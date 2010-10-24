@@ -235,4 +235,4 @@ network interface (e.g. `Local Area Connection 2`).
 For examples of using BadVPN, see [badvpn].
 
 = See also =
-[badvpn], [badvpn-server]
+[badvpn], [badvpn_server]
