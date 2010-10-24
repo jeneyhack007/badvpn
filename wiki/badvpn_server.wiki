@@ -142,4 +142,4 @@ Syntax and semantics of the language are described here.
 For examples of using BadVPN, see [badvpn].
 
 = See also =
-[badvpn], [badvpn-client]
+[badvpn], [badvpn_client]
