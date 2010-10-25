@@ -1,0 +1,160 @@
+= Setting up certificates =
+
+If you want to use TLS for server connections (recommended), the server and all the peers will
+need certificates. This section explains how to generate and distribute the certificates using
+NSS command line tools.
+
+== Setting up the Certificate Authority (CA) ==
+
+On the system that will host the CA, create a NSS database for the CA and generate a CA certificate
+valid for 24 months:
+
+{{{
+vpnca $ certutil -d sql:/home/vpnca/nssdb -N
+vpnca $ certutil -d sql:/home/vpnca/nssdb -S -n "vpnca" -s "CN=vpnca" -t "TC,," -x -2 -v 24
+> Is this a CA certificate [y/N]? y
+> Enter the path length constraint, enter to skip [<0 for unlimited path]: > -1
+> Is this a critical extension [y/N]? n
+}}}
+
+Export the public CA certificate (this file is public):
+
+{{{
+vpnca $ certutil -d sql:/home/vpnca/nssdb -L -n vpnca -a > ca.pem
+}}}
+
+== Setting up the server certificate ==
+
+On the CA system, generate a certificate for the server valid for 24 months, with TLS server usage context:
+
+{{{
+vpnca $ certutil -d sql:/home/vpnca/nssdb -S -n "<insert_server_name>" -s "CN=<insert_server_name>" -c "vpnca" -t ",," -2 -6 -v 24
+> 0
+> -1
+> Is this a critical extension [y/N]? n
+> Is this a CA certificate [y/N]? n
+> Enter the path length constraint, enter to skip [<0 for unlimited path]: >
+> Is this a critical extension [y/N]? n
+}}}
+
+Export the server certificate to a PKCS#12 file (this file must be kept secret):
+
+{{{
+vpnca $ pk12util -d sql:/home/vpnca/nssdb -o server.p12 -n "<insert_server_name>"
+}}}
+
+On the system that will run the server, create a NSS database and import the CA certificate
+and the server cerificate:
+
+{{{
+vpnserver $ certutil -d sql:/home/vpnserver/nssdb -N
+vpnserver $ certutil -d sql:/home/vpnserver/nssdb -A -t "CT,," -n "vpnca" -i /path/to/ca.pem
+vpnserver $ pk12util -d sql:/home/vpnserver/nssdb -i /path/to/server.p12
+}}}
+
+== Setting up peer certificates ==
+
+On the CA system, generate a certificate for the peer valid for 24 months, with TLS client and
+TLS server usage contexts:
+
+{{{
+vpnca $ certutil -d sql:/home/vpnca/nssdb -S -n "peer-<insert_name>" -s "CN=peer-<insert_name>" -c "vpnca" -t ",," -2 -6 -v 24
+> 0
+> 1
+> -1
+> Is this a critical extension [y/N]? n
+> Is this a CA certificate [y/N]? n
+> Enter the path length constraint, enter to skip [<0 for unlimited path]: >
+> Is this a critical extension [y/N]? n
+}}}
+
+Export the peer certificate to a PKCS#12 file (this file must be kept secret):
+
+{{{
+vpnca $ pk12util -d sql:/home/vpnca/nssdb -o peer-<insert_name>.p12 -n "peer-<insert_name>"
+}}}
+
+On the system that will run the VPN client, create a NSS database and import the CA certificate
+and the peer cerificate:
+
+{{{
+vpnclient $ certutil -d sql:/home/vpnclient/nssdb -N
+vpnclient $ certutil -d sql:/home/vpnclient/nssdb -A -t "CT,," -n "vpnca" -i /path/to/ca.pem
+vpnclient $ pk12util -d sql:/home/vpnclient/nssdb -i /path/to/peer-<insert_name>.p12
+}}}
+
+= Setting up TAP devices =
+
+You need to create and configure TAP devices on all computers that will participate in the virtual network
+(i.e. run the client program). See [badvpn_client], section for details.
+
+= Example: Local IPv4 network, UDP transport, zero security =
+
+Starting the server:
+
+{{{
+badvpn-server
+  --listen-addr 0.0.0.0:7000
+}}}
+
+Starting the peers:
+
+{{{
+badvpn-client
+  --server-addr <insert_server_local_address>:7000
+  --transport-mode udp --encryption-mode none --hash-mode none
+  --scope local1
+  --bind-addr 0.0.0.0:8000 --num-ports 30 --ext-addr {server_reported}:8000 local1
+  --tapdev tap0
+}}}
+
+= Example: Adding TLS and UDP security =
+
+Starting the server (other options as above):
+
+{{{
+badvpn-server
+  ...
+  --ssl --nssdb sql:/home/vpnserver/nssdb --server-cert-name "<insert_server_name>"
+}}}
+
+Starting the peers (other options as above):
+
+{{{
+badvpn-client
+  ...
+  --ssl --nssdb sql:/home/vpnclient/nssdb --client-cert-name "peer-<insert_name>"
+  --encryption-mode blowfish --hash-mode md5 --otp blowfish 3000 2000
+}}}
+
+= Example: Multiple local networks behind NATs, all connected to the Internet =
+
+For each peer in the existing local network, configure the NAT router to forward its
+range of ports to it (assuming their port ranges do not overlap). The clients also need
+to know the external IP address of the NAT router. If you don't have a static one,
+you'll need to discover it before starting the clients. Also forward the server port to
+the server.
+
+Starting the peers in the local network (other options as above):
+
+{{{
+badvpn-client
+  ...
+  --scope internet
+  ...
+  --ext-addr <insert_NAT_routers_external_IP>:<insert_start_of_forwarded_port_range> internet
+  ...
+}}}
+
+The `--ext-addr` option applies to the previously specified `--bind-addr` option, and must come after
+the first `--ext-addr` option which specifies a local address.
+
+Now perform a similar setup in some other local network behind a NAT. However:
+
+    * Don't set up a new server, instead make the peers connect to the existing server in the first local network.
+    * You can't use {server_reported} for the local address --ext-addr options, because the server would report the NAT router's external address rather than the peer's internal address. Instead each peer has to know its internal IP address.
+    * Use a different scope name for it, e.g. "local2" instead of "local1".
+
+If setup correctly, all peers will be able to communicate: those in the same local network will
+communicate directly through local addresses, and those in different local networks will
+communicate through the Internet.
