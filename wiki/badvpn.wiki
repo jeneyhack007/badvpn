@@ -120,7 +120,7 @@ to improve security, for example when the VPN is used only to allow clients to s
 to a central service.
 
 = Protocol =
-The protocols used in BadVPN are described in the source code in the protocol/ directory.
+The protocols used in BadVPN are described in the source code in the [http://code.google.com/p/badvpn/source/browse/#svn/trunk/protocol protocol/] directory.
 
 = See also =
 [Examples], [badvpn_server], [badvpn_client]
