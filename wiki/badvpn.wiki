@@ -123,4 +123,4 @@ to a central service.
 The protocols used in BadVPN are described in the source code in the protocol/ directory.
 
 = See also =
-[badvpn_server], [badvpn_client]
+[Examples], [badvpn_server], [badvpn_client]
