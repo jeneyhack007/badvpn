@@ -108,6 +108,8 @@ badvpn-client
   --tapdev tap0
 }}}
 
+*NOTE*: badvpn-client exits if it fails to connect to the server, or the connection is broken. For a persistent link, you should run badvpn-client in a loop with a few seconds before starting it again after it exits.
+
 = Example: Adding TLS and UDP security =
 
 Starting the server (other options as above):
