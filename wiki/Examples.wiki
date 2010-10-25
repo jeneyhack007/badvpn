@@ -43,7 +43,7 @@ Export the server certificate to a PKCS#12 file (this file must be kept secret):
 vpnca $ pk12util -d sql:/home/vpnca/nssdb -o server.p12 -n "<insert_server_name>"
 }}}
 
-On the system that will run the server, create a NSS database and import the CA certificate
+On the system that will run the server, create a NSS database (do not use a password) and import the CA certificate
 and the server cerificate:
 
 {{{
@@ -74,7 +74,7 @@ Export the peer certificate to a PKCS#12 file (this file must be kept secret):
 vpnca $ pk12util -d sql:/home/vpnca/nssdb -o peer-<insert_name>.p12 -n "peer-<insert_name>"
 }}}
 
-On the system that will run the VPN client, create a NSS database and import the CA certificate
+On the system that will run the VPN client, create a NSS database (do not use a password) and import the CA certificate
 and the peer cerificate:
 
 {{{
