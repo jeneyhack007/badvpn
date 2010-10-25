@@ -83,7 +83,7 @@ itself with a certificate.
 BadVPN uses Mozilla's NSS library for TLS support. This means that the required certificates
 and keys must be available in a NSS database. The database and certificates can be
 generated with the *certutil*
-command. See the examples section on how to generate and distribute the certificates.
+command. See the [Examples] on how to generate and distribute the certificates.
 
 === TLS for TCP data connections ===
 If TCP is used for data connections between the peers, the data connections can be secured
