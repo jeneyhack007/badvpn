@@ -89,7 +89,7 @@ command. See the [Examples] on how to generate and distribute the certificates.
 If TCP is used for data connections between the peers, the data connections can be secured
 with TLS. This requires using TLS for client-server connections. The clients need to trust
 each others' certificates to be able to connect. Additionally, each client must identify to
-its peers with the same certificates it used for connecting to the server.
+its peers with the same certificate it used for connecting to the server.
 
 === Encryption for UDP data connections ===
 If UDP is used for data connections, it is possible for each pair of peers to encrypt their
