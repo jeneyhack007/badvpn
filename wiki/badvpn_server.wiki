@@ -120,7 +120,7 @@ Syntax and semantics of the language are described here.
         if the first expression evaluates to true. If a sub-expression
         evaluates to error, the conjunction evaluates to error.
     # `function_name(<arg>, ..., <arg>)`
-        Evaluation of a user-provided function (function is the name of the
+        Evaluation of a user-provided function (`function_name` is the name of the
         function, `[a-zA-Z0-9_]+`).
         If the function with the given name does not exist, it evaluates to
         error.
