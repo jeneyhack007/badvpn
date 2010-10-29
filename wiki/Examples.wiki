@@ -154,7 +154,8 @@ the first `--ext-addr` option which specifies a local address.
 Now perform a similar setup in some other local network behind a NAT. However:
 
     * Don't set up a new server, instead make the peers connect to the existing server in the first local network.
-    * You can't use {server_reported} for the local address --ext-addr options, because the server would report the NAT router's external address rather than the peer's internal address. Instead each peer has to know its internal IP address.
+    * You can't use `{server_reported}` in the `--ext-addr` option for the local address --ext-addr options, because the server would report the NAT router's external address rather than the peer's internal address. Instead each peer has to know its internal IP address.
+    * You don't need to know the NAT router's external address; you can use `{server_reported}` in the `--ext-addr` option for the internet address. This will work because the server will see the clients connecting from the NAT router's external address (unless there is more than one NAT).
     * Use a different scope name for it, e.g. "local2" instead of "local1".
 
 If setup correctly, all peers will be able to communicate: those in the same local network will
