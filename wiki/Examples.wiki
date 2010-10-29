@@ -108,7 +108,7 @@ badvpn-client
   --tapdev tap0
 }}}
 
-*NOTE*: badvpn-client exits if it fails to connect to the server, or the connection is broken. For a persistent link, you should run badvpn-client in a loop that restarts it after a few seconds after it exits.
+*NOTE*: badvpn-client exits if it fails to connect to the server, or the connection is broken. For a persistent link, you should run badvpn-client in a loop that restarts it a few seconds after it exits.
 
 = Example: Adding TLS and UDP security =
 
@@ -137,7 +137,7 @@ to know the external IP address of the NAT router. If you don't have a static on
 you'll need to discover it before starting the clients. Also forward the server port to
 the server.
 
-Starting the peers in the local network (other options as above):
+Starting the peers in the local network (keep all the options above and add these):
 
 {{{
 badvpn-client
