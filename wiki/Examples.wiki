@@ -86,7 +86,7 @@ vpnclient $ pk12util -d sql:/home/vpnclient/nssdb -i /path/to/peer-<insert_name>
 = Setting up TAP devices =
 
 You need to create and configure TAP devices on all computers that will participate in the virtual network
-(i.e. run the client program). See [badvpn_client] for details.
+(i.e. run the client program). See [badvpn_client#TAP_device_configuration] for details.
 
 = Example: Local IPv4 network, UDP transport, zero security =
 
