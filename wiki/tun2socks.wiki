@@ -1,0 +1,33 @@
+#summary tun2socks - socksify TCP at the network layer
+
+= Introduction =
+
+`tun2socks` is used to "socksify" TCP connections at the network layer. It implements a TUN device which accepts all incoming TCP connections (regardless of destination IP), and forwards the connections through a SOCKS server. This allows you to forward *all* connections through SOCKS, without any need for application support. It can be used, for example, to forward connections through a remote SSH server.
+
+= Example (tunelling through SSH) =
+
+First create a TUN device:
+
+  * On Linux, use `tunctl -u <someuser> -t tun0 -n` or `openvpn --mktun --dev tun0 --user <someuser>".
+  * on Windows, install OpenVPN (or, if you already have it, click the start menu shortcut that creates a new TAP-Win32 device).
+
+Configure IP for the device, e.g. assign IP address 10.0.0.1, netmask 255.255.255.0.
+
+Now start the program (on Linux, run it as `<someuser>`):
+{{{
+badvpn-tun2socks --tundev tun0 --netif-ipaddr 10.0.0.2 --netif-netmask 255.255.255.0 --socks-server-addr 127.0.0.1:1080
+}}}
+
+NOTE: the `10.0.0.2` is not a typo. It specifies the IP address of the virtual router inside the TUN device, and must be different than the IP of the interface.
+
+Now you should be able to ping the virtual router's IP (`10.0.0.2`).
+
+Connect to the SSH server, passing `-D localhost:1080` to the `ssh` command to enable dynamic forwarding. This will make `ssh` open a local SOCKS server which `badvpn-tun2socks` will use.
+If you use Putty, go to Connection->SSH->Tunnels, type `1080` in `Source port`, choose `Dynamic` and click `Add`.
+
+All that remains is to route connections through the TUN device instead of the existing default gateway. This is done as follows:
+
+  # Add a route to the SSH server through your existing gateway, with a lower metric than the original default route.
+  # Add default route through the virtual router in the TAP device, with a lower metric than the original default route, but higher than the SSH route.
+
+This will make all external connections go through the TAP device, except for the SSH connection.
