@@ -21,7 +21,7 @@ badvpn-tun2socks --tundev <tun_spec> --netif-ipaddr 10.0.0.2 --netif-netmask 255
 where `<tun_spec>` is:
 
   * on Linux, `tun0`,
-  * on Windows, `tap0901:<human_name_of_TAP_device>:10.0.0.1:10.0.0.0:255.255.255.0` (the three numbers are TUN interface IP address, network, and subnet mask.
+  * on Windows, `tap0901:<human_name_of_TUN_device>:10.0.0.1:10.0.0.0:255.255.255.0` (the three numbers are TUN interface IP address, network, and subnet mask.
 
 NOTE: `--netif-ipaddr 10.0.0.2` is not a typo. It specifies the IP address of the virtual router inside the TUN device, and must be different than the IP of the interface.
 
