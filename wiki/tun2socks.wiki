@@ -35,7 +35,7 @@ All that remains is to route connections through the TUN device instead of the e
   # Add a route to the SSH server through your existing gateway, with a lower metric than the original default route.
   # Add default route through the virtual router in the TUN device, with a lower metric than the original default route, but higher than the SSH route.
 
-This will make all external connections go through the TUN device, except for the SSH connection (else SSH would go through the TUN device, which would through... SSH).
+This will make all external connections go through the TUN device, except for the SSH connection (else SSH would go through the TUN device, which would go through... SSH).
 
 For example on Linux (assuming there are no existing default routes with metric <=6; if there are, remove them):
 
