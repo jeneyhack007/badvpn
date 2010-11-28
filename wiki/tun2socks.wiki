@@ -23,8 +23,7 @@ where `<tun_spec>` is:
   * on Linux, `tun0`,
   * on Windows, `tap0901:<human_name_of_TAP_device>:10.0.0.1:10.0.0.0:255.255.255.0` (the three numbers are TUN interface IP address, network, and subnet mask.
 
-NOTE: `10.0.0.2` is not a typo. It specifies the IP address of the virtual router inside the TUN device, and must be different than the IP of the interface.
-On Windows, the three ad
+NOTE: `--netif-ipaddr 10.0.0.2` is not a typo. It specifies the IP address of the virtual router inside the TUN device, and must be different than the IP of the interface.
 
 Now you should be able to ping the virtual router's IP (`10.0.0.2`).
 
@@ -37,3 +36,10 @@ All that remains is to route connections through the TUN device instead of the e
   # Add default route through the virtual router in the TAP device, with a lower metric than the original default route, but higher than the SSH route.
 
 This will make all external connections go through the TAP device, except for the SSH connection.
+
+For example on Linux (assuming there are no existing default routes with metric <=6; if there are, remove them):
+
+{{{
+route add <IP_of_SSH_server> gw <IP_of_original_gateway> metric 5
+route add default gw 10.0.0.2 metric 6
+}}}
