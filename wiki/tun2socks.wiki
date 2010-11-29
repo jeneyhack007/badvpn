@@ -33,7 +33,7 @@ If you use Putty, go to Connection->SSH->Tunnels, type `1080` in `Source port`, 
 All that remains is to route connections through the TUN device instead of the existing default gateway. This is done as follows:
 
   # Add a route to the SSH server through your existing gateway, with a lower metric than the original default route.
-  # If your DNS servers are in the Internet (rather than your local network), also add routes for them (like for the SSH server).
+  # If your DNS servers are in the Internet (rather than your local network), also add routes for them (like for the SSH server). This is needed because `tun2socks` does not forward UDP (yet).
   # Add default route through the virtual router in the TUN device, with a lower metric than the original default route, but higher than the SSH route.
 
 This will make all external connections go through the TUN device, except for the SSH connection (else SSH would go through the TUN device, which would go through... SSH).
@@ -42,6 +42,7 @@ For example (assuming there are no existing default routes with metric <=6; othe
 
 {{{
 route add <IP_of_SSH_server> gw <IP_of_original_gateway> metric 5
+<same for DNS>
 route add default gw 10.0.0.2 metric 6
 }}}
 
@@ -49,6 +50,7 @@ Or on Windows (NOTE: `tun2socks` must be running and the interface of the defaul
 
 {{{
 route add <IP_of_SSH_server> <IP_of_original_gateway> metric 5
+<same for DNS>
 route add 0.0.0.0 mask 0.0.0.0 10.0.0.2 metric 6
 }}}
 
