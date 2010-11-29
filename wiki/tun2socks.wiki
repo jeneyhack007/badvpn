@@ -45,7 +45,7 @@ route add <IP_of_SSH_server> gw <IP_of_original_gateway> metric 5
 route add default gw 10.0.0.2 metric 6
 }}}
 
-Or on Windows:
+Or on Windows (NOTE: `tun2socks` must be running and the interface of the default gateway must be working for these to succeed):
 
 {{{
 route add <IP_of_SSH_server> <IP_of_original_gateway> metric 5
