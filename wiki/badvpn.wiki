@@ -58,7 +58,7 @@ BadVPN nodes perform IGMP snooping in order to efficiently deliver multicast fra
 this makes it possible to use BadVPN as a tunnel into an IPTV network of an Internet Service Provider
 for you to watch TV from wherever you want (given sufficient link quality).
 
-== Code quality ==
+== Design and code quality ==
 BadVPN has great focus on code quality and reliability. BadVPN is written in the C programming
 language. It is a single-threaded event-driven program. This allows for low resource usage and
 fast response times. Even though C is a relatively low-level language, the programs are made of
@@ -66,6 +66,7 @@ small, highly cohesive and loosely coupled modules that are combined into a comp
 a high level. Modules are accesed and communicate through small, simple and to-the-point interfaces.
 It utilizes a flow-based design which greatly simplifies processing of data and input and output
 of the programs.
+Furthermore, it is based on an original programming paradigm (the job queue paradigm), which greatly simplifies developing I/O modules. You can read more about the job queue paradigm at http://code.google.com/p/badvpn/source/detail?r=58 .
 
 == Security features ==
 
