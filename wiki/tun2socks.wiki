@@ -53,4 +53,4 @@ route add 0.0.0.0 mask 0.0.0.0 10.0.0.2 metric 6
 }}}
 
 
-These routes will not persist across a reboot. You should probably make scripts that install and remove them. 
+These routes will not persist across a reboot. You should probably make scripts that install and remove them. You can remove a route by changing the `add` to `del` or `remove`, depending on whether you're in Linux or Windows.
