@@ -138,7 +138,7 @@ Syntax and semantics of the language are described here.
         to what the handler function returned.
 
 = Examples =
-For examples of using BadVPN, see [badvpn].
+For examples of using BadVPN, see [Examples].
 
 = See also =
 [badvpn], [badvpn_client]
