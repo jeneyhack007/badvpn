@@ -83,7 +83,6 @@ The BadVPN server is configured entirely from command line.
 `--relay-predicate <string>`
 
     Set a predicate to define how peers can relay data through other peers. The predicate is a logical expression; see below for details. If the predicate evaluates to true, peer P can relay data through peer R. Available functions:
-
         # `pname(<string>)`
             true if the TLS common name of peer P peer equals the given string. If TLS is not used, the common name is assumed to be an empty string.
         # `paddr(<string>)`
