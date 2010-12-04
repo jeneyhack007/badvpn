@@ -232,7 +232,7 @@ the TAP driver (tap0901 for OpenVPN 2.1 and 2.2) (case sensitive), and `<interfa
 network interface (e.g. `Local Area Connection 2`).
 
 = Examples =
-For examples of using BadVPN, see [badvpn].
+For examples of using BadVPN, see [Examples].
 
 = See also =
 [badvpn], [badvpn_server]
