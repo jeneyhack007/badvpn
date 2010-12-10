@@ -34,7 +34,7 @@ All that remains is to route connections through the TUN device instead of the e
 
   # Add a route to the SSH server through your existing gateway, with a lower metric than the original default route.
   # If your DNS servers are in the Internet (rather than your local network), also add routes for them (like for the SSH server). This is needed because `tun2socks` does not forward UDP (yet).
-  # Add default route through the virtual router in the TUN device, with a lower metric than the original default route, but higher than the SSH route.
+  # Add default route through the virtual router in the TUN device, with a lower metric than the original default route, but higher than the SSH and DNS routes.
 
 This will make all external connections go through the TUN device, except for the SSH connection (else SSH would go through the TUN device, which would go through... SSH).
 
