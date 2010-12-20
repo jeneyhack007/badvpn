@@ -37,6 +37,8 @@ vpnca $ certutil -d sql:/home/vpnca/nssdb -S -n "<insert_server_name>" -s "CN=<i
 > Is this a critical extension [y/N]? n
 }}}
 
+The `<insert_server_name>` may be a domain name of the server, or just about any word.
+
 Export the server certificate to a PKCS#12 file (this file must be kept secret):
 
 {{{
@@ -125,9 +127,12 @@ Starting the peers (other options as above):
 {{{
 badvpn-client
   ...
+  --server-name "<insert_server_name>"
   --ssl --nssdb sql:/home/vpnclient/nssdb --client-cert-name "peer-<insert_name>"
   --encryption-mode blowfish --hash-mode md5 --otp blowfish 3000 2000
 }}}
+
+You may omit the `--server-name` option if the address portion of `--server-addr` is the server name (as was specified while generating the server's certificate).
 
 = Example: Multiple local networks behind NATs, all connected to the Internet =
 
