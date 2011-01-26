@@ -154,7 +154,7 @@ badvpn-client
 }}}
 
 The `--ext-addr` option applies to the previously specified `--bind-addr` option, and must come after
-the first `--ext-addr` option which specifies a local address.
+the first `--ext-addr` option which specifies a local address. This is because we want to prefer local connections to Internet ones.
 
 Now perform a similar setup in some other local network behind a NAT. However:
 
