@@ -166,3 +166,27 @@ Now perform a similar setup in some other local network behind a NAT. However:
 If setup correctly, all peers will be able to communicate: those in the same local network will
 communicate directly through local addresses, and those in different local networks will
 communicate through the Internet.
+
+= Relaying =
+
+For various reasons, it may be impossible or impractical to set up port forwardings or firewall rules. For example, you're in a third party network and can't configure the router. In this case, the VPN client will not be able to communicate directly with outside peers which _also_ didn't forward ports. BadVPN provides a fallback solution for this case: it allows two peers that cannot communicate directly to relay data through a specially designated peer.
+
+Relaying will _not_ be used by default; instead, you have to manually configure a relay peer. This is done by choosing a relay peer, which must be reachable from outside (e.g. ports forwarded, as in the example above), and telling `badvpn-server` about the relay peer.
+
+If you want `badvpn-server` to identify the relay peer based on its IP address (`not` domain name):
+
+{{{
+badvpn-server
+  ...
+  --relay-predicate 'raddr("127.0.0.1")'
+}}}
+
+Or, if you use SSL and want to identify it based on the common name:
+
+{{{
+badvpn-server
+  ...
+  --relay-predicate 'rname("peer-<insert_name>")'
+}}}
+
+*WARNING*: (for relaying and in general) On each peer, do _not_ specify external addresses (`--ext-addr`) which does not work. This applies both to internal and Internet addresses. If you specify an external address which does not work, the system will `not` figure that out; it will keep trying the non-working external address, and will not try external addresses that follow or fallback to relaying.
