@@ -171,7 +171,7 @@ communicate through the Internet.
 
 For various reasons, it may be impossible or impractical to set up port forwardings or firewall rules. For example, you're in a third party network and can't configure the router. In this case, the VPN client will not be able to communicate directly with outside peers which _also_ didn't forward ports. BadVPN provides a fallback solution for this case: it allows two peers that cannot communicate directly to relay data through a specially designated peer.
 
-Relaying will _not_ be used by default; instead, you have to manually configure a relay peer. This is done by choosing a relay peer, which must be reachable from outside (e.g. ports forwarded, as in the example above), and telling `badvpn-server` about the relay peer.
+Relaying will _not_ be used by default; instead, you have to manually configure a relay peer. This is done by choosing a relay peer, which must be reachable from all peers (e.g. ports forwarded, as in the example above), and telling `badvpn-server` about the relay peer.
 
 If you want `badvpn-server` to identify the relay peer based on its IP address (`not` domain name):
 
