@@ -173,7 +173,7 @@ For various reasons, it may be impossible or impractical to set up port forwardi
 
 Relaying will _not_ be used by default; instead, you have to manually configure a relay peer. This is done by choosing a relay peer, which must be reachable from all peers (e.g. ports forwarded, as in the example above), and telling `badvpn-server` about the relay peer.
 
-If you want `badvpn-server` to identify the relay peer based on its IP address (`not` domain name):
+If you want `badvpn-server` to identify the relay peer based on its IP address (_not_ domain name):
 
 {{{
 badvpn-server
