@@ -189,4 +189,8 @@ badvpn-server
   --relay-predicate 'rname("peer-<insert_name>")'
 }}}
 
-*WARNING*: (for relaying and in general) On each peer, do _not_ specify external addresses (`--ext-addr`) which does not work. This applies both to internal and Internet addresses. If you specify an external address which does not work, the system will `not` figure that out; it will keep trying the non-working external address, and will not try external addresses that follow or fallback to relaying.
+*WARNING*: (for relaying and in general) On each peer, do _not_ specify external addresses (`--ext-addr` options) which do not work. This applies both to internal and Internet addresses. If you specify an external address which does not work, the system will `not` figure that out; it will keep trying the non-working address, and will not try external addresses that follow or fallback to relaying.
+
+In practice, this may be hard to achieve, for example if you move your computer between different networks. In a perfect setup, you'd want your system to figure out in which network it resides, along with additional information, and automatically pass `badvpn-client` relevant addresses (e.g. `--server-addr`, `--bind-addr`, `--ext-addr`).
+
+For this purpose I have developed a daemon, called the Network Configuration Daemon (NCD) (Linux only) which can completely take over the network configuration of the system, and allows you to program your desired configuration in a specially designed programming language. You can read more about NCD in its readme file, http://code.google.com/p/badvpn/source/browse/trunk/ncd/README . However, please be aware that NCD is a new project in its early stages, and may not have some particular feature you need.
