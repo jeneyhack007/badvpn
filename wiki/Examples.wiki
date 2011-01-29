@@ -118,7 +118,7 @@ On Windows, you can use a batch script for that:
 @echo off
 :loop
 <badvpn-client command>
-ping -w 5000 -c 1 0.0.0.1 >NUL
+ping -n 1 -w 5000 0.0.0.1 >NUL
 call :loop
 }}}
 
