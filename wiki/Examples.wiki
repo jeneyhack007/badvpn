@@ -112,6 +112,16 @@ badvpn-client
 
 *NOTE*: badvpn-client exits if it fails to connect to the server, or the connection is broken. For a persistent link, you should run badvpn-client in a loop that restarts it a few seconds after it exits.
 
+On Windows, you can use a batch script for that:
+
+{{{
+@echo off
+:loop
+<badvpn-client command>
+ping -w 5000 -c 1 0.0.0.1 >NUL
+call :loop
+}}}
+
 = Example: Adding TLS and UDP security =
 
 Starting the server (other options as above):
