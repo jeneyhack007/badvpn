@@ -46,7 +46,7 @@ vpnca $ pk12util -d sql:/home/vpnca/nssdb -o server.p12 -n "<insert_server_name>
 }}}
 
 On the system that will run the server, create a NSS database (do not use a password) and import the CA certificate
-and the server cerificate:
+and the server cerificate (or do it on the CA system and transfer the nssdb folder):
 
 {{{
 vpnserver $ certutil -d sql:/home/vpnserver/nssdb -N
@@ -77,7 +77,7 @@ vpnca $ pk12util -d sql:/home/vpnca/nssdb -o peer-<insert_name>.p12 -n "peer-<in
 }}}
 
 On the system that will run the VPN client, create a NSS database (do not use a password) and import the CA certificate
-and the peer cerificate:
+and the peer cerificate (or do it on the CA system and transfer the nssdb folder):
 
 {{{
 vpnclient $ certutil -d sql:/home/vpnclient/nssdb -N
