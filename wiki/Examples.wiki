@@ -1,7 +1,7 @@
 = Setting up certificates =
 
 If you want to use TLS for server connections (recommended), the server and all the peers will
-need certificates. This section explains how to generate and distribute the certificates using
+need certificates. You may choose not to use certificates if security is not an issue, or if you just want to quickly try out BadVPN. This section explains how to generate and distribute the certificates using
 NSS command line tools.
 
 == Setting up the Certificate Authority (CA) ==
