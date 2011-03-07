@@ -99,6 +99,8 @@ badvpn-server
   --listen-addr 0.0.0.0:7000
 }}}
 
+*NOTE*: badvpn-server does not actually participate in the virtual network. If you want the server machine to be part of the network, run a local badvpn-client, like on other peers.
+
 Starting the peers:
 
 {{{
