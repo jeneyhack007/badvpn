@@ -3,7 +3,7 @@
 
 = Introduction =
 
-NCD, the Network Configuration Daemon, is a daemon and programming language for configuration of network interfaces and other aspects of the operating system. It implements various functionalities as built-in modules, which may then be called from a NCD program wherever and for whatever purpose the user needs them. This modularity makes NCD extremely flexible and extensible. It does a very good job with hotplugging in various forms, like USB network interfaces and link detection for wired devices.
+NCD, the Network Configuration Daemon, is a daemon and programming language for configuration of network interfaces and other aspects of the operating system. It implements various functionalities as built-in modules, which may be used from a NCD program wherever and for whatever purpose the user needs them. This modularity makes NCD extremely flexible and extensible. It does a very good job with hotplugging in various forms, like USB network interfaces and link detection for wired devices.
 
 NCD is only available for Linux. It is included in the BadVPN software package.
 
