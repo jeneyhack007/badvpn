@@ -1,0 +1,10 @@
+#summary NCD - powerful and extensible network interface configuration
+#labels network,config,configuration,dynamic,flexible,extensible,advanced,configuration,vpn,hotplug
+
+= Introduction =
+
+NCD, the Network Configuration Daemon, is a daemon and programming language for configuration of network interfaces and other aspects of the operating system. It implements various functionalities as built-in modules, which may then be called from a NCD program wherever and for whatever purpose the user needs them. This modularity makes NCD extremely flexible and extensible. It does a very good job with hotplugging in various forms, like USB network interfaces and link detection for wired devices.
+
+= Basics =
+
+NCD is used by writing a NCD program (the "configuration file"), then starting the `badvpn-ncd` program as a daemon (usually at system boot time). NCD will then keep running the supplied program, until it is requested to terminate (usually at shutdown time). NCD is designed to work in the background without any need to communicate with the user, and to automatically recover from any transient problems. The goal is to make things (e.g. network access) "just work", while still allowing dynamic and complex configuration.
