@@ -7,6 +7,16 @@ NCD, the Network Configuration Daemon, is a daemon and programming language for 
 
 NCD is only available for Linux. It is included in the BadVPN software package.
 
+= Why ? =
+
+If you use Linux on a desktop system, you must have heard of a program called NetworkManager. It is a program that is meant to take care of network configuration on the OS. It is designed to be extremely easy and simple to use; it has a GUI with a wireless network list, easy wireless and IP configuration, support for VPN, etc..
+
+This all seems good. Until you want to use two VPNs at the same time. Or add some nontrivial iptables rules. Or tell it not to mess with the network interface called eth1. Basically, it's a hardcoded mess, and if you want it to do something the designers haven't specifically implemented, better go crying right away.
+
+Other network configuration frameworks have similar problems. The Gentoo init scripts, for example, can't even do DHCP right (it times out and forgets about the interface forever)!
+
+My conclusion was that, if a more powerful and extensible system is needed, the existing systems need to be thrown away; a new system better suited to the needs of power users needs to be designed. So here comes NCD!
+
 = Basics =
 
 NCD is used by writing a NCD program (the "configuration file"), then starting the `badvpn-ncd` program as a daemon (usually at system boot time). NCD will then keep running the supplied program, until it is requested to terminate (usually at shutdown time). NCD is designed to work in the background without any need to communicate with the user, and to automatically recover from any transient problems. The goal is to make things (e.g. network access) "just work", while still allowing dynamic and complex configuration.
