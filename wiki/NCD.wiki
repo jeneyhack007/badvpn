@@ -39,7 +39,7 @@ The NCD interpreter by itself does not provide any control constructs. These are
 
 = Complete example =
 
-For a gradual introduction to NCD and more examples, see http://code.google.com/p/badvpn/source/browse/trunk/ncd/README .
+For a gradual introduction to NCD and more examples (e.g. wireless, conditional configuration, BadVPN interfaces), see http://code.google.com/p/badvpn/source/browse/trunk/ncd/README .
 
 This is an example NCD program that works with two network interfaces, both of which may be used for Internet access. 
 When both are working, eth1 has priority for Internet access (e.g. if eth0 is up, but later eth1 also comes up, the configuration will be changed to use eth1 for Internet access).
