@@ -15,7 +15,7 @@ This all seems good. Until you want to use two VPNs at the same time. Or add som
 
 Other network configuration frameworks have similar problems. The Gentoo init scripts, for example, can't even do DHCP right (it times out and forgets about the interface forever)!
 
-My conclusion was that, if a more powerful and extensible system is needed, the existing systems need to be thrown away; a new system better suited to the needs of power users needs to be designed. So here comes NCD!
+My conclusion was that, for more powerful and extensible network configuration, the existing systems need to be thrown away; a new system better suited to the needs of power users needs to be designed. So here comes NCD!
 
 = Basics =
 
