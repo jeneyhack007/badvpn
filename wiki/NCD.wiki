@@ -110,3 +110,7 @@ process NETCONF {
     net.dns(dns_servers, "20");
 }
 }}}
+
+= Running it =
+
+First make sure there isn't something that could conflict with your NCD program (NetworkManager?). Then try the program out by running (probably as root) `badvpn-ncd --config-file /your/ncd/program.ncd'.
