@@ -27,7 +27,7 @@ A NCD program consists of a set of so-called *processes*. Globally, the processe
 
 When NCD starts up, all statements are *uninitialized*. Then the first statement in every process is *inizialized*. An initialized statement is first in the *down* state. It may at any time transition into the *up* state. When it does so, the next statement in the process is initialized, and when this one transitions up, the next one is initialized, etc..
 
-A statement (A) that is initialized and up can, at any time, go back into the down state. When this happens, NCD will cease initializing statements, and will begin *deinitializing* statements, from the bottom up, until all statements following statement A are uninitialized; it will wait for the offending statement A to go back up, and continue initializing from that point.
+A statement (A) that is initialized and up can, at any time, go back into the down state. When this happens, NCD will cease initializing statements, and will begin *deinitializing* statements, from the bottom up, until all statements following statement A are uninitialized; it will wait for the offending statement A to go back up, and continue initializing statements from that point.
 
 When a statement is initialized, it is provided with a list of *arguments* which tell the underlying module specifically what it is supposed to do. All arguments are strings. They can either be provided literally in the statement specification, or they may refer to *variables*, which are provided by preceding statements. Variables are key to the power of NCD.
 
