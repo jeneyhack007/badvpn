@@ -112,6 +112,10 @@ process NETCONF {
 }
 }}}
 
+= Requirements =
+
+*iproute2* (`ip` command) is needed by the `net.up`, `net.ipv4.addr` and `net.ipv4.route` modules. Not all distributions come with that; Gentoo for example doesn't.
+
 = Running it =
 
 First make sure there isn't something that could conflict with your NCD program (!NetworkManager?). Also make sure the network interfaces in question are down and deconfigured. NetworkManager has a habit of not deconfiguring interfaces when stopped - remove IP addresses with `ip addr del <addr>/<prefix> dev <iface>` and set down with `ip link set <iface> down`.
