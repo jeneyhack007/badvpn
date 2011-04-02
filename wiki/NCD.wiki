@@ -9,7 +9,7 @@ NCD is only available for Linux. It is included in the BadVPN software package.
 
 = Why ? =
 
-If you use Linux on a desktop system, you must have heard of a program called NetworkManager. It is a program that is meant to take care of network configuration on the OS. It is designed to be extremely easy and simple to use; it has a GUI with a wireless network list, easy wireless and IP configuration, support for VPN, etc..
+If you use Linux on a desktop system, you must have heard of a program called !NetworkManager. It is a program that is meant to take care of network configuration on the OS. It is designed to be extremely easy and simple to use; it has a GUI with a wireless network list, easy wireless and IP configuration, support for VPN, etc..
 
 This all seems good. Until you want to use two VPNs at the same time. Or add some nontrivial iptables rules. Or tell it not to mess with the network interface called eth1. Or setup a bridge interface. Basically, it's a hardcoded mess, and if you want it to do something the designers haven't specifically implemented, better go crying right away.
 
@@ -114,7 +114,7 @@ process NETCONF {
 
 = Running it =
 
-First make sure there isn't something that could conflict with your NCD program (NetworkManager?). Then try the program out by running (probably as root) `badvpn-ncd --config-file /your/ncd/program.ncd`. Once you're satisfied with the program, disable whatever network config system your OS came with, and instead start NCD at boot time via an init script.
+First make sure there isn't something that could conflict with your NCD program (!NetworkManager?). Then try the program out by running (probably as root) `badvpn-ncd --config-file /your/ncd/program.ncd`. Once you're satisfied with the program, disable whatever network config system your OS came with, and instead start NCD at boot time via an init script.
 
 = Module documentation =
 
