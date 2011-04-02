@@ -114,7 +114,7 @@ process NETCONF {
 
 = Running it =
 
-First make sure there isn't something that could conflict with your NCD program (NetworkManager?). Then try the program out by running (probably as root) `badvpn-ncd --config-file /your/ncd/program.ncd'. Once you're satisfied with the program, disable whatever network config system your OS came with, and instead start NCD at boot time via an init script.
+First make sure there isn't something that could conflict with your NCD program (NetworkManager?). Then try the program out by running (probably as root) `badvpn-ncd --config-file /your/ncd/program.ncd`. Once you're satisfied with the program, disable whatever network config system your OS came with, and instead start NCD at boot time via an init script.
 
 = Module documentation =
 
