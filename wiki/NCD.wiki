@@ -120,7 +120,7 @@ process NETCONF {
 
 First make sure there isn't something running that could conflict with your NCD program (!NetworkManager?). Also make sure the network interfaces in question are down and deconfigured. !NetworkManager has a habit of not deconfiguring interfaces when stopped - remove IP addresses with `ip addr del <addr>/<prefix> dev <iface>` and set down with `ip link set <iface> down`.
 
-Then try the program out by running (as root) `badvpn-ncd --config-file /your/ncd/program.ncd`. Once you're satisfied with the program, disable whatever network config system your OS came with, and instead start NCD at boot time via an init script. For Gentoo, the init script is installed by the BadVPN ebuild which is available in the Downaloads section.
+Then try the program out by running (as root) `badvpn-ncd --config-file /your/ncd/program.ncd`. Once you're satisfied with the program, disable whatever network config system your OS came with, and instead start NCD at boot time via an init script. For Gentoo, the init script is installed by the BadVPN ebuild which is available in the Downloads section.
 
 = Module documentation =
 
