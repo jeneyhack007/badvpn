@@ -35,7 +35,7 @@ When a statement is initialized, it is provided with a list of *arguments* which
 
 When NCD is requested to terminate, it starts deinitializing all processes from the bottom up, like described above, and this deinitialization continues until all statements in all processes are deinitialized. NCD then exits.
 
-The NCD interpreter by itself does not provide any control constructs. These are however implemented as statements which communicate behind the back of the interpreter. An example of this are the provide() and depend() statements.
+The NCD interpreter by itself does not provide any control constructs. These are however implemented as statements which communicate behind the back of the interpreter. An example of this are the `provide()` and `depend()` statements.
 
 = Complete example =
 
