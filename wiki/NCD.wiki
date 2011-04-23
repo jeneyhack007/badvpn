@@ -55,7 +55,8 @@ process eth0 {
     net.backend.waitlink(dev);
 
     # DHCP configuration.
-    # net.ipv4.dhcp() doesn't check the obtained address in any way,
+    # net.ipv4.dhcp() will block here until it obtaines an IP address.
+    # It doesn't check the obtained address in any way,
     # so as a basic security measure, do not proceed if it is local.
     net.ipv4.dhcp(dev) dhcp;
     ip_in_network(dhcp.addr, "127.0.0.0", "8") test_local;
