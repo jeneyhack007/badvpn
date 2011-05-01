@@ -119,7 +119,7 @@ process NETCONF {
 
   * *iproute2* (`ip` command) is needed by the `net.up`, `net.ipv4.addr` and `net.ipv4.route` modules. Not all distributions come with that; Gentoo for example doesn't.
 
-  * udev >=143 is needed for `net.backend.waitdevice` and `net.watch_interfaces`.
+  * *udev >=143* is needed for `net.backend.waitdevice` and `net.watch_interfaces`.
 
 = Running it =
 
