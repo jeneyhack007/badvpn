@@ -60,4 +60,4 @@ These routes will not persist across a reboot. You should probably make scripts 
 
 = Limitations =
 
-On Windows, `tun2socks` can only handle at most 63 connections at the same time; this makes it unsuitable for most purposes. This limitation comes from the WaitForMultipleObject Windows API function. This issue will be worked around in a future version of BadVPN.
+On Windows, `tun2socks` can only handle at most 63 connections at the same time; this makes it unsuitable for most purposes. This limitation comes from the `WaitForMultipleObjects` Windows API function. This issue will be worked around in a future version of BadVPN.
