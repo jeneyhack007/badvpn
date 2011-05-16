@@ -19,7 +19,7 @@ My conclusion was that, for more powerful and extensible network configuration, 
 
 = Basics =
 
-NCD is used by writing a NCD program (the "configuration file"), then starting the `badvpn-ncd` program as a daemon (usually at system boot time). NCD will then keep running the supplied program, until it is requested to terminate (usually at shutdown time). NCD is designed to work in the background without any need to communicate with the user, and to automatically recover from any transient problems. The goal is to make things (e.g. network access) "just work", while still allowing dynamic and complex configuration.
+NCD is used by writing an NCD program (the "configuration file"), then starting the `badvpn-ncd` program as a daemon (usually at system boot time). NCD will then keep running the supplied program, until it is requested to terminate (usually at shutdown time). NCD is designed to work in the background without any need to communicate with the user, and to automatically recover from any transient problems. The goal is to make things (e.g. network access) "just work", while still allowing dynamic and complex configuration.
 
 = Model of execution =
 
