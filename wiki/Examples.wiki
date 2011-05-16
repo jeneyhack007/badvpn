@@ -201,7 +201,7 @@ badvpn-server
   --relay-predicate 'rname("peer-<insert_name>")'
 }}}
 
-*WARNING*: On each peer, you _must not_ specify external addresses (`--ext-addr` options) which do not work. This applies both to internal and Internet addresses. If you specify an address which does not work, the system will _not_ figure that out; it will keep trying the non-working address, and will not try external addresses that follow or fallback to relaying.
+*WARNING*: On each peer, you _must not_ specify external addresses (`--ext-addr` options) which do not work. This applies both to internal and Internet addresses. If you specify an address which does not work, the system will _not_ figure that out; it will keep trying the non-working address, and will not try external addresses that follow nor will it fallback to relaying.
 
 = Integration =
 
