@@ -34,7 +34,7 @@ If you use Putty, go to Connection->SSH->Tunnels, type `1080` in `Source port`, 
 All that remains is to route connections through the TUN device instead of the existing default gateway. This is done as follows:
 
   # Add a route to the SSH server through your existing gateway, with a lower metric than the original default route.
-  # If your DNS servers are in the Internet (rather than your local network), also add routes for them (like for the SSH server). This is needed because `tun2socks` does not forward UDP (yet).
+  # If your DNS servers are in the Internet (rather than your local network), also add routes for them (like for the SSH server). This is needed because `tun2socks` does not forward UDP by default (see below).
   # Add default route through the virtual router in the TUN device, with a lower metric than the original default route, but higher than the SSH and DNS routes.
 
 This will make all external connections go through the TUN device, except for the SSH connection (else SSH would go through the TUN device, which would go through... SSH).
@@ -57,6 +57,16 @@ route add 0.0.0.0 mask 0.0.0.0 10.0.0.2 metric 6
 
 
 These routes will not persist across a reboot. You should probably make scripts that install and remove them. You can remove a route by changing the `add` to `del` or `delete`, depending on whether you're in Linux or Windows.
+
+= UDP forwarding =
+
+`tun2sock` can forward UDP, however this requires a daemon, `badvpn-udpgw` to run on the remote SSH server. To enable UDP forwarding:
+
+  # On the remote SSH server, start: `badvpn-udpgw --listen-addr 127.0.0.1:7300`
+
+  # Add the following arguments to `badvpn-tun2socks`: `--udpgw-remote-server-addr 127.0.0.1:7300`
+
+UDP forwarding support is only available in the SVN repository and not in the stable version on the Downloads page.
 
 = Limitations =
 
