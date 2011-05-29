@@ -69,4 +69,4 @@ UDP forwarding support is only available in the SVN repository and not in the st
 
 = Limitations =
 
-On Windows, `tun2socks` can only handle at most 63 connections at the same time; this makes it unsuitable for most purposes. This limitation comes from the `WaitForMultipleObjects` Windows API function. This issue will be solved in a future version of BadVPN.
+On Windows, the `tun2socks` included in the current stable BadVPN download can only handle at most ~64 connections at the same time; this makes it unsuitable for most purposes. This issue has been solved, and a new Windows build is available [http://code.google.com/p/badvpn/downloads/detail?name=badvpn-1.999.107rc2-win32.zip&can=2&q= here] which can handle many more connections.
