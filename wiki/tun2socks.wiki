@@ -60,7 +60,7 @@ These routes will not persist across a reboot. You should probably make scripts 
 
 = UDP forwarding =
 
-`tun2sock` can forward UDP, however this requires a daemon, `badvpn-udpgw` to run on the remote SSH server. To enable UDP forwarding:
+`tun2socks` can forward UDP, however this requires a daemon, `badvpn-udpgw` to run on the remote SSH server. To enable UDP forwarding:
 
   # On the remote SSH server, start: `badvpn-udpgw --listen-addr 127.0.0.1:7300`
   # Add the following arguments to `badvpn-tun2socks`: `--udpgw-remote-server-addr 127.0.0.1:7300`
