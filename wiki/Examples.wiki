@@ -9,6 +9,8 @@ NSS command line tools.
 On the system that will host the CA, create a NSS database for the CA and generate a CA certificate
 valid for 24 months:
 
+*NOTE*: the `certutil` and `pk12util` commands are part of the NSS package. On Gentoo, you need to enable the `utils` USE flag for dev-libs/nss. On Windows, the programs are shipped with the BadVPN binary.
+
 {{{
 vpnca $ certutil -d sql:/home/vpnca/nssdb -N
 vpnca $ certutil -d sql:/home/vpnca/nssdb -S -n "vpnca" -s "CN=vpnca" -t "TC,," -x -2 -v 24
@@ -47,6 +49,10 @@ vpnca $ pk12util -d sql:/home/vpnca/nssdb -o server.p12 -n "<insert_server_name>
 
 On the system that will run the server, create a NSS database (do not use a password) and import the CA certificate
 and the server cerificate (or do it on the CA system and transfer the nssdb folder):
+
+*NOTE*: you can build these databases on any machine, and transfer them to the peer machines (e.g. you don't need to mess with the Windows command line to build them).
+
+*WARNING*: The resulting database will contain the unencrypted private key of the peer.
 
 {{{
 vpnserver $ certutil -d sql:/home/vpnserver/nssdb -N
