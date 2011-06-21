@@ -64,9 +64,3 @@ These routes will not persist across a reboot. You should probably make scripts 
 
   # On the remote SSH server, start: `badvpn-udpgw --listen-addr 127.0.0.1:7300`
   # Add the following arguments to `badvpn-tun2socks`: `--udpgw-remote-server-addr 127.0.0.1:7300`
-
-UDP forwarding support is only available in the SVN repository and not in the stable version on the Downloads page.
-
-= Limitations =
-
-On Windows, the `tun2socks` included in the current stable BadVPN download can only handle at most ~64 connections at the same time; this makes it unsuitable for most purposes. This issue has been solved, and a new Windows build is available [http://code.google.com/p/badvpn/downloads/detail?name=badvpn-1.999.107rc2-win32.zip&can=2&q= here] which can handle many more connections.
