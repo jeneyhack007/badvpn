@@ -202,12 +202,15 @@ frames from/to it. You are responsible for configuring it (e.g. putting it up an
 You need to enable the kernel configuration option CONFIG_TUN. If you enabled it as a module, you may
 have to load it (`modprobe tun`) before you can create the device.
 
-Then you should create a persistent TAP device for the VPN client program to open. This can be done with
-either the *tunctl* or the *openvpn*
-program. The device will be associated with a user account that will have permission to use it, which should
-be the same user as the client program will run as (not root!). To create the device with tunctl, use `tunctl -u <user> -t tapN`,
-and to create it with openvpn, use `openvpn --mktun --user <user> --dev tapN`, where N is a number that identifies the
-TAP device.
+Then you should create a persistent TAP device for the VPN client program to open. This can be done in two ways:
+{{{
+tunctl -u <user> -t tapN
+}}}
+or
+{{{
+openvpn --mktun --user <user> --dev tapN
+}}}
+where <user> is the user account the client program will run as (not root!), and tapN is the name of the network interface to create.
 
 Once the TAP device is created, pass `--tapdev tapN` to the client program to make it use this device. Note that the
 device will not be preserved across a shutdown of the system; consult your OS documentaton if you want to automate
