@@ -210,7 +210,7 @@ or
 {{{
 openvpn --mktun --user <user> --dev tapN
 }}}
-where <user> is the user account the client program will run as (not root!), and tapN is the name of the network interface to create.
+where `<user>` is the user account the client program will run as (not root!), and tapN is the name of the network interface to create.
 
 Once the TAP device is created, pass `--tapdev tapN` to the client program to make it use this device. Note that the
 device will not be preserved across a shutdown of the system; consult your OS documentaton if you want to automate
