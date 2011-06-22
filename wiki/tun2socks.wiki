@@ -5,6 +5,10 @@
 
 `tun2socks` is used to "socksify" TCP connections at the network layer. It implements a TUN device which accepts all incoming TCP connections (regardless of destination IP), and forwards them through a SOCKS server. This allows you to forward *all* connections through SOCKS, without any need for application support. It can be used, for example, to forward connections through a remote SSH server.
 
+= Installation =
+
+`tun2socks` is part of BadVPN. If you're on Linux, just build BadVPN with its CMake build system. Note that you need the NSS library to do that. Alteratively, you can use a shell script to compile `tun2socks` only, in case the CMake or NSS dependency is problematic for you: http://badvpn.googlecode.com/svn/trunk/compile-tun2sock.sh . If you're on Windows, simply grab the Windows build of BadVPN.
+
 = Example (tunelling through SSH) =
 
 First create a TUN device:
