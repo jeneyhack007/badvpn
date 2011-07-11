@@ -225,7 +225,7 @@ You can get the installer at http://openvpn.net/index.php/open-source/downloads.
 
 The OpenVPN installer automatically creates one TAP device on your system when it's run for the first time.
 To create another device, use `Programs -> OpenVPN -> Utilities -> Add a new TAP virtual ethernet adapter`.
-You may have to install OpenVPN once again to make this shortcut appear.
+You may have to install OpenVPN once again to make this shortcut appear. If creation fails, you should try again by right-clicking the shortcut and choosing `Run as Administrator`.
 
 Once you have a TAP device, you can configure it like a physical network card. You can recognize TAP devices
 by their `Device Name` field.
