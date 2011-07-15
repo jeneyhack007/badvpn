@@ -4,12 +4,12 @@ If you want to use TLS for server connections (recommended), the server and all 
 need certificates. You may choose not to use certificates if security is not an issue, or if you just want to quickly try out BadVPN. This section explains how to generate and distribute the certificates using
 NSS command line tools.
 
+*NOTE*: the `certutil` and `pk12util` commands are part of the NSS package. On Gentoo, you need to enable the `utils` USE flag for dev-libs/nss. On Windows, the programs are shipped with the BadVPN binary.
+
 == Setting up the Certificate Authority (CA) ==
 
 On the system that will host the CA, create a NSS database for the CA and generate a CA certificate
 valid for 24 months:
-
-*NOTE*: the `certutil` and `pk12util` commands are part of the NSS package. On Gentoo, you need to enable the `utils` USE flag for dev-libs/nss. On Windows, the programs are shipped with the BadVPN binary.
 
 {{{
 vpnca $ certutil -d sql:/home/vpnca/nssdb -N
