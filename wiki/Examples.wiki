@@ -209,6 +209,8 @@ badvpn-server
 
 *WARNING*: On each peer, you _must not_ specify external addresses (`--ext-addr` options) which do not work. This applies both to internal and Internet addresses. If you specify an address which does not work, the system will _not_ figure that out; it will keep trying the non-working address, and will not try external addresses that follow nor will it fallback to relaying.
 
+*WARNING*: The relay peer will see the raw frames being relayed (even if data links are otherwise secured).
+
 = Integration =
 
 In practice, specifying correct addresses may be hard, for example if you move your computer between different networks. In a perfect setup, you'd want your system to figure out in which network it resides, along with additional information, and automatically pass `badvpn-client` relevant addresses (e.g. `--server-addr`, `--bind-addr`, `--ext-addr`).
