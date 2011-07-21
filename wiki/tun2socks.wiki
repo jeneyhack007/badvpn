@@ -14,7 +14,7 @@
 First create a TUN device:
 
   * On Linux, use `openvpn --mktun --dev tun0 --user <someuser>`.
-  * On Windows, install OpenVPN (or, if you already have it, click the start menu shortcut that creates a new TAP-Win32 device).
+  * On Windows, install OpenVPN (or, if you already have it, click the start menu shortcut that creates a new TAP-Win32 device). The new device will appear in `Network Adapters` and will be identifiable by its `Device Name` field (saying Tap-Win32 something).
 
 Configure IP for the device: assign IP address 10.0.0.1, netmask 255.255.255.0.
 
