@@ -18,6 +18,7 @@ badvpn-server
     [ --ssl --nssdb <string> --server-cert-name <string> ]
     [ --comm-predicate <string> ]
     [ --relay-predicate <string> ]
+    [ --client-socket-sndbuf <bytes / 0> ]
 }}}
 
 = Options =
@@ -91,6 +92,10 @@ The BadVPN server is configured entirely from command line.
             true if the TLS common name of peer R peer equals the given string. If TLS is not used, the common name is assumed to be an empty string.
         # `raddr(<string>)`
             true if the IP address of peer R equals the given string. The string must not be a name.
+
+`--client-socket-sndbuf <bytes / 0>`
+
+    Sets the value of the SO_SNDBUF socket option for client TCP sockets (zero to not set). Lower values will improve fairness when data from multiple peers is being sent to a given peer, but may result in lower bandwidth if the network's bandwidth-delay product to too big.
 
 = Exit code =
 If initialization fails, exits with code 1. Otherwise runs until termination is requested and exits with code 1.
