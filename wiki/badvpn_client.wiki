@@ -14,16 +14,17 @@ badvpn-client
     )
     [ --loglevel <0-5/none/error/warning/notice/info/debug> ]
     [ --channel-loglevel <channel-name> <0-5/none/error/warning/notice/info/debug> ] ...
-    --server-addr <addr>
-    [ --server-name <string> ]
+    [ --threads <integer> ]
     [ --ssl --nssdb <string> --client-cert-name <string> ]
+    [ --server-name <string> ]
+    --server-addr <addr>
     [ --tapdev <name> ]
     [ --scope <scope_name> ] ...
     [
         --bind-addr <addr>
-        (transport-mode=udp? --num-ports <num>)
+        (transport-mode=udp? --num-ports <num> )
         [ --ext-addr <addr / {server_reported}:port> <scope_name> ] ...
-    ]
+    ] ...
     --transport-mode <udp/tcp>
     (transport-mode=udp?
         --encryption-mode <blowfish/aes/none>
@@ -32,10 +33,16 @@ badvpn-client
         [ --fragmentation-latency <milliseconds> ]
     )
     (transport-mode=tcp?
-        (ssl? [ --peer-ssl ])
+        (ssl? [ --peer-ssl ] )
+        [ --peer-tcp-socket-sndbuf <bytes / 0> ]
     )
     [ --send-buffer-size <num-packets> ]
     [ --send-buffer-relay-size <num-packets> ]
+    [ --max-macs <num> ]
+    [ --max-groups <num> ]
+    [ --igmp-group-membership-interval <ms> ]
+    [ --igmp-last-member-query-time <ms >]
+    [ --allow-peer-talk-without-ssl ]
 }}}
 
 = Options =
@@ -69,14 +76,8 @@ The BadVPN client is configured entirely from command line.
 
     Set the logging level for a specific logging channel.
 
-`--server-addr <addr>`
-
-    Set the address of the chat server to connect to. See below for address format.
-
-`--server-name <string>`
-
-    Set the name of the server used for validating the server's certificate. The server name defaults
-    to the the name in the server address (or a numeric address).
+`--threads <integer>`
+    Hint for the number of additional threads to use for potentionally long  computations (such  as  encryption  and OTP generation). If zero (0) (default), additional threads will be disabled and all computations will be done in the  event  loop.  If  negative (<0),  a  guess will be made, possibly based on the number of CPUs. If positive (>0), the given number of threads will be used.
 
 `--ssl`
 
@@ -89,6 +90,15 @@ The BadVPN client is configured entirely from command line.
 `--client-cert-name <string>`
 
     When using TLS, the name of the certificate to use. The certificate must be readily accessible.
+
+`--server-name <string>`
+
+    Set the name of the server used for validating the server's certificate. The server name defaults
+    to the the name in the server address (or a numeric address).
+
+`--server-addr <addr>`
+
+    Set the address of the chat server to connect to. See below for address format.
 
 `--tapdev <name>`
 
@@ -171,6 +181,9 @@ The BadVPN client is configured entirely from command line.
     For this to work, the peers must trust each others' cerificates, and the cerificates must grant the
     TLS server usage context. This option must match on all peers.
 
+`--peer-tcp-socket-sndbuf <bytes / 0>`
+    Sets the value of the SO_SNDBUF socket option for peer TCP sockets (zero to not set). Lower values will improve fairness when data from multiple sources (local and relaying) is being sent to a given peer, but may result in lower bandwidth if the network's bandwidth-delay product is too big.
+
 `--send-buffer-size <num-packets>`
 
     Sets the minimum size of the peers' send buffers for sending frames originating from this system, in
@@ -180,6 +193,21 @@ The BadVPN client is configured entirely from command line.
 
     Sets the minimum size of the peers' send buffers for relaying frames from other peers, in number of
     packets.
+
+`--max-macs <num>`
+    Sets the maximum number of MAC addresses to remember for a peer. When the number is exceeded, the least recently used slot will be reused.
+
+`--max-groups <num>`
+    Sets the maximum number of IGMP group memberships to remember for a peer. When the number is exceeded, the least recently used slot will be reused.
+
+`--igmp-group-membership-interval <ms>`
+    Sets the Group Membership Interval parameter for IGMP snooping, in milliseconds.
+
+`--igmp-last-member-query-time <ms>`
+    Sets the Last Member Query Time parameter for IGMP snooping, in milliseconds.
+
+`--allow-peer-talk-without-ssl`
+    When SSL is enabled, the clients not only connect to the server using SSL, but also exchange messages through the server through another layer of SSL. This protects the messages from attacks on the server. Older versions of BadVPN (<1.999.109), however, do not support this. This option allows older and newer clients to interoperate by not using SSL if the other peer does not support it. It does however negate the security benefits of using SSL, since the (potentionally compromised) server can then order peers not to use SSL.
 
 = Exit code =
 If initialization fails, exits with code 1. Otherwise runs until termination is requested or server connection
