@@ -86,6 +86,10 @@ and keys must be available in a NSS database. The database and certificates can 
 generated with the *certutil*
 command. See the [Examples] on how to generate and distribute the certificates.
 
+=== TLS for peer messaging ===
+
+If TLS is being used for client-server connections, it will also be used between each pair of peers communicating via the server, on top of the TLS connections to the server. This secures the messages from the server itself. It is important because the messages may include encryption keys and other private data.
+
 === TLS for TCP data connections ===
 If TCP is used for data connections between the peers, the data connections can be secured
 with TLS. This requires using TLS for client-server connections. The clients need to trust
