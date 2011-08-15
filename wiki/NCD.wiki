@@ -31,7 +31,7 @@ A statement (A) that is initialized and up can, at any time, go back into the do
 
 The deinitialization of a statement often has the *reverse effect* of initialization; for example, if a statement added a routing table entry on initialization, it will remove this same routing table entry on deinitialization. This design is very suitable for various configuration tasks, as it avoids possible leaks. This design makes it trivially easy to, for example, make sure than when a network cable is pulled out, the associated routes and IP addresses are removed.
 
-When a statement is initialized, it is provided with a list of *arguments* which tell the underlying module specifically what it is supposed to do. All arguments are strings. They can either be provided literally in the statement specification, or they may refer to *variables*, whose values are provided by preceding statements in the process. Variables are key to the power of NCD.
+When a statement is initialized, it is provided with a list of *arguments* which tell the underlying module specifically what it is supposed to do. An argument is either a string or a list of strings and lists. They can either be provided literally in the statement specification, or they may refer to *variables*, whose values are provided by preceding statements in the process. Variables are key to the power of NCD.
 
 When NCD is requested to terminate, it starts deinitializing all processes from the bottom up, like described above, and this deinitialization continues until all statements in all processes are deinitialized. NCD then exits.
 
