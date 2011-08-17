@@ -1,6 +1,8 @@
 #summary NCD - powerful and extensible network interface configuration
 #labels linux,network,interface,configuration,hotplug,dhcp,flexible,powerful
 
+= Contents =
+
 <wiki:toc max_depth="1" />
 
 = Introduction =
