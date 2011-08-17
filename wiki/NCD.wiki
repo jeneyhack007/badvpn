@@ -149,7 +149,7 @@ process foo {
     mylist->append("Of");
     mylist->append("NCD!");
     concatv(mylist) string;
-    println(string); // result: HelloWorldOfNCD!
+    println(string); # result: HelloWorldOfNCD!
 }
 }}}
 
