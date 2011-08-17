@@ -231,6 +231,9 @@ process interface_removed {
     evdep.watcher->nextevent();
 }
 
+# This is a process template. It does not start by itself.
+# Instead, new NCD processes are created from it
+# with the start() method of process_manager().
 template interface_template {
     # Interface name is first argument.
     var(_arg0) dev;
