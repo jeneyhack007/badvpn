@@ -180,7 +180,7 @@ mydir $ rm file1
 -- NCD says: removed file1
 }}}
 
- * Dynamic process management via process templates. Combined with event reporting modules, this allows having a dynamic set of similar processes, each working with some resource (such as network device). For instance, here is an NCD program which performs DHCP on every network interface. The important thing to note is that DHCP will be done on any network interface as it is plugged in, without prior knowledge about it.
+ * Dynamic process management via process templates. Combined with event reporting modules, this allows having a dynamic set of similar processes, each working with some resource (such as a network device). For instance, here is an NCD program which performs DHCP on every network interface. The important thing to note is that DHCP will be done on any network interface as it is plugged in, without prior knowledge about it.
 
 {{{
 process main {
@@ -250,4 +250,4 @@ template interface_template {
 }
 }}}
 
-All of the above concepts are explained in the [NCD_events_example].
+See also [NCD_events_example] for a similar but more complex example which responds to key presses from all input devices.
