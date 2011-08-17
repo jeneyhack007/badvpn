@@ -9,15 +9,9 @@ This page describes the event handling features of NCD. For a guide to NCD and i
 
 = Introduction =
 
-NCD has some support for imperative-style event handling via the above-described execution model. In particular:
+NCD has some support for imperative-style event handling via the above-described execution model. See [http://code.google.com/p/badvpn/wiki/NCD#Event_handling_and_imperative style first. This page provides a similar example to the DHCP example there, but somehow more complex.
 
- * Method calls, which are statements that cooperate with an existing running statement. Method calls can be used to store state into and control the base statement.
-
- * Statements which report events by going up and exposing the event via their variables, and go down when their finished() method is called, waiting for the next event.
-
- * Dynamic process management via process templates. Combined with event reporting modules, this allows having a dynamic set of similar processes, each working with some resource (such as network device).
-
-= Example description =
+= Goal =
 
 This program responds to volume key presses by synchronously calling an external script for muting and adjusting volume, and responds to power button presses by suspending using pm-suspend.
 
