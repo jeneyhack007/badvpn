@@ -1,6 +1,12 @@
 #summary Event handling example in NCD
 #labels ncd,events,volume,suspend
 
+= NCD =
+
+NCD, the Network Configuration Daemon, is a daemon and programming language for configuration of network interfaces and other aspects of the operating system.
+
+This page describes the event handling features of NCD. For a guide to NCD and its basic feaures, see [NCD].
+
 = Introduction =
 
 NCD has some support for imperative-style event handling via the above-described execution model. In particular:
