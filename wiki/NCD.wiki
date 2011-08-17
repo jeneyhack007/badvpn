@@ -1,6 +1,8 @@
 #summary NCD - powerful and extensible network interface configuration
 #labels linux,network,interface,configuration,hotplug,dhcp,flexible,powerful
 
+<wiki:toc max_depth="1" />
+
 = Introduction =
 
 NCD, the Network Configuration Daemon, is a daemon and programming language for configuration of network interfaces and other aspects of the operating system. It implements various functionalities as built-in modules, which may be used from an NCD program wherever and for whatever purpose the user needs them. This modularity makes NCD extremely flexible and extensible. It does a very good job with hotplugging in various forms, like USB network interfaces and link detection for wired devices.
@@ -132,3 +134,15 @@ Then try the program out by running (as root) `badvpn-ncd --config-file /your/nc
 = Module documentation =
 
 Individual statement types (modules) are described briefly in the headers of their source files, under ncd/modules/ in the BadVPN source code: http://code.google.com/p/badvpn/source/browse/#svn%2Ftrunk%2Fncd%2Fmodules .
+
+= Event handling and imperative style =
+
+NCD has some support for imperative-style event handling via the above-described execution model. In particular:
+
+ * Method calls, which are statements that cooperate with an existing running statement. Method calls can be used to store state into and control the base statement.
+
+ * Statements which report events by going up and exposing the event via their variables, and go down when their finished() method is called, waiting for the next event.
+
+ * Dynamic process management via process templates. Combined with event reporting modules, this allows having a dynamic set of similar processes, each working with some resource (such as network device).
+
+All of the above concepts are explained in the [NCD_events_example].
