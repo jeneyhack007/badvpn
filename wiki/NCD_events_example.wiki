@@ -9,7 +9,7 @@ This page describes the event handling features of NCD. For a guide to NCD and i
 
 = Introduction =
 
-NCD has some support for imperative-style event handling via the above-described execution model. See [http://code.google.com/p/badvpn/wiki/NCD#Event_handling_and_imperative_style this introduction] first. This page provides a similar example to the DHCP example there, but somehow more complex.
+NCD has some support for imperative-style event handling, still using its simple execution mode. See [http://code.google.com/p/badvpn/wiki/NCD#Event_handling_and_imperative_style this introduction] first. This page provides a similar example to the DHCP example there, but somehow more complex.
 
 = Goal =
 
