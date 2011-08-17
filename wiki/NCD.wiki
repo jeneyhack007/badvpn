@@ -141,9 +141,44 @@ Individual statement types (modules) are described briefly in the headers of the
 
 NCD has some support for imperative-style event handling via the above-described execution model. In particular:
 
- * Method calls, which are statements that cooperate with an existing running statement. Method calls can be used to store state into and control the base statement.
+ * Method calls, which are statements that cooperate with an existing running statement. Method calls can be used to store state into and control the base statement. A trivial example, where a method of the list() statement is used to change its value:
 
- * Statements which report events by going up and exposing the event via their variables, and go down when their finished() method is called, waiting for the next event.
+{{{
+process foo {
+    list("Hello", "World") mylist;
+    mylist->append("Of");
+    mylist->append("NCD!");
+    concatv(mylist) string;
+    println(string); // result: HelloWorldOfNCD!
+}
+}}}
+
+ * Statements which report events by going up and exposing the event via their variables, and go down when their nextevent() method is called, waiting for the next event. For example, a program which prints file change notifications for a directory:
+
+{{{
+process foo {
+    # Wait for directory event.
+    sys.watch_directory("/home/ambro/mydir") dirwarcher;
+
+    # Print the event.
+    println(dirwarcher.event_type, " ", dirwarcher.filename);
+
+    # Finish event. dirwarcher goes down and then goes
+    # back up on next event.
+    dirwarcher->nextevent();
+}
+}}}
+
+This works for example like that:
+
+{{{
+mydir $ touch file1 file2
+-- you start NCD --
+-- NCD says: added file1
+-- NCD says: added file2
+mydir $ rm file1
+-- NCD says: removed file1
+}}}
 
  * Dynamic process management via process templates. Combined with event reporting modules, this allows having a dynamic set of similar processes, each working with some resource (such as network device).
 
