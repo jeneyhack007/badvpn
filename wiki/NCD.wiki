@@ -212,6 +212,8 @@ process interface_added {
     if(evdep.is_added);
 
     # Start a new process for this network interface!
+    # Give it the network interface name as a single argument.
+    # Create the process from the template called "interface_template", below.
     list(evdep.watcher.devname) args;
     evdep.manager->start(evdep.watcher.devname, "interface_template", args);
 
