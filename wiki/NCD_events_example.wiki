@@ -103,6 +103,10 @@ template events_input_device {
     and(is_power, is_pressed) dispatch_power;
 
     # Dispatch event.
+    # We use provide_event() instead of provide() because there may
+    # be multiple instances of this template reporting events, and
+    # provide() will fail is some other event is still being processed.
+    # provide_event() however will wait for the event to be processed.
     provide_event("events_input_event");
 
     # Handle unhandled event.
