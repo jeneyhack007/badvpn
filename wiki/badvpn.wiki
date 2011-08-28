@@ -53,7 +53,7 @@ For relaying to work, for each of the two peers (P1, other one P2) there must be
 third peer (R) that P1 it is allowed to relay through and can communicate directly with, and all
 such peers R must be able to communicate directly with P2.
 
-*NOTE*: the relay will be able to see the plaintext data being relayed, and it will cost the relay twice as much CPU as it will the relayed peers.
+*NOTE:* the relay will be able to see the plaintext data being relayed, and it will cost the relay twice as much CPU as it will the relayed peers.
 
 == IGMP snooping ==
 BadVPN nodes perform IGMP snooping in order to efficiently deliver multicast frames. For example,
