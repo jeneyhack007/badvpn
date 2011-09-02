@@ -153,6 +153,8 @@ process foo {
 }
 }}}
 
+Note that the `append()` statements permanently change `mylist`; the appended values will not be removed when the `append()` statements are deinitialized.
+
  * Statements which report events by going up and exposing the event via their variables, and go down when their nextevent() method is called, waiting for the next event. For example, a program which prints file change notifications for a directory:
 
 {{{
