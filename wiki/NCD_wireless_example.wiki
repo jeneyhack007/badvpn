@@ -85,8 +85,8 @@ process wlan {
 
     # Choose configuration.
     # These have to be exclusive, or we activate multiple configurations at once...
-    strcmp(sup.bssid, "83:14:7C:4F:AE:1B") is_home1;
-    strcmp(sup.bssid, "12:34:56:78:90:AB") is_home2;
+    strcmp(sup.ssid, "Some Network") is_home1;
+    strcmp(sup.ssid, "Other Network") is_home2;
 
     # Configure interface.
     provide("WLAN_CONFIG");
