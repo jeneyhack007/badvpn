@@ -65,6 +65,8 @@ process wlan {
 
 This program uses different IP configurations for different wireless networks. For two known networks a static IP address is used, and for others, DHCP is used. It also plays a sound when connection is established or lost.
 
+*NOTE*: the BSSID and SSID that wpa_supplicant reports is *not* a secure way to identify wireless networks. An intruder could impersonate a wireless network unless additional measures are taken.
+
 {{{
 process wlan {
     # Set device.
