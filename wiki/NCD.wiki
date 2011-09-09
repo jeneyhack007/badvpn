@@ -133,6 +133,8 @@ NCD requires various programs during execution. In particular:
 
 = Running it =
 
+For installation instructions see [Installation].
+
 == Disabling existing network configuration ==
 
 Before you start NCD, you have to stop any existing network configuration system to avoid interference.
