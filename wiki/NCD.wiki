@@ -161,7 +161,7 @@ If you installed BadVPN via a package manager, NCD is integrated into your distr
 To disable existing network configurations:
 
   * Gentoo: Disable `NetworkManager` init script. Delete `net.` init scripts (which are symlinks to `net.lo`), except `net.lo` itself, to prevent Gentoo from autoconfiguring interfaces.
-  * Ubuntu: Disable !NetworkManager by editing `/etc/init/network-manager.conf` or uninstalling the `network-manager` package.
+  * Ubuntu: Disable !NetworkManager by editing `/etc/init/network-manager.conf`, commenting the two `start on` lines, or by uninstalling the `network-manager` package.
 
 To have NCD start on boot:
 
