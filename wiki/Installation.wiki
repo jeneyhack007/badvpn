@@ -30,3 +30,7 @@ add-apt-repository ppa:ambrop7/badvpn
 apt-get update
 apt-get install badvpn
 }}}
+
+= Compiling from source =
+
+See http://code.google.com/p/badvpn/source/browse/trunk/INSTALL
