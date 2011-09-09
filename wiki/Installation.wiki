@@ -2,7 +2,7 @@
 
 = Gentoo =
 
-A portage overlay is available on the Downloads page.
+A portage overlay is available on the Downloads page. The BadVPN package is `net-misc/badvpn`.
 
 If you use Portage, manually unpack the overlay somewhere, and add this folder to PORTDIR_OVERLAY. Or, if you know how to, set up `layman` to fetch the overlay automatically.
 
@@ -15,8 +15,6 @@ names_cache = /var/cache/paludis/names
 write_cache = /var/cache/paludis/metadata
 }}}
 Then sync with `cave sync x-badvpn`.
-
-The package name is `net-misc/badvpn`.
 
 = Arch =
 
