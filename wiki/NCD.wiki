@@ -147,7 +147,7 @@ Also, !NetworkManager has a habit of not deconfiguring interfaces when stopped. 
 
 == Testing from command line == 
 
-Once you're sure there is nothing that could interfere, then try the program (`/etc/ncd.conf`) out by running (as root):
+Once you're sure your interfaces are deconfigured and there is nothing that could interfere, then try the program (`/etc/ncd.conf`) out by running (as root):
 {{{
 badvpn-ncd --config-file /etc/ncd.conf
 }}}
