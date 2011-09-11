@@ -38,6 +38,7 @@ process wlan {
     net.backend.rfkill("wlan", dev);
 
     # Connect to wireless network.
+    # NOTE: for Ubuntu use /sbin/wpa_supplicant instead of /usr/sbin/wpa_supplicant!
     list() args;
     net.backend.wpa_supplicant(dev, "/etc/wpa_supplicant/all.conf", "/usr/sbin/wpa_supplicant", args);
 
