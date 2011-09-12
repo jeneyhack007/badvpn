@@ -276,6 +276,9 @@ process lan {
     net.dns(dns_servers, "20");
 
     # Go on configuring the VPN.
+    # The "NET" is just an identifier for the dependency; it can
+    # be any string as long as it's the same in the depend() a few
+    # lines below.
     provide("NET");
 }
 
