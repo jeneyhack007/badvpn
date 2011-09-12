@@ -43,83 +43,42 @@ The NCD interpreter by itself does not provide any control constructs. These are
 
 = Complete example =
 
-This is an example NCD program that works with two network interfaces, both of which may be used for Internet access. 
-When both are working, eth1 has priority for Internet access (e.g. if eth0 is up, but later eth1 also comes up, the configuration will be changed to use eth1 for Internet access).
+This is an example NCD program that works with a single wired network interface and uses DHCP to obtain the IP address, default route and DNS servers.
 
 {{{
-process eth0 {
+process lan {
     # Set device.
     var("eth0") dev;
 
-    # Wait for device.
+    # Wait for device, set it up, and wait for network cable.
     net.backend.waitdevice(dev);
     net.up(dev);
     net.backend.waitlink(dev);
 
     # DHCP configuration.
     # net.ipv4.dhcp() will block here until it obtaines an IP address.
+    # Note that it will only obtain the IP address, and *not* assign it;
+    # we do that with a separate command below.
     # It doesn't check the obtained address in any way,
     # so as a basic security measure, do not proceed if it is local.
     net.ipv4.dhcp(dev) dhcp;
     ip_in_network(dhcp.addr, "127.0.0.0", "8") test_local;
     ifnot(test_local);
-    var(dhcp.addr) addr;
-    var(dhcp.prefix) addr_prefix;
-    var(dhcp.gateway) gateway;
-    var(dhcp.dns_servers) dns_servers;
 
-    # Assign IP address.
-    net.ipv4.addr(dev, addr, addr_prefix);
+    # Assign IP address, as obtained by DHCP.
+    net.ipv4.addr(dev, dhcp.addr, dhcp.prefix);
 
-    # Go on configuring the network.
-    multiprovide("NET-eth0");
-}
+    # Add default route, as obtained by DHCP.
+    net.ipv4.route("0.0.0.0", "0", dhcp.gateway, "20", dev);
 
-process eth1 {
-    # Set device.
-    var("eth1") dev;
-
-    # Wait for device.
-    net.backend.waitdevice(dev);
-    net.up(dev);
-    net.backend.waitlink(dev);
-
-    # Static configuration.
-    var("192.168.111.116") addr;
-    var("24") addr_prefix;
-    var("192.168.111.1") gateway;
-    list("192.168.111.14", "193.2.1.66") dns_servers;
-
-    # Assign IP address.
-    net.ipv4.addr(dev, addr, addr_prefix);
-
-    # Go on configuring the network.
-    multiprovide("NET-eth1");
-}
-
-process NETCONF {
-    # Wait for some network connection. Prefer eth1 by putting it in front of eth0.
-    list("NET-eth1", "NET-eth0") pnames;
-    multidepend(pnames) ifdep;
-
-    # Alias device values.
-    var(ifdep.dev) dev;
-    var(ifdep.addr) addr;
-    var(ifdep.addr_prefix) addr_prefix;
-    var(ifdep.gateway) gateway;
-    var(ifdep.dns_servers) dns_servers;
-
-    # Add default route.
-    net.ipv4.route("0.0.0.0", "0", gateway, "20", dev);
-
-    # Configure DNS servers.
-    net.dns(dns_servers, "20");
+    # Configure DNS servers, as obtained by DHCP.
+    net.dns(dhcp.dns_servers, "20");
 }
 }}}
 
 = More examples =
 
-For wireless LAN, see [NCD_wireless_example].
+NCD is capable of much more than the above program may suggest. For example, it can handle multiple network interfaces with priorities for Internet access, it can work with wireless networks and BadVPN network interfaces. See [NCD_examples].
 
 There is also an alternative introduction to NCD, and more examples, which include BadVPN interfaces: http://code.google.com/p/badvpn/source/browse/trunk/ncd/README .
 
