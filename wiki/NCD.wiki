@@ -78,7 +78,7 @@ process lan {
 
 = More examples =
 
-NCD is capable of much more than the above program may suggest. For example, it can handle multiple network interfaces with priorities for Internet access, it can work with wireless networks and BadVPN network interfaces. See [NCD_examples].
+See [NCD_examples] for more comples examples. NCD is capable of much more than the above program may suggest. For example, it can handle multiple network interfaces with priorities for Internet access, it can work with wireless networks and BadVPN network interfaces.
 
 There is also an alternative introduction to NCD, and more examples, which include BadVPN interfaces: http://code.google.com/p/badvpn/source/browse/trunk/ncd/README .
 
