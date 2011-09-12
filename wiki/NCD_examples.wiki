@@ -239,3 +239,86 @@ process wlan_default {
     provide("WLAN_CONFIG_DONE");
 }
 }}}
+
+= BadVPN network interface =
+
+A VPN network interface depends on the availability of a network connection. We do a simple wired+DHCP here, as in [NCD]. However anything could be used instead, provided that `provide("NET");` is executed when network connection is available.
+
+{{{
+process lan {
+    # Set device.
+    var("eth0") dev;
+
+    # Wait for device, set it up, and wait for network cable.
+    net.backend.waitdevice(dev);
+    net.up(dev);
+    net.backend.waitlink(dev);
+
+    # DHCP configuration.
+    net.ipv4.dhcp(dev) dhcp;
+    ip_in_network(dhcp.addr, "127.0.0.0", "8") test_local;
+    ifnot(test_local);
+
+    # Alias IP configuration variables, to allow easy access
+    # from the VPN process.
+    var(dhcp.addr) addr;
+    var(dhcp.prefix) addr_prefix;
+    var(dhcp.gateway) gateway;
+    var(dhcp.dns_servers) dns_servers;
+
+    # Assign IP address.
+    net.ipv4.addr(dev, addr, addr_prefix);
+
+    # Add default route.
+    net.ipv4.route("0.0.0.0", "0", gateway, "20", dev);
+
+    # Configure DNS servers.
+    net.dns(dns_servers, "20");
+
+    # Go on configuring the VPN.
+    provide("NET");
+}
+
+process vpn {
+    # Wait for network connection.
+    depend("NET") netdep;
+
+    # Choose TAP device name for the VPN.
+    var("tap5") dev;
+
+    # Choose bind port for the VPN.
+    var("7716") bind_port;
+
+    # Build bind address "0.0.0.0:<bind_port>".
+    concat("0.0.0.0:", bind_port) bind_addr;
+
+    # Build local address, "<local_ip>:<bind_port>".
+    # We access the "addr" variable in "process lan" through the depend.
+    concat(netdep.addr, ":", bind_port) local_ext_addr;
+
+    # Set command line arguments to badvpn-client; --tapdev is provided automatically.
+    list(
+        "--logger", "syslog", "--syslog-ident", "badvpn-client",
+        "--server-name", "<server_name>",
+        "--server-addr", "<server-addr>:<port>",
+        "--ssl", "--nssdb", "sql:/home/badvpn/nssdb", "--client-cert-name", "peer-<someone>",
+        "--transport-mode", "udp", "--encryption-mode", "blowfish", "--hash-mode", "md5", "--otp", "blowfish", "3000", "2000",
+        "--scope", "mylanscope", "--scope", "internet",
+        "--bind-addr", bind_addr, "--num-ports", "20",
+        "--ext-addr", local_ext_addr, "mylanscope"
+    ) args;
+
+    # Start badvpn-client. Second argument is the user account to run badvpn-client as.
+    net.backend.badvpn(dev, "badvpn", "/usr/bin/badvpn-client", args);
+
+    # Now configure IP on the VPN interface. We just assign an address.
+    # DHCP can be used instead for instance.
+
+    # Choose IP address.
+    var("10.3.7.62") addr;
+    var("24") addr_prefix;
+
+    # Assign IP address.
+    net.ipv4.addr(dev, addr, addr_prefix);
+}
+}}}
