@@ -1,0 +1,241 @@
+#summary NCD - examples
+
+= Contents =
+
+<wiki:toc max_depth="1" />
+
+= Introduction =
+
+NCD, the Network Configuration Daemon, is a daemon and programming language for configuration of network interfaces and other aspects of the operating system.
+
+This page provides some network configuration examples using NCD. For a guide to NCD and its basic feaures, see [NCD].
+
+= Multiple connections with priorities =
+
+This is an example NCD program that works with two network interfaces, both of which may be used for Internet access. 
+When both are working, eth1 has priority for Internet access (e.g. if eth0 is up, but later eth1 also comes up, the configuration will be changed to use eth1 for Internet access).
+
+{{{
+process eth0 {
+    # Set device.
+    var("eth0") dev;
+
+    # Wait for device.
+    net.backend.waitdevice(dev);
+    net.up(dev);
+    net.backend.waitlink(dev);
+
+    # DHCP configuration.
+    # net.ipv4.dhcp() will block here until it obtaines an IP address.
+    # It doesn't check the obtained address in any way,
+    # so as a basic security measure, do not proceed if it is local.
+    net.ipv4.dhcp(dev) dhcp;
+    ip_in_network(dhcp.addr, "127.0.0.0", "8") test_local;
+    ifnot(test_local);
+    var(dhcp.addr) addr;
+    var(dhcp.prefix) addr_prefix;
+    var(dhcp.gateway) gateway;
+    var(dhcp.dns_servers) dns_servers;
+
+    # Assign IP address.
+    net.ipv4.addr(dev, addr, addr_prefix);
+
+    # Go on configuring the network.
+    multiprovide("NET-eth0");
+}
+
+process eth1 {
+    # Set device.
+    var("eth1") dev;
+
+    # Wait for device.
+    net.backend.waitdevice(dev);
+    net.up(dev);
+    net.backend.waitlink(dev);
+
+    # Static configuration.
+    var("192.168.111.116") addr;
+    var("24") addr_prefix;
+    var("192.168.111.1") gateway;
+    list("192.168.111.14", "193.2.1.66") dns_servers;
+
+    # Assign IP address.
+    net.ipv4.addr(dev, addr, addr_prefix);
+
+    # Go on configuring the network.
+    multiprovide("NET-eth1");
+}
+
+process NETCONF {
+    # Wait for some network connection. Prefer eth1 by putting it in front of eth0.
+    list("NET-eth1", "NET-eth0") pnames;
+    multidepend(pnames) ifdep;
+
+    # Alias device values.
+    var(ifdep.dev) dev;
+    var(ifdep.addr) addr;
+    var(ifdep.addr_prefix) addr_prefix;
+    var(ifdep.gateway) gateway;
+    var(ifdep.dns_servers) dns_servers;
+
+    # Add default route.
+    net.ipv4.route("0.0.0.0", "0", gateway, "20", dev);
+
+    # Configure DNS servers.
+    net.dns(dns_servers, "20");
+}
+}}}
+
+= Wireless, simple =
+
+Create a `wpa_supplicant` configuration file, `/etc/wpa_supplicant/all.conf` for example:
+
+{{{
+network={
+        ssid="Some Network"
+        scan_ssid=1
+        key_mgmt=WPA-PSK
+        psk="password"
+}
+
+network={
+        ssid="Other Network"
+        scan_ssid=1
+        key_mgmt=WPA-PSK
+        psk="password"
+}
+}}}
+
+And use this NCD program:
+
+{{{
+process wlan {
+    # Set device.
+    var("wlan0") dev;
+
+    # Wait for device and rfkill.
+    net.backend.waitdevice(dev);
+    net.backend.rfkill("wlan", dev);
+
+    # Connect to wireless network.
+    # NOTE: you may need /sbin/wpa_supplicant instead of /usr/sbin/wpa_supplicant (Ubuntu for example)!
+    list() args;
+    net.backend.wpa_supplicant(dev, "/etc/wpa_supplicant/all.conf", "/usr/sbin/wpa_supplicant", args);
+
+    # DHCP configuration.
+    net.ipv4.dhcp(dev) dhcp;
+    ip_in_network(dhcp.addr, "127.0.0.0", "8") test_local;
+    ifnot(test_local);
+    var(dhcp.addr) addr;
+    var(dhcp.prefix) addr_prefix;
+    var(dhcp.gateway) gateway;
+    var(dhcp.dns_servers) dns_servers;
+
+    # Assign IP address to interface.
+    net.ipv4.addr(dev, addr, addr_prefix);
+
+    # Add default route.
+    net.ipv4.route("0.0.0.0", "0", gateway, "20", dev);
+
+    # Add DNS servers.
+    net.dns(dns_servers, "20");
+}
+}}}
+
+= Wireless, network-specific IP configuration =
+
+This program uses different IP configurations for different wireless networks. For two known networks a static IP address is used, and for others, DHCP is used. It also plays a sound when connection is established or lost.
+
+{{{
+process wlan {
+    # Set device.
+    var("wlan0") dev;
+
+    # Wait for device and rfkill.
+    net.backend.waitdevice(dev);
+    net.backend.rfkill("wlan", dev);
+
+    # Connect to wireless network.
+    # NOTE: you may need /sbin/wpa_supplicant instead of /usr/sbin/wpa_supplicant (Ubuntu for example)!
+    list() args;
+    net.backend.wpa_supplicant(dev, "/etc/wpa_supplicant/all.conf", "/usr/sbin/wpa_supplicant", args) sup;
+
+    # wpa_supplicant exposes the 'bssid' and 'ssid' variables.
+    println("Connected to wireless network: bssid=", sup.bssid, " ssid=", sup.ssid);
+
+    # Choose configuration.
+    # These have to be exclusive, or we activate multiple configurations at once...
+    strcmp(sup.ssid, "Some Network") is_home1;
+    strcmp(sup.ssid, "Other Network") is_home2;
+
+    # Configure interface.
+    provide("WLAN_CONFIG");
+    depend("WLAN_CONFIG_DONE") config;
+
+    # Print configuration name.
+    println("Using wireless configuration: ", config.config_name);
+
+    # Assign IP address to interface.
+    net.ipv4.addr(dev, config.addr, config.addr_prefix);
+
+    # Add default route.
+    net.ipv4.route("0.0.0.0", "0", config.gateway, "20", dev);
+
+    # Add DNS servers.
+    net.dns(config.dns_servers, "20");
+
+    # Play a sound when connection is established and when it is lost.
+    list("/usr/bin/ffplay", "-nodisp", "-autoexit", "/usr/share/sounds/freedesktop/stereo/network-connectivity-established.oga") do;
+    list("/usr/bin/ffplay", "-nodisp", "-autoexit", "/usr/share/sounds/freedesktop/stereo/network-connectivity-lost.oga") undo;
+    run(do, undo);
+}
+
+process wlan_home1 {
+    depend("WLAN_CONFIG") wdep;
+    if(wdep.is_home1);
+
+    var("Home 1") config_name;
+
+    # Static configuration.
+    var("192.168.8.96") addr;
+    var("24") addr_prefix;
+    var("192.168.8.1") gateway;
+    list("192.168.8.1") dns_servers;
+
+    provide("WLAN_CONFIG_DONE");
+}
+
+process wlan_home2 {
+    depend("WLAN_CONFIG") wdep;
+    if(wdep.is_home2);
+
+    var("Home 2") config_name;
+
+    # Static configuration.
+    var("192.168.6.57") addr;
+    var("24") addr_prefix;
+    var("192.168.6.1") gateway;
+    list("192.168.6.1") dns_servers;
+
+    provide("WLAN_CONFIG_DONE");
+}
+
+process wlan_default {
+    depend("WLAN_CONFIG") wdep;
+    ifnot(wdep.is_home1);
+    ifnot(wdep.is_home2);
+
+    var("Default") config_name;
+
+    # DHCP configuration.
+    net.ipv4.dhcp(wdep.dev) dhcp;
+    ip_in_network(dhcp.addr, "127.0.0.0", "8") test_local;
+    ifnot(test_local);
+    var(dhcp.addr) addr;
+    var(dhcp.prefix) addr_prefix;
+    var(dhcp.gateway) gateway;
+    var(dhcp.dns_servers) dns_servers;
+
+    provide("WLAN_CONFIG_DONE");
+}
+}}}
