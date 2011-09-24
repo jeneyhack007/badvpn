@@ -391,9 +391,11 @@ template interface {
     var(_arg0) dev;
     var(_arg1) bus;
 
-    # This template is started and stopped automatically for any interface as it comes and goes.
-    # Since we only want to configure predefined interfaces based on bus location, we use provide() communicate with specific processes dealing with
-    # those interfaces (like the one just below).
+    # This template is started and stopped automatically for any
+    # interface as it comes and goes.
+    # Since we only want to configure predefined interfaces based
+    # on bus location, we use provide() communicate with specific
+    # processes dealing with those interfaces (like the one just below).
 
     # Ignore devices with unknown buses.
     strcmp(bus, "unknown") is_unnown;
