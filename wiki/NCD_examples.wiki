@@ -389,8 +389,8 @@ template interface {
     # to interface global processes dealing with those interfaces.
 
     # Ignore devices with unknown buses.
-    strcmp(bus, "unknown") is_unnown;
-    ifnot(is_unnown);
+    strcmp(bus, "unknown") is_unknown;
+    ifnot(is_unknown);
 
     # Build provide name.
     concat("IFACE-BUS-", bus) pname;
