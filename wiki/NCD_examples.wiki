@@ -329,6 +329,7 @@ process vpn {
 = Bus location based configuration =
 
 This example shows how you can configure interfaces based on the bus location (PCI and USB only). It also prints added or removed events for all interfaces, including the bus identifier, so you can easily find the right value for your device. Only the last process is where the interface is actually configured based on bus location. Add more such processes to configure more interfaces.
+
 *NOTE*: you need the latest NCD from SVN repository; I've only just implemented the `bus` variable of `net.watch_interfaces()`.
 
 {{{
