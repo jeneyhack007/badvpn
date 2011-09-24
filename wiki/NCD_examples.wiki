@@ -337,9 +337,6 @@ process main {
     # Init process manager.
     process_manager() manager;
 
-    # Allow access to manager.
-    provide("GLOBAL");
-
     # Wait for interface event.
     net.watch_interfaces() watcher;
 
@@ -363,12 +360,9 @@ process interface_event_added {
     depend("interface_event") dep;
     if(dep.is_added);
 
-    # Get global state.
-    depend("GLOBAL") gdep;
-
     # Start process from template "interface".
     list(dep.watcher.devname, dep.watcher.bus) args;
-    gdep.manager->start(dep.watcher.devname, "interface", args);
+    dep.manager->start(dep.watcher.devname, "interface", args);
 
     # Next event.
     dep.watcher->nextevent();
@@ -379,11 +373,8 @@ process interface_event_removed {
     depend("interface_event") dep;
     if(dep.is_removed);
 
-    # Get global state.
-    depend("GLOBAL") gdep;
-
     # Stop process.
-    gdep.manager->stop(dep.watcher.devname);
+    dep.manager->stop(dep.watcher.devname);
 
     # Next event.
     dep.watcher->nextevent();
@@ -393,11 +384,9 @@ template interface {
     var(_arg0) dev;
     var(_arg1) bus;
 
-    # This template is started and stopped automatically for any
-    # interface as it comes and goes.
-    # Since we only want to configure predefined interfaces based
-    # on bus location, we use provide() communicate with specific
-    # processes dealing with those interfaces (like the one just below).
+    # This template is started and stopped automatically for any interface as it comes and goes.
+    # Since we only want to configure predefined interfaces based on bus name, we use provide()
+    # to interface global processes dealing with those interfaces.
 
     # Ignore devices with unknown buses.
     strcmp(bus, "unknown") is_unnown;
