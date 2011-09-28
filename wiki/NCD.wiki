@@ -321,9 +321,9 @@ template say_hello {
 *NOTE*: `{}` is a literal empty list argument. You need the latest NCD from the SVN repository for this; else just construct a list with `list() args;` and pass `args`.
 
 Additionally, with `call()`, you can:
-  * Pass arguments to the template process. However these can only be values (strings, lists), not actual objects, i.e. you can't call a method on an argument.
+  * Pass arguments to the template process. However, these can only be values (strings, lists), not actual objects, i.e. you can't call a method on an argument.
   * Access caller's objects from within the called template process via `_caller`. This can be used if you need to "pass objects".
-  * Once the called template process has initialized, access its objects by through the name of the `call()` statement.
+  * Once the called template process has initialized, access its objects through the name of the `call()` statement.
 
 The following example demonstrates these features.
 
