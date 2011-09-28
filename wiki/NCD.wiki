@@ -257,3 +257,84 @@ template interface_template {
 }}}
 
 See also [NCD_events_example] for a similar but more complex example which responds to key presses from all input devices.
+
+= Branching (simple) =
+
+A simple way to branch is using provide and depend statements.
+
+{{{
+process test {
+   # We will be branching based on the value of 'x' here.
+   # If 'x' equals "foo", we go one way, else the other way.
+   var("bar") x;
+
+   # Produce a value which is either "true" or "false", indicating
+   # which way to branch.
+   strcmp(x, "foo") is_foo;
+
+   # Branch ... and wait for the branch to finish.
+   provide("branch");
+   depend("branch_done") br;
+
+   # Print the message.
+   println(br.msg);
+}
+
+process test_foo {
+   depend("branch") dep;
+   if(dep.is_foo);
+
+   var("x was foo!") msg;
+
+   provide("branch_done");
+}
+
+process test_other {
+   depend("branch") dep;
+   ifnot(dep.is_foo);
+
+   var("x was NOT foo!") msg;
+
+   provide("branch_done");
+}
+}}}
+
+However, this is an *inferior* way to branch, because the dependency identifiers `branch` and `branch_done` have global scope. For this reason, this technique is normally useless from within a template process, where there may be multiple instances of a process template executing in parallel, and their use of constant dependency indentifiers will interfere. A proper way to branch is using the `call()` statement (read on).
+
+= Calling templates =
+
+One use of process templates is with `process_manager()`, described above. However, there are other statements which use process templates. Of particular importance is the `call()` statement. The effect of `call()` is mostly equivalent to embedding the body of the called process template into the place of `call()`. Note that reverse execution works as expected, that is, when `call()` is requested to deinitialize (and only then), it triggers termination of the corresponding template process, and waits until all its statements have deinitialized.
+
+{{{
+process foo {
+    println("Saying hello...");
+    call("say_hello", {});
+    println("Successfully said hello!");
+}
+
+template say_hello {
+    println("Hello!");
+    rprintln("Goodbye..."); # like println(), but prints on deinitialization
+}
+}}}
+
+*NOTE*: `{}` is a literal empty list argument. You need the latest NCD from the SVN repository for this; else just construct a list with `list() args;` and pass `args`.
+
+Additionally, with `call()`, you can:
+  * Pass arguments to the template process. However these can only be values (strings, lists), not actual objects, i.e. you can't call a method on an argument.
+  * Access caller's objects from within the called template process via `_caller`. This can be used if you need to "pass objects".
+  * Once the called template process has initialized, access its objects by through the name of the `call()` statement.
+
+The following example demonstrates these features.
+
+{{{
+process foo {
+    var("Hello") x;
+    call("make_msg", {"Good", "World"}) c;
+    println(c.msg); # Prints: HelloGoodWorld
+}
+
+template make_msg {
+    concat(_caller.x, _arg0, _arg1) msg;
+}
+}}}
