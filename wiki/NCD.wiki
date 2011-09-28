@@ -303,7 +303,7 @@ However, this is an *inferior* way to branch, because the dependency identifiers
 
 = Calling templates =
 
-One use of process templates is with `process_manager()`, described above. However, there are other statements which use process templates. Of particular importance is the `call()` statement. The effect of `call()` is mostly equivalent to embedding the body of the called process template into the place of `call()`. Note that reverse execution works as expected, that is, when `call()` is requested to deinitialize (and only then), it triggers termination of the corresponding template process, and waits until all its statements have deinitialized.
+One use of process templates is with `process_manager()`, described above. However, there are other statements which use process templates. Of particular importance is the `call()` statement. The effect of `call()` is mostly equivalent to embedding the body of the called process template into the place of `call()`, including correct reverse execution.
 
 {{{
 process foo {
