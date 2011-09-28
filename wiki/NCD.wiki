@@ -260,7 +260,7 @@ See also [NCD_events_example] for a similar but more complex example which respo
 
 = Branching (simple) =
 
-A simple way to branch is using provide and depend statements.
+A simple way to branch is using `provide()` and `depend()` statements.
 
 {{{
 process test {
