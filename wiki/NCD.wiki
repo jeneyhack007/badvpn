@@ -338,3 +338,38 @@ template make_msg {
     concat(_caller.x, _arg0, _arg1) msg;
 }
 }}}
+
+= Branching (correct) =
+
+The `call()` statement can (and should) be used for branching. This works by building the name of the called template dynamically based on runtime values. The following program demonstrates this.
+
+{{{
+process test {
+   # We will be branching based on the value of 'x' here.
+   # If 'x' equals "foo", we go one way, else the other way.
+   var("bar") x;
+
+   # Produce a value which is either "true" or "false", indicating
+   # which way to branch.
+   strcmp(x, "foo") is_foo;
+
+   # Build template name based on the value of is_foo.
+   concat("branch_foo_", is_foo) branch_template;
+
+   # Branch.
+   call(branch_template, {}) c;
+
+   # Print the message.
+   println(c.msg);
+}
+
+template branch_foo_true {
+    var("x was foo!") msg;
+}
+
+template branch_foo_false {
+    var("x was NOT foo!") msg;
+}
+}}}
+
+Compared to simple branching using `provide()` and `depend()`, this branching mechanism is safe to use from template processes.
