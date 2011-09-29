@@ -37,7 +37,7 @@ The deinitialization of a statement often has the *reverse effect* of initializa
 
 When a statement is initialized, it is provided with a list of *arguments* which tell the underlying module specifically what it is supposed to do. An argument is either a string or a list of strings and lists. Arguments can either be provided literally in the statement specification, or they may refer to *variables*, whose values are provided by preceding statements in the process. Variables are key to the power of NCD.
 
-A statement is specified as `statement(arg1, ..., argN);`. Optionally, it can be given an identifuer: `statement(arg1, ..., argN) identifier;`.
+A statement is specified as `statement(arg1, ..., argN);`. Optionally, it can be given an identifier: `statement(arg1, ..., argN) identifier;`.
 
 A variable is used by passing `object.variable` as an argument. Here, `object` is an identifier of one of the statements in the process, declared somewhere above (later statements with that name shadow the earlier); `variable` is the name of the variable within this statement. Additionally, if only `object` is passed, it refers to the empty string variable within `object` (thus, you're still passing a *value* (string, list), *not* a reference to the statement).
 
