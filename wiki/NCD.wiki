@@ -414,3 +414,80 @@ template baz {
     rprintln("baz(", name, "): stopped");
 }
 }}}
+
+= Foreach =
+
+NCD currently does not have a built-in `foreach()`. However, if you really need it, you can use the hand-crafted foreach implementation below. It is used like this:
+
+{{{
+process foo {
+    var("This is a string") str;
+    list("x", "y", "z") list;
+
+    callrefhere() cref;
+    call("foreach", {"_caller.list", "_caller.cref", "foreach_list"});
+}
+
+template foreach_list {
+    var(_arg0) elem;
+    alias("_ref.str") str; # _ref can be used to refer to objects as seen callrefhere() above.
+
+    println("start element ", elem, " str=", str); 
+    rprintln("stop element ", elem);
+}
+}}}
+
+which is equivalent to:
+
+{{{
+process foo {
+    var("This is a string") str;
+
+    call("foreach_list", {"x"});
+    call("foreach_list", {"y"});
+    call("foreach_list", {"z"});
+}
+
+template foreach_list {
+    var(_arg0) elem;
+    alias("_caller.str") str;
+
+    println("start element ", elem, " str=", str); 
+    rprintln("stop element ", elem);
+}
+}}}
+
+For the first example to work, you need to paste the foreach implementation inside: (please don't try to read it)
+
+{{{
+template foreach {
+    alias(_arg0) list;
+    alias(_arg1) callref;
+    var(_arg2) callfunc;
+
+    refhere() ref;
+    index("0") pos;
+    call("foreach_it", {"_caller.ref", "_caller.pos"});
+}
+
+template foreach_it {
+    alias(_arg0) ref;
+    alias(_arg1) pos;
+
+    strcmp(pos, ref.list.length) end;
+    concat("foreach_end_", end) func;
+    call(func, {});
+}
+
+template foreach_end_true {
+    print();
+}
+
+template foreach_end_false {
+    _caller.ref.list->get(_caller.pos) elem;
+    _caller.ref.callref->call(_caller.ref.callfunc, {elem});
+    _caller.ref->ref() ref;
+    _caller.pos->next() pos;
+    call("foreach_it", {"_caller.ref", "_caller.pos"});
+}
+}}}
