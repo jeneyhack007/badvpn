@@ -322,7 +322,7 @@ template say_hello {
 
 Additionally, with `call()`, you can:
   * Pass arguments to the template process. However, these can only be values (strings, lists), not actual objects, i.e. you can't call a method on an argument.
-  * Access caller's objects from within the called template process via `_caller`. This can be used if you need to "pass objects".
+  * Access caller's objects from within the called template process via `_caller`. This can be used if you need to "pass objects", and can be made to look like it using `alias()` (see below).
   * Once the called template process has initialized, access its objects through the name of the `call()` statement.
 
 The following example demonstrates these features.
@@ -373,3 +373,44 @@ template branch_foo_false {
 }}}
 
 Compared to simple branching using `provide()` and `depend()`, this branching mechanism is safe to use from template processes.
+
+= Aliases =
+
+The `alias()` statement allows a group of variables and objects to be referred to using a new name. It also forwards method calls.
+
+{{{
+process foo {
+    list("hello", "world") x;
+    alias("x") y;
+    concatv(y) msg;
+    println(msg, y.length); # Prints: helloworld2
+    y->shift(); # actually calls x->shift();
+    concatv(y) msg;
+    println(msg, y.length); # Prints: world1
+}
+}}}
+
+*NOTE*: `list.length` has been implemented recently. You need the latest NCD from the SVN repository for this.
+
+Additionally, `alias()` can be used to simulate passing actual objects through a `call()` (compared to values), such that the called process can invoke the object's methods:
+
+{{{
+process foo {
+    process_manager() manager;
+    call("start_baz_process", {"_caller.manager", "first_baz"});
+}
+
+template start_baz_process {
+    alias(_arg0) manager;
+    var(_arg1) name;
+
+    manager->start(name, "baz", {name});
+}
+
+template baz {
+    var(_arg0) name;
+
+    println("baz(", name, "): starting");
+    rprintln("baz(", name, "): stopped");
+}
+}}}
