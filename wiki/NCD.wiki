@@ -410,6 +410,24 @@ template do_other {
 }
 }}}
 
+= One-way branching =
+
+It is possible to do a one-way branch by giving `call()` `"<none>"` as the template name, possibly using `choose()`:
+
+{{{
+process foo {
+    var("false") is_x;
+
+    # If is_x, then call do_x, else do nothing.
+    choose({{is_x, "do_x"}}, "<none>") func;
+    call(func, {});
+}
+
+template do_x {
+    println("Doing x");
+}
+}}}
+
 = Aliases =
 
 The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/alias.c alias()] statement allows a group of variables and objects to be referred to using a new name. It also forwards method calls.
