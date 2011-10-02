@@ -378,6 +378,38 @@ template branch_foo_false {
 
 Compared to simple branching using `provide()` and `depend()`, this branching mechanism is safe to use from template processes.
 
+= Multi-way branching =
+
+The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/choose.c choose()] statement together with `call()` can provide "if, else if, ..., else" style branching.
+
+{{{
+process foo {
+    var("false") is_x;
+    var("true") is_y;
+    var("false") is_z;
+
+    # If is_x then do_x, else if is_y then do_y, else if is_z then do_z, else do_other.
+    choose({{is_x, "do_x"}, {is_y, "do_y"}, {is_z, "do_z"}}, "do_other") func;
+    call(func, {});
+}
+
+template do_x {
+    println("Doing x");
+}
+
+template do_y {
+    println("Doing y");
+}
+
+template do_z {
+    println("Doing z");
+}
+
+template do_other {
+    println("Doing other");
+}
+}}}
+
 = Aliases =
 
 The `alias()` statement allows a group of variables and objects to be referred to using a new name. It also forwards method calls.
