@@ -412,7 +412,7 @@ template do_other {
 
 = One-way branching =
 
-It is possible to do a one-way branch by giving `call()` `"<none>"` as the template name, possibly using `choose()`:
+It is possible to do a one-way branch by giving `call()` `"<none>"` as the template name to make it do nothing, possibly using `choose()`:
 
 {{{
 process foo {
