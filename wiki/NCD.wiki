@@ -264,7 +264,7 @@ See also [NCD_events_example] for a similar but more complex example which respo
 
 = Branching (simple) =
 
-A simple way to branch is using `provide()` and `depend()` statements.
+A simple way to branch is using [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/depend.c provide() and depend()] statements.
 
 {{{
 process test {
@@ -307,7 +307,7 @@ However, this is an *inferior* way to branch, because the dependency identifiers
 
 = Calling templates =
 
-One use of process templates is with `process_manager()`, described above. However, there are other statements which use process templates. Of particular importance is the `call()` statement. The effect of `call()` is mostly equivalent to embedding the body of the called process template into the place of `call()`, including correct reverse execution.
+One use of process templates is with `process_manager()`, described above. However, there are other statements which use process templates. Of particular importance is the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/call.c call()] statement. The effect of `call()` is mostly equivalent to embedding the body of the called process template into the place of `call()`, including correct reverse execution.
 
 {{{
 process foo {
@@ -412,7 +412,7 @@ template do_other {
 
 = Aliases =
 
-The `alias()` statement allows a group of variables and objects to be referred to using a new name. It also forwards method calls.
+The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/alias.c alias()] statement allows a group of variables and objects to be referred to using a new name. It also forwards method calls.
 
 {{{
 process foo {
