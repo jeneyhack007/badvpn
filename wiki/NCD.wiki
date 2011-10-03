@@ -140,6 +140,22 @@ To have NCD start on boot:
 
 Individual statement types (modules) are described briefly in the headers of their source files, under ncd/modules/ in the BadVPN source code: http://code.google.com/p/badvpn/source/browse/#svn%2Ftrunk%2Fncd%2Fmodules .
 
+= Diagnostic output =
+
+The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/print.c println() and rprintln()] statements provide diagnostic output to standard outout. `println()` prints a message on initialization, and `rprintln()` prints a message on deinitialization.
+
+{{{
+process foo {
+    println("Starting");
+    rprintln("Stopped");
+
+    sleep("500", "300"); # sleeps 500ms on init and 300ms on deinit
+
+    println("Up");
+    rprintln("Down");
+}
+}}}
+
 = Dependencies =
 
 The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/depend.c provide() and depend()] statements implement dependencies.
