@@ -140,6 +140,57 @@ To have NCD start on boot:
 
 Individual statement types (modules) are described briefly in the headers of their source files, under ncd/modules/ in the BadVPN source code: http://code.google.com/p/badvpn/source/browse/#svn%2Ftrunk%2Fncd%2Fmodules .
 
+= Dependencies =
+
+The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/depend.c provide() and depend()] statements implement dependencies.
+
+Suppose we want to wait for a network device, and have some kind of service that works with it:
+
+{{{
+process foo {
+    var("eth1") dev;
+    net.backend.waitdevice(dev);
+
+    println("X: started on device ", dev);
+    rprintln("X: stopped on device ", dev);
+
+    # do something with device...
+}
+}}}
+
+However, what if, after the device is available, we want to run _two services in parallel_?
+
+{{{
+process foo {
+    var("eth1") dev;
+    net.backend.waitdevice(dev);
+
+    provide("DEVICE");
+}
+
+process device_service_x {
+    depend("DEVICE") dep;
+
+    println("X: started on device ", dep.dev);
+    rprintln("X: stopped on device ", dep.dev);
+
+    # do something with device...
+}
+
+process device_service_y {
+    depend("DEVICE") dep;
+
+    println("Y: started on device ", dep.dev);
+    rprintln("Y: stopped on device ", dep.dev);
+
+    # do something with device...
+}
+}}}
+
+Note how the service processes access the `dev` variable within process `foo` through the dependency. A `depend()` allows access to any variable as seen from the point of the matched `provide()`.
+
+Because of how the NCD interpreter works, `provide()` should always be the *last statement* in a process. Otherwise, a latter statement could take some time to deinitialize, and during this time, the depending processes may continue running (only if they are template processes, see blow) and may request variables through their `depend()`-s - which will fail, because `provide()` is scheduled for deinitialization and cant't resolve variables.
+
 = Event handling and imperative style =
 
 NCD has some support for imperative-style event handling via the above-described execution model. In particular:
