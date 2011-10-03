@@ -191,6 +191,8 @@ Note how the service processes access the `dev` variable within process `foo` th
 
 Because of how the NCD interpreter works, `provide()` should always be the *last statement* in a process. Otherwise, a latter statement could take some time to deinitialize, and during this time, the depending processes may continue running (only if they are template processes, see blow) and may request variables through their `depend()`-s - which will fail, because `provide()` is scheduled for deinitialization and cant't resolve variables.
 
+If you wanted to have some statements after a `provide()`, you should instead make a new process that `depend()`-s on this same `provide()` and put the statements there.
+
 = Event handling and imperative style =
 
 NCD has some support for imperative-style event handling via the above-described execution model. In particular:
