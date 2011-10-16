@@ -575,77 +575,41 @@ template baz {
 
 = Foreach =
 
-NCD currently does not have a built-in `foreach()`. However, if you really need it, you can use the hand-crafted foreach implementation below. It is used like this:
+[http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/foreach.c foreach()] does something for each element of a list. It is mostly equivalent to putting multiple `call()` statements one after another, but it allows the elements to by dynamic.
 
 {{{
 process foo {
-    var("This is a string") str;
-    list("x", "y", "z") list;
-
-    callrefhere() cref;
-    call("foreach", {"_caller.list", "_caller.cref", "foreach_list"});
+    var("World") world;
+    foreach({"A", "B", "C"}, "foreach_func", {"Hello", "Goodbye"});
 }
 
-template foreach_list {
-    var(_arg0) elem;
-    alias("_ref.str") str; # _ref can be used to refer to objects as seen callrefhere() above.
+template foreach_func {
+    var(_arg0) hello;
+    var(_arg1) goodbye;
 
-    println("start element ", elem, " str=", str); 
-    rprintln("stop element ", elem);
+    println(_elem, ": ", hello, _caller.world);
+    rprintln(_elem, ": ", goodbye, _caller.world);
 }
 }}}
 
-which is equivalent to:
+The template process called by `foreach()` for every element of the list can access its element using `_elem`. Additionally, like `call()`, it can access arguments passed to `foreach()`, and any variable or object `X` as seen from the point of `foreach()` via `_caller.X`.
+
+The template processes are managed by `foreach()` in the same way as the NCD interpreter initializes and deinitializes statements within a process. In particular, if a statement in one of the template processes goes down, `foreach()` will pause this process, deinitialize any following processes from the bottom up, and only then continue the process where a statement went down (assuming no prior statements went down).
+
+This means that you can use `foreach()` to acquire a set of resources. For example, to wait for the network cables of a set of interfaces to be plugged in:
 
 {{{
 process foo {
-    var("This is a string") str;
+    list("wlan0", "eth0") ifaces;
+    foreach(ifaces, "wait_iface", {});
 
-    call("foreach_list", {"x"});
-    call("foreach_list", {"y"});
-    call("foreach_list", {"z"});
+    println("all cables in");
+    rprintln("all cables no longer in (or terminating)");
 }
 
-template foreach_list {
-    var(_arg0) elem;
-    alias("_caller.str") str;
-
-    println("start element ", elem, " str=", str); 
-    rprintln("stop element ", elem);
+template wait_iface {
+    net.backend.waitlink(_elem);
 }
 }}}
 
-For the first example to work, you need to paste the foreach implementation inside: (please don't try to read it)
-
-{{{
-template foreach {
-    alias(_arg0) list;
-    alias(_arg1) callref;
-    var(_arg2) callfunc;
-
-    refhere() ref;
-    index("0") pos;
-    call("foreach_it", {"_caller.ref", "_caller.pos"});
-}
-
-template foreach_it {
-    alias(_arg0) ref;
-    alias(_arg1) pos;
-
-    strcmp(pos, ref.list.length) end;
-    concat("foreach_end_", end) func;
-    call(func, {});
-}
-
-template foreach_end_true {
-    print();
-}
-
-template foreach_end_false {
-    _caller.ref.list->get(_caller.pos) elem;
-    _caller.ref.callref->call(_caller.ref.callfunc, {elem});
-    _caller.ref->ref() ref;
-    _caller.pos->next() pos;
-    call("foreach_it", {"_caller.ref", "_caller.pos"});
-}
-}}}
+Note however that before calling `net.backend.waitlink()` you need to make sure the device in question actually exists (or you may get problems because udev renames a network interface when it's plugged in).
