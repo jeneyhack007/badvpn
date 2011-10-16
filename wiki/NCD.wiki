@@ -616,7 +616,7 @@ template wait_device {
 
 However, this approach only makes sense if the configuration cannot be applied without all the resources being present at once. If part of the configuration of a single resource can be done independently from other resources, it may make more sense to not directly attempt to acquire it from `foreach()`, but instead start a process using `process_manager()` that deals with this resource. Any configuration that depends on several resources at once can then be done using dependencies.
 
-For example, it makes sense to put a wired interface up immediately when it appears. To ease understanding, here is a program that works with a static set of interfaces, and later follows the dynamic version that takes a list of interfaces. The actual configuration commands are commented to ease experimentation without changing anything.
+For example, it makes sense to put a wired interface up immediately when it appears. To ease understanding, first a program is presented for a static set of interfaces, and then the dynamic version that takes a list of interfaces. The actual configuration commands are commented to ease experimentation without changing anything.
 
 {{{
 process main {
