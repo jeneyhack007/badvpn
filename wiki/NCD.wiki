@@ -663,7 +663,7 @@ process interface_eth1 {
 
 }}}
 
-And the dynamic version:
+And now the dynamic version, utilizing `foreach()` and `process_manager()`:
 
 {{{
 process main {
