@@ -614,4 +614,102 @@ template wait_device {
 }
 }}}
 
-Note that this approach only makes sense if the configuration cannot be applied without all the resources being present. If part of the configuration of a single resource can be done independently from the availability of other resources, it may make more sense to not directly attempt to acquire it from `foreach()`, but instead start a process using `process_manager()` that deals with this resource. Any configuration that depends on several resources at once can then be done using dependencies:
+However, this approach only makes sense if the configuration cannot be applied without all the resources being present at once. If part of the configuration of a single resource can be done independently from other resources, it may make more sense to not directly attempt to acquire it from `foreach()`, but instead start a process using `process_manager()` that deals with this resource. Any configuration that depends on several resources at once can then be done using dependencies.
+
+For example, it makes sense to put a wired interface up immediately when it appears. To ease understanding, here is a program that works with a static set of interfaces, and later follows the dynamic version that takes a list of interfaces. The actual configuration commands are commented to ease experimentation without changing anything.
+
+{{{
+process main {
+    # Let interface processes proceed (in case something else was above here).
+    provide("START-IFACES");
+
+    # Wait for all interfaces processes to initialize.
+    depend("IFACE-eth0");
+    depend("IFACE-eth1");
+
+    # All interfaces are available and configured by their processes.
+    # Configure something that needs all of them...
+    println("wait: up");
+    rprintln("wait: down");
+}
+
+process interface_eth0 {
+    depend("START-IFACES");
+
+    var("eth0") dev;
+
+    # Wait for interface to appear, possibly do more configuration here.
+    net.backend.waitdevice(dev);
+    #net.up(dev);
+    #net.backend.waitlink(dev);
+
+    concat("IFACE-", dev) pname;
+    provide(pname);
+}
+
+process interface_eth1 {
+    depend("START-IFACES");
+
+    var("eth1") dev;
+
+    # Wait for interface to appear, possibly do more configuration here.
+    net.backend.waitdevice(dev);
+    #net.up(dev);
+    #net.backend.waitlink(dev);
+
+    concat("IFACE-", dev) pname;
+    provide(pname);
+}
+
+}}}
+
+And the dynamic version:
+
+{{{
+process main {
+    list("eth0", "eth1") ifaces;
+
+    # Start "interface" process for each interface.
+    process_manager() start_manager;
+    foreach(ifaces, "start_interface", {"_caller.start_manager"});
+
+    # Wait for all interface processes to initialize completely.
+    process_manager() wait_manager;
+    foreach(ifaces, "wait_interface", {});
+
+    # All interfaces are available and configured by their
+    # "interface" processes. Configure something that needs all of them...
+    println("wait: up");
+    rprintln("wait: down");
+}
+
+template start_interface {
+    var(_elem) dev;
+    alias(_arg0) start_manager;
+
+    # Start "interface" process for this interface.
+    start_manager->start(dev, "interface", {dev});
+}
+
+template interface {
+    var(_arg0) dev;
+
+    # Wait for interface to appear, possibly do more configuration here
+    # (e.g. set up, wait for link, do DHCP)
+    net.backend.waitdevice(dev);
+    #net.up(dev);
+    #net.backend.waitlink(dev);
+
+    # Signal completion,
+    concat("IFACE-", dev) pname;
+    provide(pname);
+}
+
+template wait_interface {
+    var(_elem) dev;
+
+    # Wait for this interface.
+    concat("IFACE-", dev) pname;
+    depend(pname);
+}
+}}}
