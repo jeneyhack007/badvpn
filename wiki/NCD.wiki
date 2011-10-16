@@ -596,20 +596,22 @@ The template process called by `foreach()` for every element of the list can acc
 
 The template processes are managed by `foreach()` in the same way as the NCD interpreter initializes and deinitializes statements within a process. In particular, if a statement in one of the template processes goes down, `foreach()` will pause this process, deinitialize any following processes from the bottom up, and only then continue the process where a statement went down (assuming no prior statements went down).
 
-This means that you can use `foreach()` to acquire a set of resources. For example, to wait for the network cables of a set of interfaces to be plugged in:
+This means that you can use `foreach()` to acquire a set of resources at once. For example, to wait for to all network interfaces on a list to appear:
 
 {{{
 process foo {
-    list("wlan0", "eth0") ifaces;
-    foreach(ifaces, "wait_iface", {});
+    list("eth0", "eth1") ifaces;
+    foreach(ifaces, "wait_link", {});
 
-    println("all cables in");
-    rprintln("all cables no longer in (or terminating)");
+    println("all devices exits");
+    rprintln("all devices no longer exist (or terminating)");
+
+    # Configure those interfaces all at once here.
 }
 
-template wait_iface {
-    net.backend.waitlink(_elem);
+template wait_device {
+    net.backend.waitdevice(_elem);
 }
 }}}
 
-Note however that before calling `net.backend.waitlink()` you need to make sure the device in question actually exists (or you may get problems because udev renames a network interface when it's plugged in).
+Note that this approach only makes sense if the configuration cannot be applied without all the resources being present. If part of the configuration of a single resource can be done independently from the availability of other resources, it may make more sense to not directly attempt to acquire it from `foreach()`, but instead start a process using `process_manager()` that deals with this resource. Any configuration that depends on several resources at once can then be done using dependencies:
