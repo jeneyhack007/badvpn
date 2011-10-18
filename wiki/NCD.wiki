@@ -575,7 +575,7 @@ template baz {
 
 = Foreach =
 
-[http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/foreach.c foreach()] does something for each element of a list. It is mostly equivalent to putting multiple `call()` statements one after another, but it allows the elements to by dynamic.
+[http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/foreach.c foreach()] does something for each element of a list. It is mostly equivalent to putting multiple `call()` statements one after another, but it allows the elements to be specified dynamically in form of a list.
 
 {{{
 process foo {
