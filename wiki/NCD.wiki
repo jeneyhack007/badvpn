@@ -81,6 +81,8 @@ process lan {
 }
 }}}
 
+The above code, when read from top to bottom, simply specifies which operations are to be performed in order to reach the desired state. However note that each NCD program has an implicit deinitialization semantic. Here, for instance, pulling the network cable out will **automatically** remove the DNS servers, remove the default route and remove the IP address from the network interface.
+
 = More examples =
 
 See [NCD_examples] for more complex examples. NCD is capable of much more than the above program may suggest. For example, it can handle multiple network interfaces with priorities for Internet access, it can work with wireless networks and BadVPN network interfaces.
