@@ -534,7 +534,7 @@ template contains {
 }
 }}}
 
-If however it is truly necessary to invoke a method-like statement on an object of the caller, this can be done by going through `_caller`:
+On the other hand, if it's truly necessary to invoke a method-like statement on an object of the caller, this can be done by going through `_caller`:
 
 {{{
 process foo {
