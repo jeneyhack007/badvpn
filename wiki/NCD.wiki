@@ -533,6 +533,8 @@ template contains {
     mylist->contains(_arg1) result; # all good: mylist is a list object with ::contains method
 }
 
+If however it is truly necessary to invoke a method-like statement on an object of the caller, this can be done by going through `_caller`.
+
 }}}
 
 == Aliases ==
