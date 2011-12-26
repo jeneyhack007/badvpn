@@ -552,7 +552,7 @@ It's easy to see that how the above approach is clumsy to work with, because the
 
 == Aliases ==
 
-The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/alias.c alias()] statement allows a group of variables and objects to be referred to using a new name. It also forwards method calls.
+The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/alias.c alias()] statement allows a group of variables and objects to be referred to using a new name.
 
 {{{
 process foo {
