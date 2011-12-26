@@ -548,7 +548,7 @@ template contains {
 }
 }}}
 
-This however is clumsy to work with, because the template expects the object to have a predefined name. This can be fixed using the alias() statement, described next.
+It's easy to see that how the above approach is clumsy to work with, because the template expects the object to have a predefined name. This can be fixed using the alias() statement, described next.
 
 == Aliases ==
 
@@ -560,28 +560,24 @@ process foo {
     alias("x") y;
     concatv(y) msg;
     println(msg, y.length); # Prints: helloworld2
+    y->contains("world") c; # Method calls are forwarded too.
+    println(c);
 }
 }}}
 
-Additionally, `alias()` can be used to simulate passing actual objects through a `call()` (compared to values), such that the called process can invoke the object's methods:
+Notice how the target of the alias is given as string. When the alias() statement initializes, the target is not resolved in any way. In fact, all that alias() does is forward variable and object resolution requests by prepending the target string, plus possibly a dot, to the requested name, and resolving it from its point of view.
+
+An important use of `alias()` is for simulating passing actual objects through a `call()` (compared to just data), such that the called process can invoke the object's methods. Here's the last example from the description of call(), fixed to allow specifying the object name:
 
 {{{
 process foo {
-    process_manager() manager;
-    call("start_baz_process", {"_caller.manager", "first_baz"});
+    list("First", "Second") l;
+    call("contains", {"_caller.l", "Second"}) c;
+    println(c.result);
 }
 
-template start_baz_process {
-    alias(_arg0) manager;
-    var(_arg1) name;
-
-    manager->start(name, "baz", {name});
-}
-
-template baz {
-    var(_arg0) name;
-
-    println("baz(", name, "): starting");
-    rprintln("baz(", name, "): stopped");
+template contains {
+    alias(_arg0) passed_list;
+    passed_list->contains(_arg1) result;
 }
 }}}
