@@ -506,7 +506,8 @@ process foo {
     list("First", "Second") l;
 
     # Call a template, which supposedly operates on the list object (not).
-    # Here, "l" really means "value of variable named (empty string) in object l". The value is a list value, per documentation of list().
+    # Here, "l" really means "value of variable named (empty string) in object l".
+    # The value is a list value, per documentation of list().
     call("contains", {l, "Second"}) c;
 
     println(c.contains);
