@@ -438,6 +438,65 @@ template do_x {
 }
 }}}
 
+== Foreach ==
+
+[http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/foreach.c foreach()] does something for each element of a list. It is mostly equivalent to putting multiple `call()` statements one after another, but it allows the elements to be specified dynamically in form of a list.
+
+{{{
+process foo {
+    var("World") world;
+    foreach({"A", "B", "C"}, "foreach_func", {"Hello", "Goodbye"});
+}
+
+template foreach_func {
+    var(_arg0) hello;
+    var(_arg1) goodbye;
+
+    println(_elem, ": ", hello, _caller.world);
+    rprintln(_elem, ": ", goodbye, _caller.world);
+}
+}}}
+
+The template process created by `foreach()` for every element of the list can access its element using `_elem`. Additionally, like `call()`, it can access arguments passed to `foreach()`, and any variable or object `X` as seen from the point of `foreach()` via `_caller.X`.
+
+The template processes are managed by `foreach()` in the same way as the NCD interpreter initializes and deinitializes statements within a process. In particular, if a statement in one of the template processes goes down, `foreach()` will pause this process, deinitialize any following processes from the bottom up, and only then continue the process where a statement went down (assuming no prior statements went down).
+
+This means that you can use `foreach()` to acquire a set of resources at once. For example, to wait for to all network interfaces on a list to appear:
+
+{{{
+process foo {
+    list("eth0", "eth1") ifaces;
+    foreach(ifaces, "wait_link", {});
+
+    println("all devices exits");
+    rprintln("all devices no longer exist (or terminating)");
+
+    # Configure those interfaces all at once here.
+}
+
+template wait_device {
+    net.backend.waitdevice(_elem);
+}
+}}}
+
+== Method-like statements ==
+
+Note how the arguments of statements in NCD are restricted to plain data, and there is no concept of a reference to an object. Sometimes, however, it is needed for two or more statements to cooperate in their implementation, and you might need to tell one statement which existing related statement to cooperate with.
+
+NCD solves this with *method-like statements*. These statements are just like regular statements, except that they refer to some existing statement, and their implementation uses of this information somehow. A method-like statement is written by preceding the statement name with an object identifier and an arrow `->`. The following example demonstrates the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/list.c list]::contains() statement.
+
+{{{
+process foo {
+    list("First", "Second", "Third") l;
+    l->contains("Second") c_second;
+    println(c_second); # Prints: true
+    l->contains("Fourth") c_fourth;
+    println(c_fourth); # Prints: false
+}
+}}}
+
+Note that the `list::contains()` statements here only use the referred list object when they initialize, and not after that. In general, however, method-like statements can cooperate with the referred object however long they like; they can also go up and down like regular statements can.
+
 == Aliases ==
 
 The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/alias.c alias()] statement allows a group of variables and objects to be referred to using a new name. It also forwards method calls.
@@ -471,146 +530,5 @@ template baz {
 
     println("baz(", name, "): starting");
     rprintln("baz(", name, "): stopped");
-}
-}}}
-
-== Foreach ==
-
-[http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/foreach.c foreach()] does something for each element of a list. It is mostly equivalent to putting multiple `call()` statements one after another, but it allows the elements to be specified dynamically in form of a list.
-
-{{{
-process foo {
-    var("World") world;
-    foreach({"A", "B", "C"}, "foreach_func", {"Hello", "Goodbye"});
-}
-
-template foreach_func {
-    var(_arg0) hello;
-    var(_arg1) goodbye;
-
-    println(_elem, ": ", hello, _caller.world);
-    rprintln(_elem, ": ", goodbye, _caller.world);
-}
-}}}
-
-The template process called by `foreach()` for every element of the list can access its element using `_elem`. Additionally, like `call()`, it can access arguments passed to `foreach()`, and any variable or object `X` as seen from the point of `foreach()` via `_caller.X`.
-
-The template processes are managed by `foreach()` in the same way as the NCD interpreter initializes and deinitializes statements within a process. In particular, if a statement in one of the template processes goes down, `foreach()` will pause this process, deinitialize any following processes from the bottom up, and only then continue the process where a statement went down (assuming no prior statements went down).
-
-This means that you can use `foreach()` to acquire a set of resources at once. For example, to wait for to all network interfaces on a list to appear:
-
-{{{
-process foo {
-    list("eth0", "eth1") ifaces;
-    foreach(ifaces, "wait_link", {});
-
-    println("all devices exits");
-    rprintln("all devices no longer exist (or terminating)");
-
-    # Configure those interfaces all at once here.
-}
-
-template wait_device {
-    net.backend.waitdevice(_elem);
-}
-}}}
-
-However, this approach only makes sense if the configuration cannot be applied without all the resources being present at once. If part of the configuration of a single resource can be done independently from other resources, it may make more sense to not directly attempt to acquire it from `foreach()`, but instead start a process using `process_manager()` that deals with this resource. Any configuration that depends on several resources at once can then be done using dependencies, possibly with foreach().
-
-For example, it makes sense to put a wired interface up immediately when it appears, regardless of the presence of other interfaces. To ease understanding, first a program is presented for a static set of interfaces, and then the dynamic version that takes a list of interfaces. The actual configuration commands are commented out to ease experimentation without changing anything.
-
-{{{
-process main {
-    # Let interface processes proceed (in case something else was above here).
-    provide("START-IFACES");
-
-    # Wait for all interfaces processes to initialize.
-    depend("IFACE-eth0");
-    depend("IFACE-eth1");
-
-    # All interfaces are available and configured by their processes.
-    # Configure something that needs all of them...
-    println("wait: up");
-    rprintln("wait: down");
-}
-
-process interface_eth0 {
-    depend("START-IFACES");
-
-    var("eth0") dev;
-
-    # Wait for interface to appear, possibly do more configuration here.
-    net.backend.waitdevice(dev);
-    #net.up(dev);
-    #net.backend.waitlink(dev);
-
-    concat("IFACE-", dev) pname;
-    provide(pname);
-}
-
-process interface_eth1 {
-    depend("START-IFACES");
-
-    var("eth1") dev;
-
-    # Wait for interface to appear, possibly do more configuration here.
-    net.backend.waitdevice(dev);
-    #net.up(dev);
-    #net.backend.waitlink(dev);
-
-    concat("IFACE-", dev) pname;
-    provide(pname);
-}
-
-}}}
-
-And now the dynamic version, utilizing `foreach()` and `process_manager()`:
-
-{{{
-process main {
-    list("eth0", "eth1") ifaces;
-
-    # Start "interface" process for each interface.
-    process_manager() start_manager;
-    foreach(ifaces, "start_interface", {"_caller.start_manager"});
-
-    # Wait for all interface processes to initialize completely.
-    process_manager() wait_manager;
-    foreach(ifaces, "wait_interface", {});
-
-    # All interfaces are available and configured by their
-    # "interface" processes. Configure something that needs all of them...
-    println("wait: up");
-    rprintln("wait: down");
-}
-
-template start_interface {
-    var(_elem) dev;
-    alias(_arg0) start_manager;
-
-    # Start "interface" process for this interface.
-    start_manager->start(dev, "interface", {dev});
-}
-
-template interface {
-    var(_arg0) dev;
-
-    # Wait for interface to appear, possibly do more configuration here
-    # (e.g. set up, wait for link, do DHCP)
-    net.backend.waitdevice(dev);
-    #net.up(dev);
-    #net.backend.waitlink(dev);
-
-    # Signal completion,
-    concat("IFACE-", dev) pname;
-    provide(pname);
-}
-
-template wait_interface {
-    var(_elem) dev;
-
-    # Wait for this interface.
-    concat("IFACE-", dev) pname;
-    depend(pname);
 }
 }}}
