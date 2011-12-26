@@ -582,3 +582,47 @@ template contains {
     passed_list->contains(_arg1) result;
 }
 }}}
+
+== Multi-dependencies ==
+
+The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/multidepend.c multiprovide() and multidepend()] statements implement dependencies similar to `provide()` and `depend()`. Contrary to `provide()`, which will shout errors if another `provide()` for the same name is already active, it is possible to have multiple `multiprovide()`s providing the same name. On the other side, a `multidepend()` will always attempt to bind itself to one of the `multiprovide()`s that satisfy it. It will choose the best one based on its preference list; also, if it's already bound, and a better `multiprovide()` one comes in, it will un-bind itself, and attempt to rebind.
+
+The following example illustrates the behavior of `multiprovide()` and `multidepend()`:
+
+{{{
+process resource1 {
+    var("Resource 1") name;
+    sleep("2000", "0");
+    multiprovide("RESOURCE_1");
+}
+
+process resource2 {
+    var("Resource 2") name;
+    sleep("4000", "0");
+    multiprovide("RESOURCE_2");
+}
+
+process dependency {
+    # I want either "RESOURCE_2" or "RESOURCE_1",
+    # but I always prefer the former.
+    multidepend({"RESOURCE_2", "RESOURCE_1"}) dep;
+
+    println("Bound to ", dep.name);
+    rprintln("Unbound from ", dep.name);
+}
+}}}
+
+This will result in the following:
+
+{{{
+< NCD starts >
+< 2 seconds pass >
+Bound to Resource 1
+< 2 more seconds pass >
+Unbound from Resource 1
+Bound to Resource 2
+}}}
+
+As can be seen, unlike `depend()`, which only goes down when its bound `provide()` is broken, `multidepend()` also goes down when a better `multiprovide()` comes in.
+
+Note that the namespaces for dependency names of `provide()`/`depend()` and of `multiprovide()`/`multidepend()` are separate.
