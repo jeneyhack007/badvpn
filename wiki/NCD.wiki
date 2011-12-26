@@ -483,7 +483,7 @@ template wait_device {
 
 Note how the arguments of statements in NCD are restricted to plain data, and there is no concept of a reference to an object. Sometimes, however, it is needed for two or more statements to cooperate in their implementation, and you might need to tell one statement which existing related statement to cooperate with.
 
-NCD solves this with *method-like statements*. These statements are just like regular statements, except that they refer to some existing statement, and their implementation uses this information somehow. A method-like statement is written by preceding the statement name with an object identifier and an arrow `->`. The following example demonstrates the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/list.c list]::contains() statement.
+NCD solves this with *method-like statements*. These statements are just like regular statements, except that they refer to some existing statement, and their implementation uses this information somehow. A method-like statement is written by preceding the method name with an object identifier and an arrow `->`. The following example demonstrates the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/list.c list]::contains() statement.
 
 {{{
 process foo {
