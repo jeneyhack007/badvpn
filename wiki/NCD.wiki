@@ -330,13 +330,13 @@ process foo {
 
 template say_hello {
     println("Hello!");
-    rprintln("Goodbye..."); # like println(), but prints on deinitialization
+    rprintln("Goodbye...");
 }
 }}}
 
 Additionally, with `call()`, you can:
-  * Pass arguments to the template process. However, these can only be values (strings, lists), not actual objects, i.e. you can't call a method on an argument.
-  * Access caller's objects from within the called template process via `_caller`. This can be used if you need to "pass objects", and can be made to look like it using `alias()` (see below).
+  * Pass arguments to the template process. These can be accessed from the template process via the `_argN` special variables (N-th argument, starting with zero), and the `_args` special variable (list of arguments).
+  * Access caller's objects from within the called template process via `_caller`.
   * Once the called template process has initialized, access its objects through the name of the `call()` statement.
 
 The following example demonstrates these features.
@@ -496,6 +496,27 @@ process foo {
 }}}
 
 Note that the `list::contains()` statements here only use the referred list object when they initialize, and not after that. In general, however, method-like statements can cooperate with the referred object however long they like; they can also go up and down like regular statements can.
+
+The restriction on arguments being plain data applies not only to statement arguments, but on template process arguments too. For example, the following code is *incorrect*:
+
+{{{
+process foo {
+    # Make a list object using the list() statement.
+    # http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/list.c
+    list("First", "Second") l;
+
+    # Call a template, which supposedly operates on the list object (not).
+    # Here, "l" really means "value of variable named (empty string) in object l". The value is a list value, per documentation of list().
+    call("contains", {l, "Second"}) c;
+
+    println(c.contains);
+}
+
+template contains {
+    # Incorrect; there is no object named _arg0! (but there is a special *variable* named _arg0)
+    _arg0->contains(_arg1) contains;
+}
+}}}
 
 == Aliases ==
 
