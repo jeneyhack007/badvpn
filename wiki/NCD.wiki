@@ -142,7 +142,11 @@ To have NCD start on boot:
 
 Individual statement types (modules) are described briefly in the headers of their source files, under ncd/modules/ in the BadVPN source code: http://code.google.com/p/badvpn/source/browse/#svn%2Ftrunk%2Fncd%2Fmodules .
 
-= Diagnostic output =
+= NCD lanaguage introduction =
+
+Here's a quick introduction to the programming language of NCD.
+
+== Diagnostic output ==
 
 The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/print.c println() and rprintln()] statements provide diagnostic output to standard outout. `println()` prints a message on initialization, and `rprintln()` prints a message on deinitialization.
 
@@ -158,7 +162,7 @@ process foo {
 }
 }}}
 
-= Dependencies =
+== Dependencies ==
 
 The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/depend.c provide() and depend()] statements implement dependencies.
 
@@ -250,7 +254,7 @@ process device_service_y {
 
 }}}
 
-= Branching (simple) =
+== Branching (simple) ==
 
 NCD does not provide any nested control structures, such as `if` and `for`, as found in many languages; instead, execution control is done with special-purpose statements.
 
@@ -297,7 +301,7 @@ However, this is an *inferior* way to branch, because the dependency names used 
 
 A proper way to branch is using the `call()` statement (read on).
 
-= Process templates =
+== Process templates ==
 
 Many of NCD's execution control features rely on a feature called *process templates*. A process template is written like a process, but using the `template` keyword instead of `process`. Unlike a regular process, which starts up automatically and is terminated automatically on NCD shutdown, a process template by itself does nothing. Instead, special statements are used to dynamically create *template processes* out of process templates.
 
@@ -313,7 +317,7 @@ Because all template processes created out of the same process templates have th
 
 Some statements that create template processes are `call()`, `foreach()` and `process_manager()`. Read on to learn about them.
 
-= Calling templates =
+== Calling templates ==
 
 The effect of [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/call.c call()] is mostly equivalent to embedding the body of the called process template into the place of `call()`, including correct reverse execution.
 
@@ -349,7 +353,7 @@ template make_msg {
 }
 }}}
 
-= Branching (correct) =
+== Branching (correct) ==
 
 The `call()` statement can (and should) be used for branching. This works by building the name of the called template dynamically based on runtime values. The following program demonstrates this.
 
@@ -384,7 +388,7 @@ template branch_foo_false {
 
 Compared to simple branching using `provide()` and `depend()`, this branching mechanism is safe to use from template processes.
 
-= Multi-way branching =
+== Multi-way branching ==
 
 The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/choose.c choose()] statement together with `call()` can provide "if, else if, ..., else" style branching.
 
@@ -416,7 +420,7 @@ template do_other {
 }
 }}}
 
-= One-way branching =
+== One-way branching ==
 
 It is possible to do a one-way branch by giving `call()` `"<none>"` as the template name to make it do nothing, possibly using `choose()`:
 
@@ -434,7 +438,7 @@ template do_x {
 }
 }}}
 
-= Aliases =
+== Aliases ==
 
 The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/alias.c alias()] statement allows a group of variables and objects to be referred to using a new name. It also forwards method calls.
 
@@ -473,7 +477,7 @@ template baz {
 }
 }}}
 
-= Foreach =
+== Foreach ==
 
 [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/foreach.c foreach()] does something for each element of a list. It is mostly equivalent to putting multiple `call()` statements one after another, but it allows the elements to be specified dynamically in form of a list.
 
