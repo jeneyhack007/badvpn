@@ -510,13 +510,29 @@ process foo {
     # The value is a list value, per documentation of list().
     call("contains", {l, "Second"}) c;
 
-    println(c.contains);
+    println(c.result);
 }
 
 template contains {
     # Incorrect; there is no object named _arg0! (but there is a special *variable* named _arg0)
-    _arg0->contains(_arg1) contains;
+    _arg0->contains(_arg1) result;
 }
+}}}
+
+In this case, the error can be corrected by having the template process construct its own list object:
+
+{{{
+process foo {
+    list("First", "Second") l;
+    call("contains", {l, "Second"}) c;
+    println(c.result);
+}
+
+template contains {
+    listfrom(_arg0) mylist; # like list(), only it concatenates the list arguments
+    mylist->contains(_arg1) result; # all good: mylist is a list object with ::contains method
+}
+
 }}}
 
 == Aliases ==
