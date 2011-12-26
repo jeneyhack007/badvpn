@@ -314,7 +314,7 @@ template my_template {
 
 A template process, however, is an *actual process*; its code is that of the process template is was created from. Unlike regular processes, template processes do not terminate automatically when NCD is requested to shut down; termination of a template process needs to be requested by its controlling code (often by the same statement that created it).
 
-Because all template processes created out of the same process templates have the same code, there needs to be a way to distinguish them. All statements that create template processes take a list of arguments, which is accessible from resulting template processes via `_argN` special variables.
+Because all template processes created out of the same process template have the same code, there needs to be a way to distinguish them. All statements that create template processes take a list of arguments, which is accessible from resulting template processes via `_argN` special variables. Additionally, the creator of a template process can provide other special variables.
 
 Some statements that create template processes are `call()`, `foreach()` and `process_manager()`. Read on to learn about them.
 
