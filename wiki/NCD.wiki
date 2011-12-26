@@ -297,7 +297,7 @@ process test_other {
 }
 }}}
 
-However, this is an *inferior* way to branch, because the dependency names (`branch` and `branch_done`) have global scope. This means that each branch needs its unique set of dependency names, so as not to conflict with unrelated provide() and depend() statements.
+However, this is an *inferior* way to branch, because the dependency names (`branch` and `branch_done`) have global scope. This means that each branch needs its unique set of dependency names, so as not to conflict with unrelated `provide()` and `depend()` statements.
 
 A proper way to branch is using the `call()` statement (read on).
 
@@ -306,7 +306,8 @@ A proper way to branch is using the `call()` statement (read on).
 Many of NCD's execution control features rely on a feature called *process templates*. A process template is written like a process, but using the `template` keyword instead of `process`. Unlike a regular process, which starts up automatically and is terminated automatically on NCD shutdown, a process template by itself does nothing. Instead, special statements are used to dynamically create *template processes* out of process templates.
 
 {{{
-template my_template { # Does nothing by itself.
+# Does nothing by itself.
+template my_template {
     println("If I'm saying this, I'm running from a template process!");
 }
 }}}
