@@ -546,10 +546,9 @@ process foo {
 template contains {
     _caller.l->contains(_arg0) result;
 }
+}}}
 
 This however is clumsy to work with, because the template expects the object to have a predefined name. This can be fixed using the alias() statement, described next.
-
-}}}
 
 == Aliases ==
 
