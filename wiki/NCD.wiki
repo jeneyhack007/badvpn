@@ -299,7 +299,7 @@ A proper way to branch is using the `call()` statement (read on).
 
 = Process templates =
 
-Many of NCD's execution control features rely on a feature called *process templates*. A process template is written like a process, but using the `template` keyword instead of `process`. Unlike a regular process, which starts up automatically and is terminated automatically on NCD shutdown, a process template by itself does nothing. Instead, special statements are used to create *template processes* out of process templates.
+Many of NCD's execution control features rely on a feature called *process templates*. A process template is written like a process, but using the `template` keyword instead of `process`. Unlike a regular process, which starts up automatically and is terminated automatically on NCD shutdown, a process template by itself does nothing. Instead, special statements are used to dynamically create *template processes* out of process templates.
 
 A template process, however, is an *actual process*; its code is that of the process template is was created from. Similarly, unlike regular processes, template processes do not terminate automatically when NCD is requested to shut down; termination of a template process needs to be requested by its controlling code (often by the same statement that created it).
 
