@@ -532,8 +532,22 @@ template contains {
     listfrom(_arg0) mylist; # like list(), only it concatenates the list arguments
     mylist->contains(_arg1) result; # all good: mylist is a list object with ::contains method
 }
+}}}
 
-If however it is truly necessary to invoke a method-like statement on an object of the caller, this can be done by going through `_caller`.
+If however it is truly necessary to invoke a method-like statement on an object of the caller, this can be done by going through `_caller`:
+
+{{{
+process foo {
+    list("First", "Second") l;
+    call("contains", {"Second"}) c;
+    println(c.result);
+}
+
+template contains {
+    _caller.l->contains(_arg0) result;
+}
+
+This however is clumsy to work with, because the template expects the object to have a predefined name. This can be fixed using the alias() statement, described next.
 
 }}}
 
