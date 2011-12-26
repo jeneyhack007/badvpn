@@ -585,7 +585,7 @@ template contains {
 
 == Multi-dependencies ==
 
-The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/multidepend.c multiprovide() and multidepend()] statements implement dependencies similar to `provide()` and `depend()`. Contrary to `provide()`, which will shout errors if another `provide()` for the same name is already active, it is possible to have multiple `multiprovide()`s providing the same name. On the other side, a `multidepend()` will always attempt to bind itself to one of the `multiprovide()`s that satisfy it. It will choose the best one based on its preference list; also, if it's already bound, and a better `multiprovide()` one comes in, it will un-bind itself, and attempt to rebind.
+The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/multidepend.c multiprovide() and multidepend()] statements implement dependencies similar to `provide()` and `depend()`. Contrary to `provide()`, which will shout errors if another `provide()` for the same name is already active, it is possible to have multiple parallel `multiprovide()`s satisfying a single `multidepend()`. On the other side, a `multidepend()` will always attempt to bind itself to one of the `multiprovide()`s that satisfy it. It will always choose the best one based on its preference list, possibly un-binding itself from an existing `multiprovide()`.
 
 The following example illustrates the behavior of `multiprovide()` and `multidepend()`:
 
