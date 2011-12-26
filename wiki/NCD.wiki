@@ -297,7 +297,7 @@ process test_other {
 }
 }}}
 
-However, this is an *inferior* way to branch, because the dependency names used in `branch` and `branch_done` have global scope. This means that each branch needs its unique set of dependency names, so as not to conflict with unrelated provide() and depend() statements.
+However, this is an *inferior* way to branch, because the dependency names (`branch` and `branch_done`) have global scope. This means that each branch needs its unique set of dependency names, so as not to conflict with unrelated provide() and depend() statements.
 
 A proper way to branch is using the `call()` statement (read on).
 
