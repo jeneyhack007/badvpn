@@ -448,9 +448,6 @@ process foo {
     alias("x") y;
     concatv(y) msg;
     println(msg, y.length); # Prints: helloworld2
-    y->shift(); # actually calls x->shift();
-    concatv(y) msg;
-    println(msg, y.length); # Prints: world1
 }
 }}}
 
@@ -518,7 +515,7 @@ template wait_device {
 }
 }}}
 
-However, this approach only makes sense if the configuration cannot be applied without all the resources being present at once. If part of the configuration of a single resource can be done independently from other resources, it may make more sense to not directly attempt to acquire it from `foreach()`, but instead start a process using `process_manager()` that deals with this resource. Any configuration that depends on several resources at once can then be done using dependencies.
+However, this approach only makes sense if the configuration cannot be applied without all the resources being present at once. If part of the configuration of a single resource can be done independently from other resources, it may make more sense to not directly attempt to acquire it from `foreach()`, but instead start a process using `process_manager()` that deals with this resource. Any configuration that depends on several resources at once can then be done using dependencies, possibly with foreach().
 
 For example, it makes sense to put a wired interface up immediately when it appears, regardless of the presence of other interfaces. To ease understanding, first a program is presented for a static set of interfaces, and then the dynamic version that takes a list of interfaces. The actual configuration commands are commented out to ease experimentation without changing anything.
 
