@@ -250,129 +250,9 @@ process device_service_y {
 
 }}}
 
-= Event handling and imperative style =
-
-NCD has some support for imperative-style event handling via the above-described execution model. In particular:
-
- * Method calls, which are statements that cooperate with an existing running statement. Method calls can be used to store state into and control the base statement. A trivial example, where a method of the list() statement is used to change its value:
-
-{{{
-process foo {
-    list("Hello", "World") mylist;
-    mylist->append("Of");
-    mylist->append("NCD!");
-    concatv(mylist) string;
-    println(string); # result: HelloWorldOfNCD!
-}
-}}}
-
-Note that the `append()` statements permanently change `mylist`; the appended values will not be removed when the `append()` statements are deinitialized.
-
- * Statements which report events by going up and exposing the event via their variables, and go down when their nextevent() method is called, waiting for the next event. For example, a program which prints file change notifications for a directory:
-
-{{{
-process foo {
-    # Wait for directory event.
-    sys.watch_directory("/home/ambro/mydir") dirwarcher;
-
-    # Print the event.
-    println(dirwarcher.event_type, " ", dirwarcher.filename);
-
-    # Finish event. dirwarcher goes down and then goes
-    # back up on next event.
-    dirwarcher->nextevent();
-}
-}}}
-
-This works for example like that:
-
-{{{
-mydir $ touch file1 file2
--- you start NCD --
--- NCD says: added file1
--- NCD says: added file2
-mydir $ rm file1
--- NCD says: removed file1
-}}}
-
- * Dynamic process management via process templates. Combined with event reporting modules, this allows having a dynamic set of similar NCD processes, each working with some resource (such as a network device). For instance, here is an NCD program which performs DHCP on every network interface. The important thing to note is that DHCP will be done on any network interface as it is plugged in, without prior knowledge about it.
-
-{{{
-process main {
-    # Create process manager, which is we use to create new processes from the
-    # interface process template, and to stop them.
-    process_manager() manager;
-
-    # Wait for network interface event.
-    net.watch_interfaces() watcher;
-
-    # Was a network interface added?
-    strcmp(watcher.event_type, "added") is_added;
-
-    # Was a network interface removed?
-    strcmp(watcher.event_type, "removed") is_removed;
-
-    # Allow handling of "added" and "removed" events.
-    provide("interface_event");
-
-    # If neither added nor removed, skip the event here.
-    ifnot(is_added);
-    ifnot(is_removed);
-    watcher->nextevent();
-}
-
-process interface_added {
-    # Wait for event and proceed only if it's our event.
-    depend("interface_event") evdep;
-    if(evdep.is_added);
-
-    # Start a new process for this network interface!
-    # Give it the network interface name as a single argument.
-    # Create the process from the template called "interface_template", below.
-    list(evdep.watcher.devname) args;
-    evdep.manager->start(evdep.watcher.devname, "interface_template", args);
-
-    # Finish event.
-    evdep.watcher->nextevent();
-}
-
-process interface_removed {
-    # Wait for event and proceed only if it's our event.
-    depend("interface_event") evdep;
-    if(evdep.is_removed);
-
-    # Stop the process for this interface.
-    evdep.manager->stop(evdep.watcher.devname);
-
-    # Finish event.
-    evdep.watcher->nextevent();
-}
-
-# This is a process template. It does not start by itself.
-# Instead, new NCD processes are created from it
-# with the start() method of process_manager().
-template interface_template {
-    # Interface name is first argument.
-    var(_arg0) dev;
-
-    # Do not configure the loopback interface with DHCP.
-    strcmp(dev, "lo") is_local;
-    ifnot(is_local);
-
-    # Wait for interface, do DHCP, configure it... Same stuff as in the first example.
-    net.backend.waitdevice(dev);
-    net.up(dev);
-    net.backend.waitlink(dev);
-    net.ipv4.dhcp(dev) dhcp;
-    ip_in_network(dhcp.addr, "127.0.0.0", "8") test_local;
-    ifnot(test_local);
-    net.ipv4.addr(dev, dhcp.addr, dhcp.prefix);
-}
-}}}
-
-See also [NCD_events_example] for a similar but more complex example which responds to key presses from all input devices.
-
 = Branching (simple) =
+
+NCD does not provide any nested control structures, such as `if` and `for`, as found in many languages; instead, execution control is done with special-purpose statements.
 
 A simple way to branch is using [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/depend.c provide() and depend()] statements.
 
@@ -413,11 +293,23 @@ process test_other {
 }
 }}}
 
-However, this is an *inferior* way to branch, because the dependency identifiers `branch` and `branch_done` have global scope. For this reason, this technique is normally useless from within a template process, where there may be multiple instances of a process template executing in parallel, and their use of constant dependency indentifiers will interfere. A proper way to branch is using the `call()` statement (read on).
+However, this is an *inferior* way to branch, because the dependency names used in `branch` and `branch_done` have global scope. This means that each branch needs its unique set of dependency names, so as not to conflict with unrelated provide() and depend() statements.
+
+A proper way to branch is using the `call()` statement (read on).
+
+= Process templates =
+
+Many of NCD's execution control features rely on a feature called *process templates*. A process template is written like a process, but using the `template` keyword instead of `process`. Unlike a regular process, which starts up automatically and is terminated automatically on NCD shutdown, a process template by itself does nothing. Instead, special statements are used to create *template processes* out of process templates.
+
+A template process, however, is an *actual process*; its code is that of the process template is was created from. Similarly, unlike regular processes, template processes do not terminate automatically when NCD is requested to shut down; termination of a template process needs to be requested by its controlling code (often by the same statement that created it).
+
+Because all template processes created out of the same process templates have the same code, there needs to be a way to distinguish them. All statements that create template processes take a list of arguments, which is accessible from resulting template processes via `_argN` special variables.
+
+Some statements that create template processes are `call()`, `foreach()` and `process_manager()`. Read on to learn about them.
 
 = Calling templates =
 
-One use of process templates is with `process_manager()`, described above. However, there are other statements which use process templates. Of particular importance is the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/call.c call()] statement. The effect of `call()` is mostly equivalent to embedding the body of the called process template into the place of `call()`, including correct reverse execution.
+The effect of [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/call.c call()] is mostly equivalent to embedding the body of the called process template into the place of `call()`, including correct reverse execution.
 
 {{{
 process foo {
