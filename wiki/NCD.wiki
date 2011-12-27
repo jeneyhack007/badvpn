@@ -647,7 +647,7 @@ process main {
 }
 }}}
 
-This will result in something in the form of the following (the values here correspond to what is defined in the `linux/input.h` header file).
+Note that you have to provide a specific event device, and that a regular user account might not have read permission on the device. If all goes well, this will result in NCD spamming the console with something in form of the following (the values here correspond to what is defined in the `linux/input.h` header file):
 
 {{{
 Event: EV_MSC 458792 MSC_SCAN
