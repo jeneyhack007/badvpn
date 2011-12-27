@@ -647,7 +647,7 @@ process main {
 }
 }}}
 
-Note that you have to provide a specific `-event-` (!) device, and that a regular user account might not have read permission on the device. If all goes well, this will result in NCD spamming the console with something in form of the following (the values here correspond to what is defined in the `linux/input.h` header file):
+To run this, you have to provide an existing `-event-` (!) device, and you need read permission on the device. If all goes well, this will result in NCD spamming the console with something in form of the following (the values here correspond to what is defined in the `linux/input.h` header file):
 
 {{{
 Event: EV_MSC 458792 MSC_SCAN
@@ -657,3 +657,5 @@ Event: EV_KEY 0 KEY_ENTER
 Event: EV_SYN 0 unknown
 ... handled.
 }}}
+
+Note how the above example executes in a conceptually different way to what has been demonstrated before. In previous examples, processes were meant to advance forward towards a goal, and only revert to a previous state when something goes wrong. In this case, however, the process reverts as soon as `nextevent()` is reached, deinitializing all statements between `nextevent()` and `sys.evdev()`. While it may not appear as such at first look, it is really a *loop*.
