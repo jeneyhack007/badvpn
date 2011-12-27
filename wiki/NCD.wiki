@@ -631,10 +631,10 @@ Note that the namespaces for dependency names of `provide()`/`depend()` and of `
 
 Many statements in NCD can be considered to report events. However, until now, events were reported only in form of a module going up or down. Some examples of this are `net.backend.waitdevice()`, `net.ipv4.dhcp()` and `depend()`. Sometimes, however, events may need to be treated as just events, without a natural correspondence to the up/down state of a statement.
 
-Any general event reporting facility in NCD is implemented in form of a statement which behaves as follows:
+General event reporting facilities in NCD are implemented in form of a statement which behaves as follows:
 
-  # When an event occurs, it goes up and exposes the information about the event via its variables.
-  # It has a `::nextevent()` method that is called to indicate that the current event has been handled; this makes the event reporting statement to go back down, waiting for the next event.
+  # When an event occurs, the statement goes up and exposes the information about the event via its variables.
+  # The statement has a `::nextevent()` method that is called to indicate that the current event has been handled; this makes the event reporting statement go back down, waiting for the next event.
 
 The following example demonstrates the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/sys_evdev.c sys_evdev()] statement, which reports events from a Linux event device (evdev).
 
@@ -647,7 +647,7 @@ process main {
 }
 }}}
 
-This will result in something with the form of the following:
+This will result in something in the form of the following (the values here correspond to what is defined in the `linux/input.h` header file).
 
 {{{
 Event: EV_MSC 458792 MSC_SCAN
