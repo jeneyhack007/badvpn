@@ -447,6 +447,7 @@ template do_x {
 process foo {
     var("World") world;
     foreach({"A", "B", "C"}, "foreach_func", {"Hello", "Goodbye"});
+    println("Everyone said hello!");
 }
 
 template foreach_func {
@@ -456,6 +457,19 @@ template foreach_func {
     println(_elem, ": ", hello, _caller.world);
     rprintln(_elem, ": ", goodbye, _caller.world);
 }
+}}}
+
+This results in the following:
+
+{{{
+A: HelloWorld
+B: HelloWorld
+C: HelloWorld
+Everyone said hello!
+< you hit CTRL+C >
+C: GoodbyeWorld
+B: GoodbyeWorld
+A: GoodbyeWorld
 }}}
 
 The template process created by `foreach()` for every element of the list can access its element using `_elem`. Additionally, like `call()`, it can access arguments passed to `foreach()`, and any variable or object `X` as seen from the point of `foreach()` via `_caller.X`.
