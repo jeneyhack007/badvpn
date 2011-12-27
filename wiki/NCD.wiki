@@ -626,3 +626,34 @@ Bound to Resource 2
 As can be seen, unlike `depend()`, which only goes down when its bound `provide()` is broken, `multidepend()` also goes down when a better `multiprovide()` comes in.
 
 Note that the namespaces for dependency names of `provide()`/`depend()` and of `multiprovide()`/`multidepend()` are separate.
+
+== Event-reporting modules ==
+
+Many statements in NCD can be considered to report events. However, until now, events were reported only in form of a module going up or down. Some examples of this are `net.backend.waitdevice()`, `net.ipv4.dhcp()` and `depend()`. Sometimes, however, events may need to be treated as just events, without a natural correspondence to the up/down state of a statement.
+
+Any general event reporting facility in NCD is implemented in form of a statement which behaves as follows:
+
+- When an event occurs, it goes up and exposes the information about the event via its variables.
+- It has a `::nextevent()` method that is called to indicate that the current event has been handled; this makes the event reporting statement to go back down, waiting for the next event.
+
+The following example demonstrates the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/sys_evdev.c sys_evdev()] statement, which reports events from a Linux event device (evdev).
+
+{{{
+process main {
+    sys.evdev("/dev/input/by-id/usb-BTC_USB_Multimedia_Keyboard-event-kbd") evdev;
+    println("Event: ", evdev.type, " ", evdev.value, " ", evdev.code);
+    rprintln("... handled.");
+    evdev->nextevent();
+}
+}}}
+
+This will result in something with the form of the following:
+
+{{{
+Event: EV_MSC 458792 MSC_SCAN
+... handled.
+Event: EV_KEY 0 KEY_ENTER
+... handled.
+Event: EV_SYN 0 unknown
+... handled.
+}}}
