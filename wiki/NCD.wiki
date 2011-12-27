@@ -633,8 +633,8 @@ Many statements in NCD can be considered to report events. However, until now, e
 
 Any general event reporting facility in NCD is implemented in form of a statement which behaves as follows:
 
-- When an event occurs, it goes up and exposes the information about the event via its variables.
-- It has a `::nextevent()` method that is called to indicate that the current event has been handled; this makes the event reporting statement to go back down, waiting for the next event.
+  # When an event occurs, it goes up and exposes the information about the event via its variables.
+  # It has a `::nextevent()` method that is called to indicate that the current event has been handled; this makes the event reporting statement to go back down, waiting for the next event.
 
 The following example demonstrates the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/sys_evdev.c sys_evdev()] statement, which reports events from a Linux event device (evdev).
 
