@@ -356,7 +356,7 @@ template make_msg {
 
 Note that it is impossible to define new statements from within the NCD programming language. The only way to define a new statement is to extend NCD by implementing the statement in C language using NCD's module interface. However, when considering a new statement, you should always first try to implement the same functionality in the NCD programming language, which would usually involve using process templates in some way.
 
-You can compare the NCD interpreter and its programming language to a CPU and its machine language. Similarly to how you can't add new machine instructions to the CPU without changing its hardware (or microcode), you can't add new statements to NCD without changing its source code. On the other hand, like you _can_ write subroutines and call them using machine instructions, you can write process templates for NCD and call them using `call()`.
+You can compare the NCD interpreter and its programming language to a CPU and its machine language. Similarly to how you can't add new machine instructions to the CPU without changing its hardware (or microcode), you can't add new statements to NCD without changing its source code. On the other hand, like you _can_ write subroutines and call them using machine instructions, you can write process templates for NCD and call them using the `call()` statement.
 
 == Branching (correct) ==
 
