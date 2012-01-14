@@ -111,4 +111,4 @@ template events_input_event_power {
 }
 }}}
 
-**WARNING**: you should pass `--loglevel warning` to NCD to avoid spamming the terminal or system log with tens of lines every time the mouse is moved or key pressed, and to avoid wasting CPU building the log messages.
+*WARNING*: you should pass `--loglevel warning` to NCD to avoid spamming the terminal or system log with tens of lines every time the mouse is moved or key pressed, and to avoid wasting CPU building the log messages.
