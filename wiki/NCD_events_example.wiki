@@ -109,7 +109,6 @@ template events_input_event_vdown {
 template events_input_event_power {
     runonce(_caller.gdep.suspend_cmd);
 }
+}}}
 
 **WARNING**: you should pass `--loglevel warning` to NCD to avoid spamming the terminal or system log with tens of lines every time the mouse is moved or key pressed, and to avoid wasting CPU building the log messages.
-
-}}}
