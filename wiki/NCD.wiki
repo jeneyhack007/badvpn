@@ -152,14 +152,27 @@ The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/print.c pri
 
 {{{
 process foo {
-    println("Starting");
-    rprintln("Stopped");
+    println("Starting up, please wait...");
+    rprintln("Goodbye World!");
 
     sleep("500", "300"); # sleeps 500ms on init and 300ms on deinit
 
-    println("Up");
-    rprintln("Down");
+    println("Hello World!");
+    rprintln("Shutting down, please wait...");
 }
+}}}
+
+This should result in something like this:
+{{{
+$ badvpn-ncd --loglevel warning --config-file hello.ncd
+Starting up, please wait...
+< 500ms passes >
+Hello World!
+< you hit CTRL+C >
+Shutting down, please wait...
+< 300ms passes >
+Goodbye World!
+$ 
 }}}
 
 == Dependencies ==
