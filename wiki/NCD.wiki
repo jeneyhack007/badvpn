@@ -27,7 +27,7 @@ NCD is used by writing an NCD program (the "configuration file"), then starting 
 
 = Model of execution =
 
-A NCD program (see example below) consists of a set of so-called *processes*. Globally, the processes can be considered to execute in parallel. Each process consists of a list of *statements*.
+An NCD program (see example below) consists of a set of so-called *processes*. Globally, the processes can be considered to execute in parallel. Each process consists of a list of *statements*.
 
 When NCD starts up, all statements are *uninitialized*. Then the first statement in every process is *inizialized*. An initialized statement is first in the *down* state. It may at any time transition into the *up* state. When it does so, the next statement in the process is initialized, and when this one transitions up, the next one is initialized, etc..
 
