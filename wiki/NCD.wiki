@@ -777,4 +777,4 @@ Foo done.
 A: died
 }}}
 
-In this case, start() spawned the process, which immediately proceeded to sleep(), at which point it returned control to the `foo` process. This one than immediately called stop(), triggering the deinitialization of the process that was spawned; sleep() was immediately requested to terminate. sleep() again returned control to `foo`, which printed "Foo done.". After 3 seconds, sleep() finally deinitialized.
+In this case, start() spawns the process, which proceeds to sleep(), at which point control is returned to the `foo` process. This one then  called stop(), triggering the deinitialization of the process that was spawned, and requesting sleep() to terminate. sleep() again returns control to `foo`, which prints "Foo done.". After 3 seconds, sleep() finally deinitialized.
