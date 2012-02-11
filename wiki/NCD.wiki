@@ -693,7 +693,7 @@ Note how the above example executes in a conceptually different way to what has 
 
 == Handling events ==
 
-Event-reporting modules are not of much use without a useful way to handle events. In many cases, a new process needs to be created in response to an event, and persist after the event is over. This functionality is offered by the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/process_manager.c process_manager()] module.
+Event-reporting modules are not of much use without a useful way to handle events. The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/process_manager.c process_manager()] module provides the ability to spawn new processes in response to events. The following example demonstrates the behavior of process_manager():
 
 {{{
 process foo {
@@ -748,3 +748,33 @@ $
 }}}
 
 See how start() creates a new process and gives control to it; however, as soon as the created process cannot continue (in this case, entering sleep()), control is returned to the process that called start(). In fact, start() is done after it has spawned the process - it will not do anything from that point on, and will *not* stop the process when deinitializing. Instead, process_manager() will stop its processes when deinitializing, waiting for them to terminate.
+
+Processes created via process_manager() can also be stopped explicitly using the stop() method, by providing the same process identifier as in the corresponding start() call:
+
+{{{
+process foo {
+    process_manager() mgr;
+    mgr->start("processA", "template_for_A", {});
+    mgr->stop("processA");
+    println("Foo done.");
+}
+
+template template_for_A {
+    println("A: starting");
+    rprintln("A: died");
+    sleep("1000", "3000");
+    println("A: started"); # never called
+}
+}}}
+
+This will produce the following:
+
+{{{
+$ badvpn-ncd --loglevel warning --config-file manager2.ncd
+A: starting
+Foo done.
+< 3 seconds pass >
+A: died
+}}}
+
+In this case, start() spawned the process, which immediately proceeded to sleep(), at which point it returned control to the `foo` process. This one than immediately called stop(), triggering the deinitialization of the process that was spawned; sleep() was immediately requested to terminate. sleep() again returned control to `foo`, which printed "Foo done.". After 3 seconds, sleep() finally deinitialized.
