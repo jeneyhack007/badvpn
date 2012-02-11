@@ -691,7 +691,7 @@ Event: EV_SYN 0 unknown
 
 Note how the above example executes in a conceptually different way to what has been demonstrated before. In previous examples, processes were meant to advance forward towards a goal, and only revert to a previous state when something goes wrong. In this case, however, the process reverts as soon as `nextevent()` is reached, deinitializing all statements between `nextevent()` and `sys.evdev()`. While it may not appear as such at first look, it is really a *loop*. (feel free to indent the statements following `sys.evdev()` if you like it better that way)
 
-== Handling events ==
+== Process manager ==
 
 Event-reporting modules are not of much use without a useful way to handle events. The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/process_manager.c process_manager()] module provides the ability to spawn new processes in response to events. The following example demonstrates the behavior of process_manager():
 
@@ -778,3 +778,46 @@ A: died
 }}}
 
 In this case, start() spawns the process, which proceeds to sleep(), at which point control is returned to the `foo` process. This one then  calls stop(), triggering the deinitialization of the process that was just spawned, requesting its sleep() statement to terminate. sleep() again returns control to `foo`, which prints "Foo done.". After 3 seconds, sleep() finally deinitializes.
+
+== Handling events with process manager ==
+
+process_manager() can be used in combination with event reporting modules, in particular with those that report the presence of hardware devices, to automatically create processes that configure them:
+
+{{{
+process main {
+    process_manager() mgr;
+    
+    # Wait for network interface event (interface added/removed).
+    net.watch_interfaces() watcher;
+
+    println("Event: interface ", watcher.devname, " ", watcher.event_type);
+
+    # Dispatch event.
+    concat("interface_event_", watcher.event_type) func;
+    call(func, {watcher.devname});
+
+    # Finish handling this event.
+    watcher->nextevent();
+}
+
+template interface_event_added {
+    var(_arg0) dev;
+    _caller.mgr->start(dev, "interface_worker", {dev});
+}
+
+template interface_event_removed {
+    var(_arg0) dev;
+    _caller.mgr->stop(dev);
+}
+
+template interface_worker {
+    var(_arg0) dev;
+
+    println(dev, ": starting");
+    rprintln(dev, ": died");
+
+    # Here comes your interface configuration code.
+}
+}}}
+
+This results in automatic starting and stopping of network interface configuration processes based which network interfaces exist in the system at any given time. Be aware that an `interface_worker` will be created for *all* network interfaces, including the loopback, wired and wireless interfaces. To configure them properly, branching must be used.
