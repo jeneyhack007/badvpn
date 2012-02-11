@@ -816,7 +816,7 @@ template interface_worker {
     println(dev, ": starting");
     rprintln(dev, ": died");
 
-    # Here comes your interface configuration code.
+    # Here comes your GENERIC interface configuration code.
 }
 }}}
 
