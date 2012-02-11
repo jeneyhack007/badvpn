@@ -691,7 +691,7 @@ Event: EV_SYN 0 unknown
 
 Note how the above example executes in a conceptually different way to what has been demonstrated before. In previous examples, processes were meant to advance forward towards a goal, and only revert to a previous state when something goes wrong. In this case, however, the process reverts as soon as `nextevent()` is reached, deinitializing all statements between `nextevent()` and `sys.evdev()`. While it may not appear as such at first look, it is really a *loop*. (feel free to indent the statements following `sys.evdev()` if you like it better that way)
 
-= Handling events =
+== Handling events ==
 
 Event-reporting modules are not of much use without a useful way to handle events. In many cases, a new process needs to be created in response to an event, and persist after the event is over. This functionality is offered by the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/process_manager.c process_manager()] module.
 
