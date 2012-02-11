@@ -690,3 +690,61 @@ Event: EV_SYN 0 unknown
 }}}
 
 Note how the above example executes in a conceptually different way to what has been demonstrated before. In previous examples, processes were meant to advance forward towards a goal, and only revert to a previous state when something goes wrong. In this case, however, the process reverts as soon as `nextevent()` is reached, deinitializing all statements between `nextevent()` and `sys.evdev()`. While it may not appear as such at first look, it is really a *loop*. (feel free to indent the statements following `sys.evdev()` if you like it better that way)
+
+= Handling events =
+
+Event-reporting modules are not of much use without a useful way to handle events. In many cases, a new process needs to be created in response to an event, and persist after the event is over. This functionality is offered by the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/process_manager.c process_manager()] module.
+
+{{{
+process foo {
+    process_manager() mgr;
+    rprintln("Destroying manager...");
+    println("Starting A");
+    mgr->start("processA", "template_for_A", {});
+    println("Starting B");
+    mgr->start("processB", "template_for_B", {});
+    println("Started all!");
+}
+
+template template_for_A {
+    println("A: starting");
+    rprintln("A: died");
+    sleep("1000", "1000");
+    println("A: finished");
+    rprintln("A: dying");
+}
+
+template template_for_B {
+    println("B: starting");
+    rprintln("B: died");
+    sleep("2000", "2000");
+    println("B: finished");
+    rprintln("B: dying");
+}
+}}}
+
+This will result in this:
+
+{{{
+$ badvpn-ncd --loglevel warning --config-file manager1.ncd
+Starting A
+A: starting
+Starting B
+B: starting
+Started all!
+< 1 second passes >
+A: finished
+< 1 second passes >
+B: finished
+< you hit CTRL+C >
+Destroying manager...
+B: dying
+A: dying
+< 1 second passes >
+A: died
+< 1 second passes >
+B: died
+$ 
+}}}
+
+See how start() creates a new process and gives control to it; however, as soon as the created process cannot continue (in this case, entering sleep()), control is returned to the process that called start(). In fact, start() is done after it has spawned the process - it will not do anything from that point on, and will *not* stop the process when deinitializing. Instead, process_manager() will stop its processes when deinitializing, waiting for them to terminate.
