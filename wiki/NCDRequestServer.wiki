@@ -1,0 +1,54 @@
+#summary NCD request server
+
+= Introduction =
+
+The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/sys_request_server.c sys.request_server()] module in NCD provides an interface for client programs on the same system to communicate with the NCD process.
+
+= Example server =
+
+{{{
+process main {
+    sys.request_server("/home/ambro/request.socket", "request_handler", {}) server;
+    println("Running.");
+}
+
+template request_handler {
+    println("Request...");
+    rprintln("Handled.");
+
+    value(_request.data) val;
+    try("verifier", {"_caller.val"}) t;
+
+    choose({{t.succeeded, "request_valid"}}, "request_invalid") func;
+    call(func, {});
+}
+
+template request_valid {
+    _caller._request->reply({"OK"});
+    _caller._request->finish();
+}
+
+template request_invalid {
+    _caller._request->reply({"Error", "Invalid request."});
+    _caller._request->finish();
+}
+
+template verifier {
+    alias(_arg0) val;
+    strcmp(val.type, "string") a;
+    _try->assert(a);
+}
+}}}
+
+= Usage =
+
+{{{
+$ badvpn-ncd-request /home/ambro/request.socket '{}'
+{"Error", "Bad request."}
+$ badvpn-ncd-request /home/ambro/request.socket '{"Hello"}'
+{"Error", "Unknown request."}
+$ badvpn-ncd-request /home/ambro/request.socket '{"ping"}'
+{"OK", "Pong."}
+$ badvpn-ncd-request /home/ambro/request.socket '{"halt"}'
+{"OK", "Halting."}
+}}}
