@@ -54,10 +54,10 @@ template bad_request {
     _caller._request->finish();
 }
 
-# called from try() to verify the request format.
+# Called from try() to verify the request format.
 # If an assertion fails, this immediately de-executes and
 # the try() statement reports succeeded=false. Othersise,
-# this de-executes once it completes, and reports succeeded=trye.
+# this de-executes once it completes, and reports succeeded=true.
 template verify_request {
     alias(_arg0) val;
 
