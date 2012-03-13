@@ -8,34 +8,70 @@ The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/sys_request
 
 {{{
 process main {
-    sys.request_server("/home/ambro/request.socket", "request_handler", {}) server;
-    println("Running.");
+    # Start the request server. Will start a request_handler process
+    # for every request received.
+    sys.request_server("/home/ambro/request.socket", "request_handler", {});
 }
 
 template request_handler {
-    println("Request...");
-    rprintln("Handled.");
-
+    # Verify format of request data.
     value(_request.data) val;
-    try("verifier", {"_caller.val"}) t;
+    try("verify_request", {"_caller.val"}) t;
 
-    choose({{t.succeeded, "request_valid"}}, "request_invalid") func;
+    # If verification failed, reply error.
+    choose({{t.succeeded, "<none>"}}, "bad_request") func;
+    call(func, {});
+
+    # Determine request type.
+    val->get("0") cmd;
+    strcmp(cmd, "ping") is_ping;
+    strcmp(cmd, "halt") is_halt;
+    strcmp(cmd, "reboot") is_reboot;
+
+    # Dispatch based on request type.
+    choose({{is_ping, "ping_request"}, {is_halt, "halt_request"}, {is_reboot, "reboot_request"}}, "unknown_request") func;
     call(func, {});
 }
 
-template request_valid {
-    _caller._request->reply({"OK"});
+template ping_request {
+    _caller._request->reply({"OK", "Pong."});
     _caller._request->finish();
 }
 
-template request_invalid {
-    _caller._request->reply({"Error", "Invalid request."});
+template halt_request {
+    # runonce({"/sbin/halt"});
+    _caller._request->reply({"OK", "Halting."});
     _caller._request->finish();
 }
 
-template verifier {
+template unknown_request {
+    _caller._request->reply({"Error", "Unknown request."});
+    _caller._request->finish();
+}
+
+template bad_request {
+    _caller._request->reply({"Error", "Bad request."});
+    _caller._request->finish();
+}
+
+# called from try() to verify the request format.
+# If an assertion fails, this immediately de-executes and
+# the try() statement reports succeeded=false. Othersise,
+# this de-executes once it completes, and reports succeeded=trye.
+template verify_request {
     alias(_arg0) val;
-    strcmp(val.type, "string") a;
+
+    # Request payload must be a list...
+    strcmp(val.type, "list") a;
+    _try->assert(a);
+
+    # ...with one element...
+    strcmp(val.length, "1") a;
+    _try->assert(a);
+
+    # ...which is a string.
+    val->get("0") cmd;
+    strcmp(cmd.type, "string") a;
     _try->assert(a);
 }
 }}}
