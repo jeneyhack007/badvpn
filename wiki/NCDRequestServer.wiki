@@ -40,7 +40,7 @@ template verifier {
 }
 }}}
 
-Whenever a request from a client is received, a new `request_handler` process is created to handle it. There, the request data sent by the client is accessed via _request.data, and replies can be sent using _request.reply() and _request.finish(). The request handler code uses the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/value.c value()] and [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/try.c try()] commands to check the format of the request.
+Whenever a request from a client is received, a new `request_handler` process is created to handle it. There, the request data sent by the client is accessed via `_request.data`, and replies can be sent using `_request.reply()` and `_request.finish()`. The request handler code uses the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/value.c value()] and [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/try.c try()] commands to check the format of the request.
 
 = Usage =
 
