@@ -1,5 +1,5 @@
 #summary tun2socks - socksify TCP at the network layer
-#labels tun,socks,ssh,tunnel,vpn,socksify,tcp
+#labels tun,socks,ssh,tunnel,vpn,socksify,tcp,proxify
 
 = Introduction =
 
