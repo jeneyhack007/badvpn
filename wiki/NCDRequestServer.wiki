@@ -26,10 +26,9 @@ template request_handler {
     val->get("0") cmd;
     strcmp(cmd, "ping") is_ping;
     strcmp(cmd, "halt") is_halt;
-    strcmp(cmd, "reboot") is_reboot;
 
     # Dispatch based on request type.
-    choose({{is_ping, "ping_request"}, {is_halt, "halt_request"}, {is_reboot, "reboot_request"}}, "unknown_request") func;
+    choose({{is_ping, "ping_request"}, {is_halt, "halt_request"}}, "unknown_request") func;
     call(func, {});
 }
 
