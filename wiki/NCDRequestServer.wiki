@@ -2,7 +2,7 @@
 
 = Introduction =
 
-The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/sys_request_server.c sys.request_server()] module in NCD provides an interface for client programs on the same system or on the network to communicate with a running NCD program. Such an interface opens many new possibilities for things to use NCD for. The long-term goal is to implement a (better) equivalent to the NetworkManager daemon completely in the NCD programming language, and also a corresponding GUI.
+The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/sys_request_server.c sys.request_server()] module in NCD provides an interface for client programs on the same system or on the network to communicate with a running NCD program. Such an interface opens many new possibilities for things to use NCD for. The long-term goal is to implement a (better) equivalent to the !NetworkManager daemon completely in the NCD programming language, and also a corresponding GUI.
 
 = Example =
 
