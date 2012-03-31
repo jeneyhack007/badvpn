@@ -7,72 +7,114 @@ The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/sys_request
 = Example server =
 
 {{{
-process main {
-    # Start the request server. Will start a request_handler process
-    # for every request received.
-    sys.request_server("/home/ambro/request.socket", "request_handler", {});
+process request_server {
+    # Listen on a Unix socket. It is also possible to listen on TCP.
+    var({"unix", "/home/ambro/request.socket"}) listen_addr;
+    #var({"tcp", "127.0.0.1", "8000"}) listen_addr;
+
+    # Start the request server. For each request, template request_handler
+    # is instantiated to handle it. 
+    sys.request_server(listen_addr, "request_handler", {});
+
+    println("Up and running!");
 }
 
 template request_handler {
-    # Verify format of request data.
-    value(_request.data) val;
-    try("verify_request", {"_caller.val"}) t;
+    # Create value objects for request data, to allow examining it.
+    value(_request.data) req;
 
-    # If verification failed, reply error.
-    choose({{t.succeeded, "<none>"}}, "bad_request") func;
-    call(func, {});
+    # Create value object for parse results. The parser will write results here.
+    # In case parsing fails, assume it's a bad command.
+    value(["cmd":"bad"]) res;
 
-    # Determine request type.
-    val->get("0") cmd;
-    strcmp(cmd, "ping") is_ping;
-    strcmp(cmd, "halt") is_halt;
+    # Parse request data. This writes fields into the 'res' map above.
+    try("parse_request", {"_caller.req", "_caller.res"}) parse;
 
-    # Dispatch based on request type.
-    choose({{is_ping, "ping_request"}, {is_halt, "halt_request"}}, "unknown_request") func;
+    # Dispatch. If parsing failed, this calls template bad_request.
+    res->get("cmd") cmd;
+    concat(cmd, "_request") func;
     call(func, {});
 }
 
-template ping_request {
-    _caller._request->reply({"OK", "Pong."});
-    _caller._request->finish();
-}
-
-template halt_request {
-    # runonce({"/sbin/halt"});
-    _caller._request->reply({"OK", "Halting."});
-    _caller._request->finish();
-}
-
-template unknown_request {
-    _caller._request->reply({"Error", "Unknown request."});
-    _caller._request->finish();
-}
-
+# This handles invalid requests.
 template bad_request {
     _caller._request->reply({"Error", "Bad request."});
     _caller._request->finish();
 }
 
-# Called from try() to verify the request format.
-# If an assertion fails, this immediately de-executes and
-# the try() statement reports succeeded=false. Othersise,
-# this de-executes once it completes, and reports succeeded=true.
-template verify_request {
-    alias(_arg0) val;
+# This handles ping requests.
+template ping_request {
+    _caller._request->reply({"OK", "Pong."});
+    _caller._request->finish();
+}
 
-    # Request payload must be a list...
-    strcmp(val.type, "list") a;
+# This handles echo requests.
+template echo_request {
+    alias("_caller._request") request;
+    alias("_caller.res") res;
+
+    # Reply with echo argument and finish. The argument was written to the map in 'res' by parse_echo.
+    res->get("echo_arg") echo_arg;
+    request->reply({"OK", echo_arg});
+    request->finish();
+}
+
+template parse_request {
+    alias(_arg0) req;
+    alias(_arg1) res;
+
+    # If an assertion here fails, we will be immediately stopped; see try() documentation.
+
+    # Request must be a list...
+    strcmp(req.type, "list") a;
     _try->assert(a);
 
-    # ...with one element...
-    strcmp(val.length, "1") a;
+    # ...with at least the first element...
+    num_greater_equal(req.length, "1") a;
     _try->assert(a);
 
-    # ...which is a string.
-    val->get("0") cmd;
+    # ...which is a string...
+    req->get("0") cmd;
     strcmp(cmd.type, "string") a;
     _try->assert(a);
+
+    # ...and is one of the supported commands.
+    strcmp(cmd, "ping") is_ping;
+    strcmp(cmd, "echo") is_echo;
+    or(is_ping, is_echo) a;
+    _try->assert(a);
+
+    # Parse specific commands.
+    concat("parse_", cmd) func;
+    call(func, {});
+
+    # Only on success, set 'cmd' in the result, else "bad" is left by default.
+    res->insert("cmd", cmd);
 }
+
+template parse_ping {
+    alias("_caller._try") try;
+    alias("_caller.req") req;
+
+    # Request must have zero arguments.
+    num_equal(req.length, "1") a;
+    try->assert(a);
+}
+
+template parse_echo {
+    alias("_caller._try") try;
+    alias("_caller.req") req;
+    alias("_caller.res") res;
+
+    # Request must have one argument.
+    num_equal(req.length, "2") a;
+    try->assert(a);
+
+    # Remember that argument
+    req->get("1") echo_arg;
+    res->insert("echo_arg", echo_arg);
+}
+
 }}}
 
 Whenever a request from a client is received, a new `request_handler` process is created to handle it. There, the request data sent by the client is accessed via `_request.data`, and replies can be sent using `_request.reply()` and `_request.finish()`. The request handler code uses the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/value.c value()] and [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/try.c try()] commands to check the format of the request.
@@ -80,12 +122,13 @@ Whenever a request from a client is received, a new `request_handler` process is
 = Usage =
 
 {{{
-$ badvpn-ncd-request /home/ambro/request.socket '{}'
+$ badvpn-ncd-request unix:/home/ambro/request.socket '{}'
 {"Error", "Bad request."}
-$ badvpn-ncd-request /home/ambro/request.socket '{"Hello"}'
-{"Error", "Unknown request."}
-$ badvpn-ncd-request /home/ambro/request.socket '{"ping"}'
+$ badvpn-ncd-request unix:/home/ambro/request.socket '{"ping"}'
 {"OK", "Pong."}
-$ badvpn-ncd-request /home/ambro/request.socket '{"halt"}'
-{"OK", "Halting."}
+$ badvpn-ncd-request unix:/home/ambro/request.socket '{"echo", {"Hello", "server!"}}'
+{"OK", {"Hello", "server!"}}
+$ badvpn-ncd-request unix:/home/ambro/request.socket '{"echo", "Please", "Respond"}'
+{"Error", "Bad request."}
+$ 
 }}}
