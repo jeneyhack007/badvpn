@@ -89,6 +89,10 @@ See [NCD_examples] for more complex examples. NCD is capable of much more than t
 
 There is also an alternative introduction to NCD, and more examples, which include BadVPN interfaces: http://code.google.com/p/badvpn/source/browse/trunk/ncd/README .
 
+= Graphical interface =
+
+A user-friendly network configuration system employing the NCD programming language ang a GUI is being worked on. See the [http://code.google.com/p/ncdgui/ ncdgui] project. However, note that this is not a GUI to NCD itself (that does not make sense, as does not making a GUI to any other programming language), but to specific programs written in NCD that are programmed to talk to a GUI.
+
 = Requirements =
 
 NCD requires various programs during execution. In particular:
