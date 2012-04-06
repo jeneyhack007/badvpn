@@ -173,4 +173,4 @@ Head state: "q9"
 $ 
 }}}
 
-Note that the left side of the tape is printed in reverse - the "B" is at the far left of the tape.
+Note that the left side of the tape is reversed, both in input and output - the "B" printed above belongs to the far left of the tape.
