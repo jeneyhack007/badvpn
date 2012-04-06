@@ -2,7 +2,7 @@
 
 = Introduction =
 
-The NCD programming language is Turing-complete. The following implementation of a Turing machine in NCD proves this.
+The [NCD] programming language is Turing-complete. The following implementation of a Turing machine in NCD proves this.
 
 = Turing machine =
 
