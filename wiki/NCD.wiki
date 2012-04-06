@@ -150,7 +150,7 @@ Individual statement types (modules) are described briefly in the headers of the
 
 Here's a quick introduction to the programming language of NCD.
 
-While the NCD language was designed for programming dynamic configurations in a partially declarative style, it has some support for imperative programming, when the integrated high-level commands do not suffice. NCD is in fact [NCDTuringMachine turing complete].
+While the NCD language was designed for programming dynamic configurations in a partially declarative style, it has some support for imperative programming, for cases when the integrated high-level commands do not suffice. NCD is in fact [NCDTuringMachine turing complete].
 
 == Diagnostic output ==
 
