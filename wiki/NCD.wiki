@@ -38,9 +38,9 @@ The deinitialization of a statement often has the *reverse effect* of initializa
 When a statement is initialized, it is provided with a list of *arguments* which tell the underlying module specifically what it is supposed to do. Arguments can either be provided literally in the statement specification, or they may refer to *variables*, whose values are provided by preceding statements in the process. Variables are key to the power of NCD.
 
 In NCD, data is stored and passed as so-called *values*. For example, arguments passed to statements are instantiated to values. A value is pure data; there is no such thing as a reference or pointer in NCD. There are three kinds of values:
-  # Strings. A string is a sequence of bytes, excluding the zero byte. It can be specified literally as `"string contents"`. To include the double quote or backslash in a string, prefix it with a backslash. All other characters must be specified directly without escaping (including newlines).
-  # Lists. A list is an ordered set of zero of more values (recursively, which may themselves be any of the three types of values). A list can be specified literally as `{value1, ..., valueN}`.
-  # Maps. A map is a set of (key, value) pairs, with unique keys. Both the key and the value can be any kind of value, recursively. This means that the key can in fact be a list or even a map itself, and is is possible to have keys of different types in a map. A map can be specified literally as `[key1:value1, ..., keyN:valueN]`.
+  # *Strings*. A string is a sequence of bytes, excluding the zero byte. It can be specified literally as `"string contents"`. To include the double quote or backslash in a string, prefix it with a backslash. All other characters must be specified directly without escaping (including newlines).
+  # *Lists*. A list is an ordered set of zero of more values (recursively, which may themselves be any of the three types of values). A list can be specified literally as `{value1, ..., valueN}`.
+  # *Maps*. A map is a set of (key, value) pairs, with unique keys. Both the key and the value can be any kind of value, recursively. This means that the key can in fact be a list or even a map itself, and is is possible to have keys of different types in a map. A map can be specified literally as `[key1:value1, ..., keyN:valueN]`.
 
 A statement is specified as `statement(arg1, ..., argN);`. Optionally, it can be given an identifier: `statement(arg1, ..., argN) identifier;`.
 
