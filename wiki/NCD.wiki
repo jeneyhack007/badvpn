@@ -39,7 +39,12 @@ When a statement is initialized, it is provided with a list of *arguments* which
 
 A statement is specified as `statement(arg1, ..., argN);`. Optionally, it can be given an identifier: `statement(arg1, ..., argN) identifier;`.
 
-A variable is used by passing `object.variable` as an argument. Here, `object` is an identifier of one of the statements in the process, declared somewhere above (later statements with that name shadow the earlier); `variable` is the name of the variable within this statement. Additionally, if only `object` is passed, it refers to the empty string variable within `object` (thus, you're still passing a *value* (string, list), *not* a reference to the statement).
+A variable is used by passing `object.variable` as an argument. Here, `object` is an identifier of one of the statements in the process, declared somewhere above (later statements with that name shadow the earlier); `variable` is the name of the variable within this statement. Additionally, if only `object` is passed, it refers to the empty string variable within `object` (if the object even exports one).
+
+Arguments are passed as *values*. Values are pure data; here is no such thing as a reference or pointer in NCD. There are three kinds of values:
+  # Strings. A string is a sequence of bytes, excluding the zero byte. It can be specified literally as `"string contents"`. To include the double quote or backslash in a string, prefix it with a backslash. All other characters must be specified directly without escaping (including newlines).
+  # Lists. A list is an ordered set of zero of more values (recursively, which may themselves be any of the three types of values). A list can be specified literally as `{value1, ..., valueN}`.
+  # Maps. A map is a set of (key, value) pairs, with unique keys. Both the key and the value can be any kind of value, recursively. This means that the key can in fact be a list or even a map itself, and is is possible to have keys of different types in a map. A map can be specified literally as `[key1:value1, ..., keyN:valueN]`.
 
 When NCD is requested to terminate, it starts deinitializing all processes from the bottom up, like described above, and this deinitialization continues until all statements in all processes are deinitialized. NCD then exits.
 
