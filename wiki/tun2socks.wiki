@@ -68,3 +68,29 @@ These routes will not persist across a reboot. You should probably make scripts 
 
   # On the remote SSH server, start: `badvpn-udpgw --listen-addr 127.0.0.1:7300`
   # Add the following arguments to `badvpn-tun2socks`: `--udpgw-remote-server-addr 127.0.0.1:7300`
+
+= Using with Tor =
+
+The goal here is to have all connections initiating from a virtual machine go through [https://www.torproject.org/ Tor] via tun2socks.
+
+*NOTE*: It is not currently possible to use tun2socks with Tor on a single host without a virtual machine; that would require dynamically updating the routing table based on which Tor nodes are used.
+
+  # Let's assume you use !VirtualBox to run the VM, and you run Tor on the host.
+  # Set the Network Adapter type in !VirtualBox to Host Only.
+  # On the host, identify the IP address of the guest on the !VirtualBox  interface. This IP address can found and configured in `File->Preferences->Network`. Most likely it will be `192.168.56.1`. On a Linux host, this interface will likely be called `vboxnet0`.
+  # On the host, configure Tor to provide a SOCKS and DNS server for the VM to use. Do this by adding the following options to the torrc file (use the right IP address): "`SocksListenAddress 192.168.56.1`" and "`DNSPort 192.168.56.1:53`".
+  # Start Tor on the host. If possible, verify that it's listening on  port numbers `9050` and `53` on the IP address of the VirtualBox interface (e.g. 192.168.56.1, not localhost!). On a Linux host, you can do this by running `netstat -nlp` as root.
+  # In the VM, configure the local network interface (the normal one, not TAP). Do not use DHCP; only set the IP address (e.g. `192.168.56.2`). At this point, is should be possible to ping the guest from the host, and the reverse.
+  # On the guest, create and configure the TAP device for `tun2socks`, as is described in SSH tunneling example above. Additionally, use Tor's DNS server, e.g. `192.168.56.1`.
+  # Then finally start `tun2socks` in the guest, similarly to how it is done in the SSH example above. However, instead of using `127.0.0.1:8080` as the SOCKS server, use Tor's SOCKS server running on the host, e.g. `192.168.56.1:9050`. Note that you don't have to manually configure any routes; the default route on the TAP interface is all that is needed. This is because the SOCKS and DNS servers are on the local network, so don't have to override the default route via tun2socks. 
+
+All traffic from the VM should now be going through TOR. TCP connections will be intercepted by tun2socks and will be sent through Tor's SOCKS server; DNS queries will be sent by the guest's OS directly to Tor's DNS server. UDP will not work because Tor doesn't support UDP.
+
+This configuration has been tested using a Linux host and a Windows XP guest; however, it should work with any OS combination assuming the relevant software (tor, tun2socks) is supported. In particular, you're limited to Linux and Windows guests.
+
+*NOTE*: Tor will issue some warnings that IP address came without hostnames: "Warning: Your application (using socks5 to port 80) is giving Tor only an IP address....". This is normal ad you might be able to shut Tor up about it by adding these to torrc:
+{{{
+SafeSocks 0
+TestSocks 0
+WarnUnsafeSocks 0
+}}}
