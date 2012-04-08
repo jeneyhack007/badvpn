@@ -77,7 +77,7 @@ The goal here is to have all connections initiating from a virtual machine go th
 
   # Let's assume you use !VirtualBox to run the VM, and you run Tor on the host.
   # Set the Network Adapter type in !VirtualBox to Host Only.
-  # On the host, identify the IP address of the guest on the !VirtualBox  interface. This IP address can found and configured in `File->Preferences->Network`. Most likely it will be `192.168.56.1`. On a Linux host, this interface will likely be called `vboxnet0`.
+  # On the host, identify the IP address of the host on the !VirtualBox  interface. This IP address can found and configured in `File->Preferences->Network`. Most likely it will be `192.168.56.1`. On a Linux host, this interface will likely be called `vboxnet0`.
   # On the host, configure Tor to provide a SOCKS and DNS server for the VM to use. Do this by adding the following options to the torrc file (use the right IP address): "`SocksListenAddress 192.168.56.1`" and "`DNSPort 192.168.56.1:53`".
   # Start Tor on the host. If possible, verify that it's listening on  port numbers `9050` and `53` on the IP address of the VirtualBox interface (e.g. 192.168.56.1, not localhost!). On a Linux host, you can do this by running `netstat -nlp` as root.
   # In the VM, configure the local network interface (the normal one, not TAP). Do not use DHCP; only set the IP address (e.g. `192.168.56.2`). At this point, is should be possible to ping the guest from the host, and the reverse.
