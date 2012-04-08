@@ -75,6 +75,8 @@ The goal here is to have all connections initiating from a virtual machine go th
 
 *NOTE*: It is not currently possible to use tun2socks with Tor on a single host without a virtual machine; that would require dynamically updating the routing table based on which Tor nodes are used.
 
+*WARNING*: software in the VM may [https://trac.torproject.org/projects/tor/wiki/doc/TransparentProxyLeaks reveal information] about you without your knowledge. The Tor project recommends only using the [https://www.torproject.org/projects/torbrowser.html.en Tor Browser Bundle] as your web browser. However, it is not possible to properly use this browser together with transparent proxying as described here. You should however at least use something like Chrome's [https://support.google.com/chrome/?p=cpn_incognito Incognito mode]. You can read more about potential problems [https://www.torproject.org/projects/torbrowser/design/ here].
+
   # Let's assume you use !VirtualBox to run the VM, and you run Tor on the host.
   # Set the Network Adapter type in !VirtualBox to Host Only.
   # On the host, identify the IP address of the host on the !VirtualBox  interface. This IP address can found and configured in `File->Preferences->Network`. Most likely it will be `192.168.56.1`. On a Linux host, this interface will likely be called `vboxnet0`.
@@ -94,3 +96,5 @@ SafeSocks 0
 TestSocks 0
 WarnUnsafeSocks 0
 }}}
+
+*NOTE*: 
