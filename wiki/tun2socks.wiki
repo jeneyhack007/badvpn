@@ -88,7 +88,7 @@ All traffic from the VM should now be going through TOR. TCP connections will be
 
 This configuration has been tested using a Linux host and a Windows XP guest; however, it should work with any OS combination assuming the relevant software (tor, tun2socks) is supported. In particular, you're limited to Linux and Windows guests.
 
-*NOTE*: Tor will issue some warnings that IP address came without hostnames: "Warning: Your application (using socks5 to port 80) is giving Tor only an IP address....". This is normal ad you might be able to shut Tor up about it by adding these to torrc:
+*NOTE*: Tor will issue warnings that IP addresses come without hostnames: "Warning: Your application (using socks5 to port 80) is giving Tor only an IP address....". This is normal and you might be able to silence it by adding these to torrc:
 {{{
 SafeSocks 0
 TestSocks 0
