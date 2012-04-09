@@ -79,6 +79,8 @@ The goal here is to have all connections initiating from a virtual machine go th
 
 *NOTE*: DNS queries done by the guest will be slower than if applications were directly configured to use Tor.
 
+The following steps show how to set transparent proxying for the virtual machine.
+
   # Let's assume you use !VirtualBox to run the VM, and you run Tor on the host.
   # Set the Network Adapter type in !VirtualBox to Host Only.
   # On the host, identify the IP address of the host on the !VirtualBox  interface. This IP address can found and configured in `File->Preferences->Network`. Most likely it will be `192.168.56.1`. On a Linux host, this interface will likely be called `vboxnet0`.
