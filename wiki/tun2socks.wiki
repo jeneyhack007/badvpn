@@ -7,7 +7,7 @@
 
 = Installation =
 
-`tun2socks` is part of BadVPN. If you're on Linux, just build BadVPN with its CMake build system (or use the Gentoo overlay or the Arch AUR package). Note that you need the NSS and OpenSSL libraries to do that. Alternatively, you can use a shell script to compile `tun2socks` only, in case the CMake or library dependencies are problematic for you: http://badvpn.googlecode.com/svn/trunk/compile-tun2sock.sh . If you're on Windows, simply grab the Windows build of BadVPN.
+`tun2socks` is part of BadVPN. If you're on Linux, just build BadVPN with its CMake build system (or use the Gentoo overlay, the Arch AUR or Ubuntu PPA packages). Note that you need the NSS and OpenSSL libraries to do that. Alternatively, you can use a shell script to compile `tun2socks` only, in case the CMake or library dependencies are problematic for you: http://badvpn.googlecode.com/svn/trunk/compile-tun2sock.sh . If you're on Windows, simply grab the Windows build of BadVPN.
 
 = Example (tunelling through SSH) =
 
