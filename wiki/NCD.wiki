@@ -884,6 +884,8 @@ When a value object contains a list or a map, the `get()` method can be used to 
 
 {{{
 process main {
+    # Create a value object storing a list of three elements,
+    # with the third element being a list of two.
     value({"First", "Second", {"Third.First", "Third.Second"}}) v;
 
     # Get the element at index 1.
@@ -900,5 +902,39 @@ process main {
 
     # We can also check the length of a list.
     println(third.length); # 2
+}
+}}}
+
+Note that the `get()` method will fail if the given list index or map key does not exist, and the process will not continue. To check for the existence of an element, the `try_get()` method should be used. `try_get()` is like `get()`, except that it will not fail if the element specified does not exist; rather, existence is reported via the `exists` variable. The following program demonstrates using `value()` with maps and checking for the existence of a key.
+
+{{{
+process main {
+    # Create a value storing a map with two elements.
+    value(["key1":"val1", "key2":"val2"]) v;
+
+    # Get the value under "key1".
+    v->get("key1") v1;
+    println(v1.exists); # true
+    println(v1); # val1
+
+    # Check for existence of "key3".
+    v->try_get("key3") v3;
+    println(v3.exists); # false
+
+    # Branch based on existence.
+    concat("exists_", v3.exists) func;
+    call(func, {});
+}
+
+template exists_true {
+    println("key3 exists and has the value ", _caller.v3);
+}
+
+template exists_false {
+    println("key3 does not exist");
+
+    # We must not do anything else with v3!
+    # If "key3" did in fact exist, we could now use v3 as if
+    # it was the result of get().
 }
 }}}
