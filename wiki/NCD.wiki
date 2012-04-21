@@ -914,7 +914,7 @@ process main {
 
     # Get the value under "key1".
     v->get("key1") v1;
-    println(v1.exists); # true
+    println(v1.exists); # true (always, because we used get and not try_get)
     println(v1); # val1
 
     # Check for existence of "key3".
