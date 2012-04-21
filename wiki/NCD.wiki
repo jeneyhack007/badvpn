@@ -837,10 +837,10 @@ This results in automatic starting and stopping of network interface configurati
 
 In NCD, simple configurations can be implemented in a declarative style without directly managing any state. To do complex things, however, it is often required to in part resort to imperative programming.
 
-NCD provides two ways of storing state. For simple things, the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/var.c var()] statement may suffice. `var()` takes as argument a single value an allows later access to this value via the empty string variable (i.e. the name of the `var()` statement). Additionally, `var()` has a `set()` method, which allows changing the stored value subsequently. The following example demonstrates listening for keyboard events while remembering the last event that has occured, using `var()`.
+NCD provides two ways of storing state. For simple things, the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/var.c var()] statement may suffice. `var()` takes as argument a single value an allows later access to this value via the empty string variable (i.e. the name of the `var()` statement). Additionally, `var()` has a `set()` method, which allows changing the stored value subsequently. The following example demonstrates listening for keyboard events while remembering the last event that has occurred, using `var()`.
 
 {{{
-process foo {
+process main {
     # Previous event is stored here.
     var("none") prev_event;
 
@@ -878,4 +878,27 @@ Event: {"EV_KEY", "0", "KEY_E"} Previous: {"EV_MSC", "458760", "MSC_SCAN"}
 Event: {"EV_SYN", "0", "unknown"} Previous: {"EV_KEY", "0", "KEY_E"}
 }}}
 
-The other, much more powerful, method of storing state is via the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/value.c value()] statement.
+The other, much more powerful, method of storing state is via the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/value.c value()] statement. Like `var()`, `value()` accepts a single argument, which it stores, and allows reading the stored value via the empty string variable. However, `value()` allows fine-grained access and modification of the stored value.
+
+When `value()` contains a list or a map, the `get()` method can be used to access the i-th element of the list, or the value under a certain key in a map. For lists and map, the value object also exports the `length` variable, indicating the number of elements.
+
+{{{
+process main {
+    value({"First", "Second", {"Third.First", "Third.Second"}}) v;
+
+    # Get the element at index 1.
+    v->get("1") second;
+    println(second); # Second
+
+    # Get the element at index 2.
+    v->get("2") third;
+
+    # The result of get() is another value object, so if it is a list,
+    # we can call get() on this one too.
+    third->get("0") third_first;
+    println(third_first); # Third.First
+
+    # We can also check the length of a list.
+    println(third.length); # 2
+}
+}}}
