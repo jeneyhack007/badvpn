@@ -835,7 +835,9 @@ This results in automatic starting and stopping of network interface configurati
 
 == Storing state ==
 
-In NCD, simple configurations can be implemented in a declarative style without directly managing any state. To do complex things, however, it is often required to in part resort to imperative programming. NCD provides two ways of storing state. For simple things, the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/var.c var()] statement may suffice. The following example demonstrates listening for keyboard events while remembering the last event that has occured.
+In NCD, simple configurations can be implemented in a declarative style without directly managing any state. To do complex things, however, it is often required to in part resort to imperative programming.
+
+NCD provides two ways of storing state. For simple things, the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/var.c var()] statement may suffice. `var()` takes as argument a single value an allows later access to this value via the empty string variable (i.e. the name of the `var()` statement). Additionally, `var()` has a `set()` method, which allows changing the value it stores subsequently. The following example demonstrates listening for keyboard events while remembering the last event that has occured.
 
 {{{
 process foo {
@@ -874,5 +876,6 @@ Event: {"EV_SYN", "0", "unknown"} Previous: {"EV_KEY", "1", "KEY_E"}
 Event: {"EV_MSC", "458760", "MSC_SCAN"} Previous: {"EV_SYN", "0", "unknown"}
 Event: {"EV_KEY", "0", "KEY_E"} Previous: {"EV_MSC", "458760", "MSC_SCAN"}
 Event: {"EV_SYN", "0", "unknown"} Previous: {"EV_KEY", "0", "KEY_E"}
-
 }}}
+
+The other, much more powerful, method of storing state is via the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/value.c value()] statement.
