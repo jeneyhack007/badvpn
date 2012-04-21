@@ -880,7 +880,7 @@ Event: {"EV_SYN", "0", "unknown"} Previous: {"EV_KEY", "0", "KEY_E"}
 
 The other, much more powerful, method of storing state is via the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/value.c value()] statement. Like `var()`, `value()` accepts a single argument, which it stores, and allows reading the stored value via the empty string variable. However, `value()` allows fine-grained access and modification of the stored value.
 
-When `value()` contains a list or a map, the `get()` method can be used to access the i-th element of the list, or the value under a certain key in a map. For lists and map, the value object also exports the `length` variable, indicating the number of elements.
+When a value object contains a list or a map, the `get()` method can be used to access the i-th element of the list, or the value corresponding a given key in a map. For lists and map, the value object also exports the `length` variable, indicating the number of elements.
 
 {{{
 process main {
