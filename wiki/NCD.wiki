@@ -832,3 +832,31 @@ template interface_worker {
 }}}
 
 This results in automatic starting and stopping of network interface configuration processes based which network interfaces exist in the system at any given time. Be aware that an `interface_worker` will be created for *all* network interfaces, including the loopback, wired and wireless interfaces. To configure them properly, branching must be used.
+
+== Storing state ==
+
+In NCD, simple configurations can be implemented in a declarative style without directly managing any state. To do complex things, however, it is often required to in part resort to imperative programming. NCD provides two ways of storing state. For simple things, the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/var.c var()] statement may suffice. The following example demonstrates listening for keyboard events while remembering the last event that has occured.
+
+{{{
+process foo {
+    # Previous event is stored here.
+    var("none") prev_event;
+
+    # Wait for keyboard event.
+    sys.evdev("/dev/input/by-id/usb-BTC_USB_Multimedia_Keyboard-event-kbd") evdev;
+
+    # Build a value (list) representing the event.
+    var({evdev.type, evdev.value, evdev.code}) event;
+
+    # Print this and previous event.
+    to_string(event) str1;
+    to_string(prev_event) str2;
+    println("Event: ", str1, " Previous: ", str2);
+
+    # Update previous event.
+    prev_event->set(event);
+
+    # Wait for next event.
+    evdev->nextevent();
+}
+}}}
