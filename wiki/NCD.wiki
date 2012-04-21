@@ -860,3 +860,19 @@ process foo {
     evdev->nextevent();
 }
 }}}
+
+This will resort in something like this:
+
+{{{
+$ badvpn-ncd --loglevel warning --config-file var_state.ncd
+Event: {"EV_MSC", "458792", "MSC_SCAN"} Previous: "none"
+Event: {"EV_KEY", "0", "KEY_ENTER"} Previous: {"EV_MSC", "458792", "MSC_SCAN"}
+Event: {"EV_SYN", "0", "unknown"} Previous: {"EV_KEY", "0", "KEY_ENTER"}
+Event: {"EV_MSC", "458760", "MSC_SCAN"} Previous: {"EV_SYN", "0", "unknown"}
+Event: {"EV_KEY", "1", "KEY_E"} Previous: {"EV_MSC", "458760", "MSC_SCAN"}
+Event: {"EV_SYN", "0", "unknown"} Previous: {"EV_KEY", "1", "KEY_E"}
+Event: {"EV_MSC", "458760", "MSC_SCAN"} Previous: {"EV_SYN", "0", "unknown"}
+Event: {"EV_KEY", "0", "KEY_E"} Previous: {"EV_MSC", "458760", "MSC_SCAN"}
+Event: {"EV_SYN", "0", "unknown"} Previous: {"EV_KEY", "0", "KEY_E"}
+
+}}}
