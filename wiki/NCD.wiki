@@ -636,7 +636,7 @@ process foo {
 }
 }}}
 
-However, this only applies when referred name within an object (`length`) is a "final" variable, and doesn't just point to another object. E.g. it is safe to refer to objects within a `call()` statement.
+However, this only applies when referred name within an object (`length` in the case above) is a "final" variable, rather than just pointing to another object. E.g. it is safe to refer to objects within a `call()` statement.
 
 == Multi-dependencies ==
 
