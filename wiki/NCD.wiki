@@ -159,7 +159,7 @@ While the NCD language was designed for programming dynamic configurations in a 
 
 == Diagnostic output ==
 
-The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/print.c println() and rprintln()] statements provide diagnostic output to standard outout. `println()` prints a message on initialization, and `rprintln()` prints a message on deinitialization.
+The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/print.c println() and rprintln()] statements provide diagnostic output to standard output. `println()` prints a message on initialization, and `rprintln()` prints a message on deinitialization.
 
 {{{
 process foo {
