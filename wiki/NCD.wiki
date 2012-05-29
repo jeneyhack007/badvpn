@@ -374,7 +374,7 @@ You can compare the NCD interpreter and its programming language to a CPU and it
 
 == Branching with call()  ==
 
-The `call()` statement can (and should) be used for branching. This works by building the name of the called template dynamically based on runtime values. The following program demonstrates this.
+The `call()` statement can be used for branching, in addition to the `If` clause described above. You can branch using `call()` by building the name of the called template dynamically based on runtime values. The following program demonstrates this.
 
 {{{
 process test {
@@ -405,11 +405,11 @@ template branch_foo_false {
 }
 }}}
 
-Compared to simple branching using `provide()` and `depend()`, this branching mechanism is safe to use from template processes.
+Branching using `call()` may sometimes be preferable to the `If` clause because the branched code is specified externally to the calling process. However, note that the `If` clause is internally translated to a statement similar to `call()`.
 
 == Multi-way branching ==
 
-The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/choose.c choose()] statement together with `call()` can provide "if, else if, ..., else" style branching.
+The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/choose.c choose()] statement together with `call()` can provide "if, else if, ..., else" style branching, if for some reason you want to avoid the `If` clause.
 
 {{{
 process foo {
