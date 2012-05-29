@@ -280,7 +280,7 @@ process device_service_y {
 
 == Branching ==
 
-NCD provides an `If` clause as a special kind of statement:
+The latest version of NCD (1.999.120) provides an `If` clause as a special kind of statement:
 
 {{{
 process main {
@@ -308,7 +308,9 @@ Got Y
 Choice: B
 }}}
 
-Note that the `If` keyword begins with a capital `I`. You can use any number of `elif` parts, and optionally an `else` part. The clause (unlike in many other languages) must be terminated with a semicolon. You can give the clause a name just before the semicolon; this will allow you to access objects within the branch that was taken - the example above does this when printing `branch.choice`.
+Note that the `If` keyword begins with a capital `I`. You can use any number of `elif` parts, and optionally an `else` part. The clause (unlike in many other languages) must be terminated with a semicolon. The condition arguments to `If` and `elif` must be strings, and are considered true only if they are equal to "true".
+
+You can give the clause a name just before the semicolon; this will allow you to access objects within the branch that was taken - the example above does this when printing `branch.choice`.
 
 The `If` clause is internally implemented as syntax sugar around the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/call2.c embcall2_multif()] statement (read on about templates and `call()` to see how that works).
 
@@ -369,7 +371,7 @@ Note that it is impossible to define new statements from within the NCD programm
 
 You can compare the NCD interpreter and its programming language to a CPU and its machine language. Similarly to how you can't add new machine instructions to the CPU without changing its hardware (or microcode), you can't add new statements to NCD without changing its source code. On the other hand, like you _can_ write subroutines and call them using machine instructions, you can write process templates for NCD and call them using the `call()` statement.
 
-== Branching (correct) ==
+== Branching with call()  ==
 
 The `call()` statement can (and should) be used for branching. This works by building the name of the called template dynamically based on runtime values. The following program demonstrates this.
 
