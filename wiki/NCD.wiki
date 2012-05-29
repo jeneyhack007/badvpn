@@ -300,6 +300,7 @@ process main {
 
     println("Choice: ", branch.choice);
 }
+}}}
 
 {{{
 $ badvpn-ncd --loglevel warning --config-file if_example.ncd
