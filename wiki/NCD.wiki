@@ -286,15 +286,16 @@ The latest version of NCD (1.999.120) provides an `If` clause as a special kind 
 process main {
     var("anything-but-true") x;
     var("true") y;
+    var("Got ") outside;
 
     If (x) {
-        println("Got X");
+        println(outside, "X");
         var("A") choice;
     } elif (y) {
-        println("Got Y");
+        println(outside, "Y");
         var("B") choice;
     } else {
-        println("Got none");
+        println(outside, "none");
         var("C") choice;
     } branch;
 
@@ -310,7 +311,7 @@ Choice: B
 
 Note that the `If` keyword begins with a capital `I`. You can use any number of `elif` parts, and optionally an `else` part. The clause (unlike in many other languages) must be terminated with a semicolon. The condition arguments to `If` and `elif` must be strings, and are considered true only if they are equal to "true".
 
-You can give the clause a name just before the semicolon; this will allow you to access objects within the branch that was taken - the example above does this when printing `branch.choice`.
+Code inside the clause can directly access objects above it, like the example accesses the variable `outside`. You can also give the clause a name just before the semicolon; this will allow you to access objects within the branch that was taken - the example above does this when printing `branch.choice`.
 
 The `If` clause is internally implemented as syntax sugar around the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/call2.c embcall2_multif()] statement (read on about templates and `call()` to see how that works).
 
