@@ -278,52 +278,38 @@ process device_service_y {
 
 }}}
 
-== Branching (simple) ==
+== Branching ==
 
-NCD does not provide any nested control structures, such as `if` and `for`, as found in many languages; instead, execution control is done with special-purpose statements.
-
-A simple way to branch is using [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/depend.c provide() and depend()] statements.
+NCD provides an `If` clause as a special kind of statement:
 
 {{{
-process test {
-   # We will be branching based on the value of 'x' here.
-   # If 'x' equals "foo", we go one way, else the other way.
-   var("bar") x;
+process main {
+    var("anything-but-true") x;
+    var("true") y;
 
-   # Produce a value which is either "true" or "false", indicating
-   # which way to branch.
-   strcmp(x, "foo") is_foo;
+    If (x) {
+        println("Got X");
+        var("A") choice;
+    } elif (y) {
+        println("Got Y");
+        var("B") choice;
+    } else {
+        println("Got none");
+        var("C") choice;
+    } branch;
 
-   # Branch ... and wait for the branch to finish.
-   provide("branch");
-   depend("branch_done") br;
-
-   # Print the message.
-   println(br.msg);
+    println("Choice: ", branch.choice);
 }
 
-process test_foo {
-   depend("branch") dep;
-   if(dep.is_foo); # if(cond): if cond="true", proceed; else block indefinitely
-
-   var("x was foo!") msg;
-
-   provide("branch_done");
-}
-
-process test_other {
-   depend("branch") dep;
-   ifnot(dep.is_foo); # ifnot(cond): if cond!="true", proceed; else block indefinitely
-
-   var("x was NOT foo!") msg;
-
-   provide("branch_done");
-}
+{{{
+$ badvpn-ncd --loglevel warning --config-file if_example.ncd
+Got Y
+Choice: B
 }}}
 
-However, this is an *inferior* way to branch, because the dependency names (`branch` and `branch_done`) have global scope. This means that each branch needs its unique set of dependency names, so as not to conflict with unrelated `provide()` and `depend()` statements.
+Note that the `If` keyword begins with a capital `I`. You can use any number of `elif` parts, and optionally an `else` part. The clause (unlike in many other languages) must be terminated with a semicolon. You can give the clause a name just before the semicolon; this will allow you to access objects within the branch that was taken - the example above does this when printing `branch.choice`.
 
-A proper way to branch is using the `call()` statement (read on).
+The `If` clause is internally implemented as syntax sugar around the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/call2.c embcall2_multif()] statement (read on about templates and `call()` to see how that works).
 
 == Process templates ==
 
