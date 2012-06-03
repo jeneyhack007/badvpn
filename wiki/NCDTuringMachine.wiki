@@ -144,4 +144,4 @@ Head state: "h"
 $ 
 }}}
 
-Note that the left side of the tape is reversed, both in input and output - the "B" printed above belongs to the far left of the tape.
+Note that the left side of the tape is printed in reverse (not relevant in this example).
