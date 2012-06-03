@@ -128,10 +128,6 @@ template turing {
         # Continue loop.
         loop_blk->downup();
     };
-
-    # Branch on whether we found a rule.
-    choose({{rule.exists, "turing_have_rule"}}, "<none>") func;
-    call(func, {});
 }
 }}}
 
