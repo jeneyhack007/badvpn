@@ -137,10 +137,10 @@ The Turing machine included in the example produces the following:
 
 {{{
 $ badvpn-ncd --loglevel warning --config-file ./turing.ncd
-Tape L: {"4", "B"}
-Tape R: {"3", "2", "2", "2"}
-Head position: {"left", "1"}
-Head state: "q9"
+Tape L: {"B"}
+Tape R: {"x", "x", "x", "x", "0", "0", "1", "1", "1", "1", "1", "1", "1", "1"}
+Head position: {"right", "3"}
+Head state: "h"
 $ 
 }}}
 
