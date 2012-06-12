@@ -70,7 +70,7 @@ The BadVPN server is configured entirely from command line.
 
 `--comm-predicate <string>`
 
-    Set a predicate to define which pairs of clients are allowed to commnicate. The predicate is a logical expression; see below for details. Available functions:
+    Set a predicate to define which pairs of clients are allowed to communicate. The predicate is a logical expression; see below for details. Available functions:
         # `p1name(<string>)`
             true if the TLS common name of peer 1 equals the given string. If TLS is not used, the common name is assumed to be an empty string.
         # `p1addr(<string>)`
