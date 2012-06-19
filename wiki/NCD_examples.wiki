@@ -67,7 +67,7 @@ process eth1 {
 }
 
 process NETCONF {
-    # Wait for some network connection. Prefer eth1 by putting it in 
+    # Wait for some network connection. Prefer eth1 by putting it in front of eth0.
     multidepend({"NET-eth1", "NET-eth0"}) ifdep;
 
     # Alias device values.
