@@ -57,7 +57,7 @@ process eth1 {
     var("192.168.111.116") addr;
     var("24") addr_prefix;
     var("192.168.111.1") gateway;
-    list("192.168.111.14", "193.2.1.66") dns_servers;
+    var({"192.168.111.14", "193.2.1.66"}) dns_servers;
 
     # Assign IP address.
     net.ipv4.addr(dev, addr, addr_prefix);
@@ -67,9 +67,8 @@ process eth1 {
 }
 
 process NETCONF {
-    # Wait for some network connection. Prefer eth1 by putting it in front of eth0.
-    list("NET-eth1", "NET-eth0") pnames;
-    multidepend(pnames) ifdep;
+    # Wait for some network connection. Prefer eth1 by putting it in 
+    multidepend({"NET-eth1", "NET-eth0"}) ifdep;
 
     # Alias device values.
     var(ifdep.dev) dev;
