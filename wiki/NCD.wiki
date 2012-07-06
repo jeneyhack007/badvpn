@@ -459,21 +459,30 @@ template do_x {
 
 == Foreach ==
 
-[http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/foreach.c foreach()] does something for each element of a list. It is mostly equivalent to putting multiple `call()` statements one after another, but it allows the elements to be specified dynamically in form of a list.
+[http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/foreach.c foreach()] does something for each element of a list or map. It is mostly equivalent to putting multiple `call()` statements one after another, but it allows the elements to be specified dynamically in form of a list.
 
 {{{
 process foo {
     var("World") world;
-    foreach({"A", "B", "C"}, "foreach_func", {"Hello", "Goodbye"});
+    foreach({"A", "B", "C"}, "foreach_func_list", {"Hello", "Goodbye"});
+    foreach(["a":"1", "b":"2"], "foreach_func_map", {"Hello", "Goodbye"});
     println("Everyone said hello!");
 }
 
-template foreach_func {
+template foreach_func_list {
     var(_arg0) hello;
     var(_arg1) goodbye;
 
     println(_elem, ": ", hello, _caller.world);
     rprintln(_elem, ": ", goodbye, _caller.world);
+}
+
+template foreach_func_map {
+    var(_arg0) hello;
+    var(_arg1) goodbye;
+
+    println(_key, "=", _val, ": ", hello, _caller.world);
+    rprintln(_key, "=", _val, ": ", goodbye, _caller.world);
 }
 }}}
 
@@ -483,14 +492,18 @@ This results in the following:
 A: HelloWorld
 B: HelloWorld
 C: HelloWorld
+a=1: HelloWorld
+b=2: HelloWorld
 Everyone said hello!
 < you hit CTRL+C >
+b=2: GoodbyeWorld
+a=1: GoodbyeWorld
 C: GoodbyeWorld
 B: GoodbyeWorld
 A: GoodbyeWorld
 }}}
 
-The template process created by `foreach()` for every element of the list can access its element using `_elem`. Additionally, like `call()`, it can access arguments passed to `foreach()`, and any variable or object `X` as seen from the point of `foreach()` via `_caller.X`.
+The template process created by `foreach()` for every element of the list can access the current element using `_elem`, or in case of a map using `_key` and `_val`. Additionally, like `call()`, it can access arguments passed to `foreach()`, and any variable or object `X` as seen from the point of `foreach()` via `_caller.X`.
 
 The template processes are managed by `foreach()` in the same way as the NCD interpreter initializes and deinitializes statements within a process. In particular, if a statement in one of the template processes goes down, `foreach()` will pause this process, deinitialize any following processes from the bottom up, and only then continue the process where a statement went down (assuming no prior statements went down).
 
