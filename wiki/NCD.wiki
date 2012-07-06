@@ -505,7 +505,7 @@ A: GoodbyeWorld
 
 The template process created by `foreach()` for every element of the list can access the current element using `_elem`, or in case of a map using `_key` and `_val`. Additionally, like `call()`, it can access arguments passed to `foreach()`, and any variable or object `X` as seen from the point of `foreach()` via `_caller.X`.
 
-Maps are iterated in their implicitly defined order, which depends only on the contents (keys and values) in the map. In particular, the entries of a map are ordered lexicographically by (key, value), where keys and values are ordered according to [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/valuemetic.c the usual way].
+Maps are iterated in their implicitly defined order, which depends only on the contents (keys and values) in the map. In particular, the entries of a map are ordered lexicographically by (key, value), where keys and values are ordered [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/valuemetic.c the usual way].
 
 The template processes are managed by `foreach()` in the same way as the NCD interpreter initializes and deinitializes statements within a process. In particular, if a statement in one of the template processes goes down, `foreach()` will pause this process, deinitialize any following processes from the bottom up, and only then continue the process where a statement went down (assuming no prior statements went down).
 
