@@ -675,6 +675,25 @@ process foo {
 
 However, this only applies when referred name within an object (`length` in the case above) is a "final" variable, rather than just pointing to another object. E.g. it is safe to refer to objects within a `call()` statement.
 
+In general, aliases can be used to specify the arguments a process template takes. As was just demonstrated, they can simulate passing objects, but can also serve as a more efficient alternative to `var()` for passing non-object arguments:
+
+{{{
+process main {
+    list("foobar") list;
+    call("do_something", {"foo", "bar", "_caller.list"}) c;
+    println(c.result);
+}
+
+template do_something {
+    alias("_arg0") s1;
+    alias("_arg1") s2;
+    alias(_arg2) list;
+
+    concat(s1, s2) s;
+    list->contains(s) result;
+}
+}}}
+
 == Multi-dependencies ==
 
 The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/multidepend.c multiprovide() and multidepend()] statements implement dependencies similar to `provide()` and `depend()`. Contrary to `provide()`, which will shout errors if another `provide()` for the same name is already active, it is possible to have multiple parallel `multiprovide()`s satisfying a single `multidepend()`. On the other side, a `multidepend()` will always attempt to bind itself to one of the `multiprovide()`s that satisfy it. It will always choose the best one based on its preference list, possibly un-binding itself from an existing `multiprovide()`.
