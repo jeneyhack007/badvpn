@@ -525,6 +525,38 @@ template wait_device {
 }
 }}}
 
+NCD also provides the `Foreach` clause which does not require explicitly creating a process template:
+
+{{{
+process main {
+    var({"A", "B", "C"}) list;
+    value(["a":"1", "b":"2"]) map;
+
+    # Iterate list elements.
+    Foreach (list As elem) {
+        println(elem);
+    };
+
+    # Iterate list elements and indices (zero-based).
+    Foreach (list As index:elem) {
+        println("at ", index, ": ", elem);
+    };
+
+    # Iterate map keys.
+    Foreach (map As key) {
+        map->get(key) val; # use value::get() to retrieve the value
+        println("key=", key, " val=", val);
+    };
+
+    # Iterate map keys and values.
+    Foreach (map As key:val) {
+        println("key=", key, " val=", val);
+    };
+}
+}}}
+
+The `Foreach` clause behaves very similarly to the `foreach()` statement. In particular, when `Foreach` is finished, there is a fully initialized process corresponding to each iteration step. In fact, `Foreach` is internally implemented by translating into the `foreach_emb()` clause.
+
 == Method-like statements ==
 
 Note how the arguments of statements in NCD are restricted to plain data, and there is no concept of a reference to an object. Sometimes, however, it is needed for two or more statements to cooperate in their implementation, and you might need to tell one statement which existing related statement to cooperate with.
