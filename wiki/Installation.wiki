@@ -18,11 +18,11 @@ Then sync with `cave sync x-badvpn`.
 
 = Arch =
 
-Use the `badvpn` package from AUR: https://aur.archlinux.org/packages.php?ID=48249
+Use the [https://aur.archlinux.org/packages.php?ID=48249 AUR package].
 
 = Ubuntu =
 
-BadVPN builds are available in this PPA: https://launchpad.net/~ambrop7/+archive/badvpn/+packages
+BadVPN builds are available [https://launchpad.net/~ambrop7/+archive/badvpn/+packages in a PPA].
 
 To install BadVPN from this PPA, run as root:
 {{{
@@ -33,4 +33,4 @@ apt-get install badvpn
 
 = Compiling from source =
 
-See http://code.google.com/p/badvpn/source/browse/trunk/INSTALL
+See [http://code.google.com/p/badvpn/source/browse/trunk/INSTALL INSTALL].
