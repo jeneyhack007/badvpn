@@ -114,3 +114,33 @@ template events_input_event_power {
 }}}
 
 *WARNING*: you should pass `--loglevel warning` to NCD to avoid spamming the terminal or system log with tens of lines every time the mouse is moved or key pressed, and to avoid wasting CPU building the log messages.
+
+For completeness, here's an example volume script, which you should place at `/usr/local/bin/volumekey`. It should be made executable, and the card name should be adjusted (look at the symlinks in `/proc/asound`).
+
+{{{
+#!/bin/bash
+
+CARD=Intel
+CHANNEL=Master
+INCREMENT=4%
+
+KEY=$1
+
+MUTED=no
+amixer -c "${CARD}" get "${CHANNEL}" | grep '\[off\]' >/dev/null
+[[ $? = 0 ]] && MUTED=yes
+
+if [[ $KEY = up ]] || [[ $KEY = down ]]; then
+        if [[ $MUTED = yes ]]; then
+                amixer -c "${CARD}" set "${CHANNEL}" unmute
+        else
+                if [[ $KEY = up ]]; then
+                        amixer -c "${CARD}" set "${CHANNEL}" "${INCREMENT}"+
+                else
+                        amixer -c "${CARD}" set "${CHANNEL}" "${INCREMENT}"-
+                fi
+        fi
+elif [[ $KEY = mute ]]; then
+        amixer -c "${CARD}" set "${CHANNEL}" mute
+fi
+}}}
