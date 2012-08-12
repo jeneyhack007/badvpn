@@ -187,8 +187,8 @@ template wlan_config {
     alias("_arg0") ssid;
 
     # Compare SSID to known ones.
-    strcmp(ssid, "Some Network") is_home1;
-    strcmp(ssid, "Other Network") is_home2;
+    val_equal(ssid, "Some Network") is_home1;
+    val_equal(ssid, "Other Network") is_home2;
 
     # Branch.
     If (is_home1) {
@@ -319,41 +319,20 @@ process main {
     println("interface event: ", watcher.event_type, " ", watcher.devname, " ", watcher.bus);
 
     # Determine event type.
-    strcmp(watcher.event_type, "added") is_added;
-    strcmp(watcher.event_type, "removed") is_removed;
+    val_equal(watcher.event_type, "added") is_added;
+    val_equal(watcher.event_type, "removed") is_removed;
 
     # Dispatch.
-    provide("interface_event");
+    If (is_added) {
+        var({watcher.devname, watcher.bus}) args;
+        manager->start(watcher.devname, "interface", args);
+    }
+    elif (is_removed) {
+        manager->stop(watcher.devname);
+    };
 
-    # Handle unknown events.
-    ifnot(is_added);
-    ifnot(is_removed);
+    # Next event.
     watcher->nextevent();
-}
-
-process interface_event_added {
-    # Wait for added event.
-    depend("interface_event") dep;
-    if(dep.is_added);
-
-    # Start process from template "interface".
-    list(dep.watcher.devname, dep.watcher.bus) args;
-    dep.manager->start(dep.watcher.devname, "interface", args);
-
-    # Next event.
-    dep.watcher->nextevent();
-}
-
-process interface_event_removed {
-    # Wait for removed event.
-    depend("interface_event") dep;
-    if(dep.is_removed);
-
-    # Stop process.
-    dep.manager->stop(dep.watcher.devname);
-
-    # Next event.
-    dep.watcher->nextevent();
 }
 
 template interface {
@@ -365,7 +344,7 @@ template interface {
     # to interface global processes dealing with those interfaces.
 
     # Ignore devices with unknown buses.
-    strcmp(bus, "unknown") is_unknown;
+    val_equal(bus, "unknown") is_unknown;
     ifnot(is_unknown);
 
     # Build provide name.
