@@ -162,14 +162,9 @@ process wlan {
     # wpa_supplicant exposes the 'bssid' and 'ssid' variables.
     println("Connected to wireless network: bssid=", sup.bssid, " ssid=", sup.ssid);
 
-    # Choose configuration.
-    # These have to be exclusive, or we activate multiple configurations at once...
-    strcmp(sup.ssid, "Some Network") is_home1;
-    strcmp(sup.ssid, "Other Network") is_home2;
-
-    # Configure interface.
-    provide("WLAN_CONFIG");
-    depend("WLAN_CONFIG_DONE") config;
+    # Call configuration, pass SSID as argument.
+    call("wlan_config", {sup.ssid}) config;
+    alias("config.config") config;
 
     # Print configuration name.
     println("Using wireless configuration: ", config.config_name);
@@ -189,53 +184,39 @@ process wlan {
     run(do, undo);
 }
 
-process wlan_home1 {
-    depend("WLAN_CONFIG") wdep;
-    if(wdep.is_home1);
+template wlan_config {
+    # First argument in call() is SSID.
+    alias("_arg0") ssid;
 
-    var("Home 1") config_name;
+    # Compare SSID to known ones.
+    strcmp(ssid, "Some Network") is_home1;
+    strcmp(ssid, "Other Network") is_home2;
 
-    # Static configuration.
-    var("192.168.8.96") addr;
-    var("24") addr_prefix;
-    var("192.168.8.1") gateway;
-    list("192.168.8.1") dns_servers;
-
-    provide("WLAN_CONFIG_DONE");
-}
-
-process wlan_home2 {
-    depend("WLAN_CONFIG") wdep;
-    if(wdep.is_home2);
-
-    var("Home 2") config_name;
-
-    # Static configuration.
-    var("192.168.6.57") addr;
-    var("24") addr_prefix;
-    var("192.168.6.1") gateway;
-    list("192.168.6.1") dns_servers;
-
-    provide("WLAN_CONFIG_DONE");
-}
-
-process wlan_default {
-    depend("WLAN_CONFIG") wdep;
-    ifnot(wdep.is_home1);
-    ifnot(wdep.is_home2);
-
-    var("Default") config_name;
-
-    # DHCP configuration.
-    net.ipv4.dhcp(wdep.dev) dhcp;
-    ip_in_network(dhcp.addr, "127.0.0.0", "8") test_local;
-    ifnot(test_local);
-    var(dhcp.addr) addr;
-    var(dhcp.prefix) addr_prefix;
-    var(dhcp.gateway) gateway;
-    var(dhcp.dns_servers) dns_servers;
-
-    provide("WLAN_CONFIG_DONE");
+    # Branch.
+    If (is_home1) {
+        var("Home 1") config_name;
+        var("192.168.8.96") addr;
+        var("24") addr_prefix;
+        var("192.168.8.1") gateway;
+        list("192.168.8.1") dns_servers;
+    }
+    elif (is_home2) {
+        var("Home 2") config_name;
+        var("192.168.6.57") addr;
+        var("24") addr_prefix;
+        var("192.168.6.1") gateway;
+        list("192.168.6.1") dns_servers;
+    }
+    else {
+        var("Default DHCP") config_name;
+        net.ipv4.dhcp(wdep.dev) dhcp;
+        ip_in_network(dhcp.addr, "127.0.0.0", "8") test_local;
+        ifnot(test_local);
+        var(dhcp.addr) addr;
+        var(dhcp.prefix) addr_prefix;
+        var(dhcp.gateway) gateway;
+        var(dhcp.dns_servers) dns_servers;
+    } config;
 }
 }}}
 
