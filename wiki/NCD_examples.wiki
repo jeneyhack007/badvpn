@@ -196,14 +196,14 @@ template wlan_config {
         var("192.168.8.96") addr;
         var("24") addr_prefix;
         var("192.168.8.1") gateway;
-        list("192.168.8.1") dns_servers;
+        var({"192.168.8.1"}) dns_servers;
     }
     elif (is_home2) {
         var("Home 2") config_name;
         var("192.168.6.57") addr;
         var("24") addr_prefix;
         var("192.168.6.1") gateway;
-        list("192.168.6.1") dns_servers;
+        var({"192.168.6.1"}) dns_servers;
     }
     else {
         var("Default DHCP") config_name;
