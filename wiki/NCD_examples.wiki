@@ -118,8 +118,7 @@ process wlan {
 
     # Connect to wireless network.
     # NOTE: you may need /sbin/wpa_supplicant instead of /usr/sbin/wpa_supplicant (Ubuntu for example)!
-    list() args;
-    net.backend.wpa_supplicant(dev, "/etc/wpa_supplicant/all.conf", "/usr/sbin/wpa_supplicant", args);
+    net.backend.wpa_supplicant(dev, "/etc/wpa_supplicant/all.conf", "/usr/sbin/wpa_supplicant", {});
 
     # DHCP configuration.
     net.ipv4.dhcp(dev) dhcp;
@@ -156,8 +155,7 @@ process wlan {
 
     # Connect to wireless network.
     # NOTE: you may need /sbin/wpa_supplicant instead of /usr/sbin/wpa_supplicant (Ubuntu for example)!
-    list() args;
-    net.backend.wpa_supplicant(dev, "/etc/wpa_supplicant/all.conf", "/usr/sbin/wpa_supplicant", args) sup;
+    net.backend.wpa_supplicant(dev, "/etc/wpa_supplicant/all.conf", "/usr/sbin/wpa_supplicant", {}) sup;
 
     # wpa_supplicant exposes the 'bssid' and 'ssid' variables.
     println("Connected to wireless network: bssid=", sup.bssid, " ssid=", sup.ssid);
