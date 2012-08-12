@@ -72,6 +72,7 @@ process lan {
 
     # Check IP address - make sure it's not local.
     # If you have other reserved subnets around, check for those too.
+    # ifnot() does nothing if argument is "true", waits forever otherwise.
     ip_in_network(dhcp.addr, "127.0.0.0", "8") test_local;
     ifnot(test_local);
 
