@@ -1,3 +1,9 @@
+= Permissions =
+
+On Linux and other unix-like systems, it is preferable if both `badvpn-client` and `badvpn-server` run a seperate users with limited privileges. Each program will only need read access to its corresponding NSS database (if SSL/certificates are being used), and preferably no write access to avoid accidental (or malicious) corruption of the database.
+
+On Gentoo, a user `badvpn` will be automatically created for `badvpn-client`, and the `badvpn-server` init script will use this user by default. However, for `badvpn-server`, no init script and user are available; you should use [NCD] or a custom solution to start and restart the client automatically when it exits due to connection problems.
+
 = Setting up certificates =
 
 If you want to use TLS for server connections (recommended), the server and all the peers will
