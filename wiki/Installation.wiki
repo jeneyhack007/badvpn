@@ -2,7 +2,7 @@
 
 = Gentoo =
 
-The BadVPN package is available in the Portage tree as `net-misc/badvpn`.
+The BadVPN package is available in the Portage tree as [http://packages.gentoo.org/package/net-misc/badvpn net-misc/badvpn].
 
 = Arch =
 
