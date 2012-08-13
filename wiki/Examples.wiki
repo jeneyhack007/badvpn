@@ -2,7 +2,7 @@
 
 On Linux and other unix-like systems, it is preferable if both `badvpn-client` and `badvpn-server` programs run as seperate user accounts with limited privileges. Each program will only need read access to its corresponding NSS database (if SSL/certificates are being used), and preferably no write access to avoid accidental (or malicious) corruption of the databases.
 
-On Gentoo, a user `badvpn` will be automatically created for `badvpn-server`, and the `badvpn-server` init script will use this user by default. However, for `badvpn-server`, no init script and user are available; you should use [NCD] or a custom solution to start and restart the client automatically when it exits due to connection problems. Of course you can also use NCD to start the server via the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/daemon.c daemon()] command.
+On Gentoo, a user `badvpn` will be automatically created for `badvpn-server`, and the `badvpn-server` init script will use this user by default. However, for `badvpn-client`, no init script and user account is created; you should use [NCD] and the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/net_backend_badvpn.c net.backend.badvpn()] command, or a custom solution to start and restart the client automatically when it exits due to connection problems. Of course you can also use NCD to start the server via the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/daemon.c daemon()] command.
 
 = Setting up certificates =
 
