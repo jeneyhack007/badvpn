@@ -1,4 +1,4 @@
-#summary NCD - powerful and extensible network interface configuration
+#summary NCD - scripting language for network configuration and much more
 #labels linux,network,interface,configuration,hotplug,dhcp,flexible,powerful
 
 = Contents =
