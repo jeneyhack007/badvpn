@@ -1011,7 +1011,7 @@ template exists_false {
 }
 }}}
 
-So far we have only seen how value() allows examination of existing values. However, an important feature of value() is in-place modification. The following example demonstrates some simple ways to modify values.
+So far we have only seen how value() allows examination of existing values. However, an important feature of value() is in-place modification. The following example demonstrates some simple ways to modify value objects.
 
 {{{
 process main {
