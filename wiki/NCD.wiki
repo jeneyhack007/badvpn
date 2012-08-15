@@ -1008,3 +1008,35 @@ template exists_false {
     # it was the result of get().
 }
 }}}
+
+So far we have only seen how value() allows examination of existing values. However, an important feature of value() is in-place modification. The following example demonstrates this.
+
+{{{
+process main {
+    # Build a list value.
+    value({"A", "B", "C"}) v;
+
+    # Insert A2 to position 1.
+    v->insert("1", "A2");
+    to_string(v) str;
+    println(str); # {"A", "A2", "B", "C"}
+
+    # Replace element at position 2 with B2.
+    v->replace("2", "B2");
+    to_string(v) str;
+    println(str); # {"A", "A2", "B2", "C"}
+
+    # Remove element at position 0.
+    v->remove("0");
+    to_string(v) str;
+    println(str); # {"A2", "B2", "C"}
+
+    # Maps work similarly, except that keys are used
+    # in place of indices, and insert() and replace()
+    # are identical.
+    value(["k1":"v1", "k2":"v2"]) v;
+    v->replace("k1", "v1_changed");
+    to_string(v) str;
+    println(str); # ["k1":"v1_changed", "k2":"v2"]
+}
+}}}
