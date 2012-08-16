@@ -189,7 +189,7 @@ $
 
 == Running external programs ==
 
-The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/run.c run()] statement runs some command on initialization, waiting for it to complete, and also runs another command on deinitialization. If the initialization command fails, the run() statement reports an error, triggering the interpreter to retry it after some seconds. The following example demonstrates using run() to manipulate Linux bridge devices. It first creates a bridge `br0`, then proceeds to make sure that the device `eth0` is in the bridge when it exists (it can be a USB network interface which can be plugged in and out).
+The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/run.c run()] statement runs some command on initialization, waiting for it to complete, and also runs another command on deinitialization. If the initialization command fails, the `run()` statement reports an error, triggering the interpreter to retry the statement after some seconds. The following example demonstrates using `run()` to manipulate Linux bridge devices using the [http://linux.die.net/man/8/brctl brctl] program. It first creates a bridge `br0`, then proceeds to make sure that the device `eth0` is in the bridge whenever it exists (it can be a USB network interface that is plugged in and out regularly, and we want to handle this).
 
 {{{
 process main {
@@ -197,6 +197,7 @@ process main {
     var("eth0") port_dev;
 
     # Create the bridge (and destroy it on deinit).
+    # NOTE: the full path to the executable must be provided.
     run({"/sbin/brctl", "addbr", bridge_dev},
         {"/sbin/brctl", "delbr", bridge_dev});
 
@@ -210,7 +211,18 @@ process main {
 }
 }}}
 
-If we wanted to add two or more devices to the bridge, the `provide()` an `depend()` statements, described in the next section, should be used so we could work with each device independently of the others. 
+If we wanted to add two or more devices to the bridge, the `provide()` an `depend()` statements (described in the next section) should be used so we could work with each device independently of the others.
+
+Another command that runs external programs is [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/runonce.c runonce()]. Comparet to `run()`, `runonce()` takes a single command which it runs on initialization, and the statement goes up as soon as the command terminates, successfully or not. The exit status of the command is exposed via the `exit_status` variable, which is either the non-negative exit code of the program (if the program terminated normally), or -1 (if the program terminated with a signal). When `runonce()` is requested to deinitialize, it will wait for the command to terminate if it hasn't yet (but by default it will not send any signal).
+
+{{{
+process main {
+    runonce({"/bin/ping", "-c1", "-w5", "www.google.com"}) run;
+    println("Exit status: ", run.exit_status);
+}
+}}}
+
+In order to do something useful with the exit status, the `If` clause or other ways of branching may be used (discussed later).
 
 == Dependencies ==
 
