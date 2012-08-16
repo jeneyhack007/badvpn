@@ -187,6 +187,8 @@ Goodbye World!
 $ 
 }}}
 
+*NOTE*: these printing commands will currently block the entire interpreter, so be careful when the standard output is slow or goes via the network. Also, the commands ignore any errors writing to standard output, so they should not be used to produce files via redirection.
+
 == Running external programs ==
 
 The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/run.c run()] statement runs some command on initialization, waiting for it to complete, and also runs another command on deinitialization. If the initialization command fails, the `run()` statement reports an error, triggering the interpreter to retry the statement after some seconds. The following example demonstrates using `run()` to manipulate Linux bridge devices using the [http://linux.die.net/man/8/brctl brctl] program. It first creates a bridge `br0`, then proceeds to make sure that the device `eth0` is in the bridge whenever it exists (it can be a USB network interface that is plugged in and out regularly, and we want to handle this).
