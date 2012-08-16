@@ -208,6 +208,10 @@ process main {
     # it stops existing or we're quitting).
     run({"/sbin/brctl", "addif", bridge_dev, port_dev},
         {"/sbin/brctl", "delif", bridge_dev, port_dev});
+
+    # NOTE: this is just a sample. To be useful, the bridge
+    # and port also need to be set up using net.up(), and more
+    # than one port needs to be added.
 }
 }}}
 
