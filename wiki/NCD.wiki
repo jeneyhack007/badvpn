@@ -224,6 +224,17 @@ process main {
 
 In order to do something useful with the exit status, the `If` clause or other ways of branching may be used (discussed later). Also, if the above program is requested to terminate while the ping is in progress, `runonce()` will wait for the ping to complete, which may not be desired. The `term_on_deinit` option of `runonce()` can be used to make it send `SIGTERM` to the ping process and cause it to exit early.
 
+There is one more way to run external programs from NCD: the [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/daemon.c daemon()] statement. Unlike `run()` and `runonce()`, `daemon()` will only spawn the child process and go up immediately without waiting for it to terminate. If the process does terminate, it will wait some time (10 seconds, currently hardcoded) and start it again; and it will do so without going down. When `daemon()` is requested to terminate, it will send SIGTERM to the child process and wait for it to terminate (unless it terminated itself and hasn't yet been restarted). The following example demonstrates using `daemon()` to start `sshd`:
+
+{{{
+process sshd {
+        # Make sure the daemon we're starting doesn't daemonize itself
+        # by forking, and instead just does its job. For sshd, the -D
+        # option ensures that.
+        daemon({"/usr/sbin/sshd", "-D"});
+}
+}}}
+
 == Dependencies ==
 
 The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/depend.c provide() and depend()] statements implement dependencies.
