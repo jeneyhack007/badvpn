@@ -1,5 +1,5 @@
 #summary NCD - scripting language for network configuration and much more
-#labels linux,network,interface,configuration,hotplug,dhcp,flexible,powerful
+#labels network,interface,configuration,hotplug,dhcp,flexible,powerful
 
 = Contents =
 
@@ -186,6 +186,31 @@ Shutting down, please wait...
 Goodbye World!
 $ 
 }}}
+
+== Running external programs ==
+
+The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/run.c run()] statement runs some command on initialization, waiting for it to complete, and also runs another command on deinitialization. If the initialization command fails, the run() statement reports an error, triggering the interpreter to retry it after some seconds. The following example demonstrates using run() to manipulate Linux bridge devices. It first creates a bridge `br0`, then proceeds to make sure that the device `eth0` is in the bridge when it exists (it can be a USB network interface which can be plugged in and out).
+
+{{{
+process main {
+    var("br0") bridge_dev;
+    var("eth0") port_dev;
+
+    # Create the bridge (and destroy it on deinit).
+    run({"/sbin/brctl", "addbr", bridge_dev},
+        {"/sbin/brctl", "delbr", bridge_dev});
+
+    # Wait for the port device to start existing.
+    net.backend.waitdevice(port_dev);
+
+    # Add port device to the bridge (and remove it when
+    # it stops existing or we're quitting).
+    run({"/sbin/brctl", "addif", bridge_dev, port_dev},
+        {"/sbin/brctl", "delif", bridge_dev, port_dev});
+}
+}}}
+
+If we wanted to add two or more devices to the bridge, the `provide()` an `depend()` statements, described in the next section, should be used so we could work with each device independently of the others. 
 
 == Dependencies ==
 
