@@ -222,7 +222,7 @@ process main {
 }
 }}}
 
-In order to do something useful with the exit status, the `If` clause or other ways of branching may be used (discussed later).
+In order to do something useful with the exit status, the `If` clause or other ways of branching may be used (discussed later). Also, if the above program is requested to terminate while the ping is in progress, `runonce()` will wait for the ping to complete, which may not be desired. The `term_on_deinit` option of `runonce()` can be used to make it send `SIGTERM` to the ping process and cause it to exit early.
 
 == Dependencies ==
 
