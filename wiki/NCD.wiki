@@ -148,6 +148,8 @@ To have NCD start on boot:
   * Arch: Enable the `/etc/rc.d/badvpn-ncd` init script by adding it to `DAEMONS` in `/etc/rc.conf`. Make sure it comes after syslog.
   * Ubuntu: Use the `/etc/init/badvpn-ncd.conf` Upstart script. The script is disabled by default; the `start on` line inside it is commented out. Uncomment it to have it start on boot. However be aware that `apt-get` will start it regardless when it installs the `badvpn` package (the default `/etc/ncd.conf` is a no-op to avoid damage here). You can also manually control the service using `initctl <start/stop/restart/status> badvpn-ncd`. 
 
+*NOTE*: in Gentoo, starting the NCD init script may implicitly start some other unwanted script such as `dhcpcd` or `NetworkManager`. This is because the NCD script has `need net` to make sure the local interface has been set up. To avoid starting unwanted scripts, this can be added to `/etc/conf.d/net`: `rc_net_lo_provide="net"`.
+
 = Module documentation =
 
 Individual statement types (modules) are described briefly in the headers of their source files, under ncd/modules/ in the BadVPN source code: http://code.google.com/p/badvpn/source/browse/#svn%2Ftrunk%2Fncd%2Fmodules .
