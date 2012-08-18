@@ -564,7 +564,7 @@ The template process created by `foreach()` for every element of the list can ac
 
 Maps are always iterated as if they were sorted by keys; the order of the keys is [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/valuemetic.c the usual value order].
 
-The template processes are managed by `foreach()` in the same way as the NCD interpreter initializes and deinitializes statements within a process. Because explaining exactly how `foreach()` behaves would require understanding the internal design of the interpreter, let's just say again that it behaves as if it was replaced by a sequence of `call()` commands, one for each element of the list or map - including reactions to statements that go down.
+The template processes are managed by `foreach()` in the same way as the NCD interpreter initializes and deinitializes statements within a process. Because explaining exactly how `foreach()` behaves would require understanding the internal design of the interpreter, let's just say again that it behaves as if it was replaced with a sequence of `call()` commands, one for each element of the list or map - including reactions to statements that go down.
 
 This means that you can use `foreach()` to acquire a set of resources at once. For example, to wait for to all network interfaces on a list to appear:
 
