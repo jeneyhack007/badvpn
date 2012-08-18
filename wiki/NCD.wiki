@@ -219,7 +219,7 @@ process main {
 
 To add more than one device to the bridge, the `provide()` an `depend()` statements (described in the next section) should be used so we could work with each device independently of the others.
 
-Another command that runs external programs is [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/runonce.c runonce()]. Comparet to `run()`, `runonce()` takes a single command which it runs on initialization, and the statement goes up as soon as the command terminates, successfully or not. The exit status of the command is exposed via the `exit_status` variable, which is either the non-negative exit code of the program (if the program terminated normally), or -1 (if the program terminated with a signal). When `runonce()` is requested to deinitialize, it will wait for the command to terminate if it hasn't yet (but by default it will not send any signal).
+Another command that runs external programs is [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/runonce.c runonce()]. Compared to `run()`, `runonce()` takes a single command which it runs on initialization, and the statement goes up as soon as the command terminates, successfully or not. The exit status of the command is exposed via the `exit_status` variable, which is either the non-negative exit code of the program (if the program terminated normally), or -1 (if the program terminated with a signal). When `runonce()` is requested to deinitialize, it will wait for the command to terminate if it hasn't yet (but by default it will not send any signal).
 
 {{{
 process main {
