@@ -516,7 +516,7 @@ template do_x {
 
 == Foreach ==
 
-[http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/foreach.c foreach()] does something for each element of a list or map. It is mostly equivalent to putting multiple `call()` statements one after another, but it allows the elements to be specified dynamically in form of a list.
+[http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/foreach.c foreach()] does something for each element of a list or map. It is mostly equivalent to putting multiple `call()` statements one after another, but it allows the elements to be specified dynamically.
 
 {{{
 process foo {
