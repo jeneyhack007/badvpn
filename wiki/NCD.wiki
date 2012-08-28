@@ -1145,16 +1145,22 @@ process main {
 
     # Use blocker. This blocks until the process below
     # puts the blocker into up state.
+    # It also goes back down when the proces puts the
+    # blocker back into down state.
     blk->use();
 
     println("This happens after 1 second.");
+    rprintln("This is printed after 2 seconds.");
 }
 
 process unblock_timer {
     depend("start_unblock_timer") dep;
     sleep("1000", "0");
     dep.blk->up();
+    sleep("1000", "0");
+    dep.blk->down();
 }
+
 }}}
 
 The `downup()` method can be used to atomically put the blocker down and back up. This can be used to implement a loop.
@@ -1177,7 +1183,7 @@ process main {
 
     # Atomically put blocker down and back up.
     # This makes the use() statement go down and immediately back up,
-    # restarting anything  that follows it.
+    # restarting anything that follows it.
     blk->downup();
 }
 }}}
