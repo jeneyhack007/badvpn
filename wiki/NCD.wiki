@@ -87,7 +87,7 @@ process lan {
 }
 }}}
 
-The above code, when read from top to bottom, simply specifies which operations are to be performed in order to reach the desired state. However note that each NCD program has an implicit deinitialization semantic. Here, for instance, pulling the network cable out will **automatically** remove the DNS servers, remove the default route and remove the IP address from the network interface.
+The above code, when read from top to bottom, simply specifies which operations are to be performed in order to reach the desired state. However note that each NCD program has an implicit deinitialization semantic. Here, for instance, pulling the network cable out will **automatically** remove the DNS servers, remove the default route and remove the IP address from the network interface; as will the DHCP lease timing out.
 
 = More examples =
 
