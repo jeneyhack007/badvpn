@@ -1127,8 +1127,8 @@ process main {
     # Put the blocker into up state.
     blk->up();
 
-    # Use blocker. In this case, this does nothing and execution
-    # proceeds, because the blocker is in up date.
+    # Use blocker. This time, however, execution will
+    # proceed immediately because the blocker is in up date.
     blk->use();
 
     println("This always happens.");
@@ -1145,7 +1145,7 @@ process main {
 
     # Use blocker. This blocks until the process below
     # puts the blocker into up state.
-    # It also goes back down when the proces puts the
+    # It also goes back down when the process puts the
     # blocker back into down state.
     blk->use();
 
