@@ -1188,7 +1188,7 @@ process main {
 }
 }}}
 
-The following script uses [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/sys_watch_directory.c sys.watch_directory()] to receive directory change notifications, and runs an update script every time the directory changes. It delays an update 1 second after a change occurs, and also restarts the update if something changed during it. It used a blocker to help implement these semantics.
+The following script uses [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/sys_watch_directory.c sys.watch_directory()] to receive directory change notifications, and runs an update script every time the directory changes. It delays an update 1 second after a change occurs, and also restarts the update if something changed during it. It uses a blocker to help implement these semantics.
 
 {{{
 process watcher {
