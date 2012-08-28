@@ -1101,3 +1101,145 @@ process main {
     println(str); # ["k1":"v1_changed", "k2":"v2"]
 }
 }}}
+
+== Blockers ==
+
+The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/blocker.c blocker()] module provides a statement whose up/down state can be changed imperatively.
+
+{{{
+process main {
+    # Create blocker. This does nothing by itself.
+    blocker() blk;
+
+    # Use blocker. In this case, this will wait forever
+    # because the blocker is initialized in down state.
+    blk->use();
+
+    println("This never happens.");
+}
+}}}
+
+{{{
+process main {
+    # Create blocker.
+    blocker() blk;
+
+    # Put the blocker into up state.
+    blk->up();
+
+    # Use blocker. Now, this does nothing and execution
+    # proceeds, because the blocker is in up date.
+    blk->use();
+
+    println("This always happens.");
+}
+}}}
+
+{{{
+process main {
+    # Create blocker.
+    blocker() blk;
+
+    # Wake up the process below.
+    provide("start_unblock_timer");
+
+    # Use blocker. This blocks until the process below
+    # puts the blocker into up state.
+    blk->use();
+
+    println("This happens after 1 second.");
+}
+
+process unblock_timer {
+    depend("start_unblock_timer") dep;
+    sleep("1000", "0");
+    dep.blk->up();
+}
+}}}
+
+{{{
+process main {
+    # Create blocker.
+    blocker() blk;
+
+    # Set blocker to up state.
+    blk->up();
+
+    # Use blocker.
+    blk->use();
+
+    println("This happens about every 1 second.");
+
+    # Sleep one second.
+    sleep("1000", "0");
+
+    # Atomically put blocker down and back up.
+    # This makes the use() statement go down and immediately back up,
+    # restarting anything  that follows it.
+    blk->downup();
+}
+}}}
+
+The following script uses [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/sys_watch_directory.c sys.watch_directory()] to receive directory change notifications, and runs an update script every time the directory changes. It delays an update 1 second after a change occurs, and also restarts the update if something changed during it. It used a blocker to help implement these semantics.
+
+{{{
+process watcher {
+    # Blocker object used to trigger an update.
+    blocker() blk;
+
+    # State: updating - if updater script is running
+    #        updating_dirty - if something changed while
+    #                         script was running
+    var("false") updating;
+    var("false") updating_dirty;
+
+    # Start update process.
+    spawn("updater", {});
+
+    # Wait for directory event.
+    sys.watch_directory("/home/ambro") watcher;
+
+    # Print event details (e.g. "added somefile").
+    println(watcher.filename, " ", watcher.event_type);
+
+    # If updating is in progress, mark dirty.
+    If (updating) {
+        updating_dirty->set("true");
+    };
+
+    # Request update. This makes use() proceed forward.
+    blk->up();
+
+    # Wait for next event (execution moves up).
+    watcher->nextevent();
+}
+
+template updater {
+    # Wait for update request.
+    _caller.blk->use();
+
+    # Wait some time.
+    sleep("1000", "0");
+
+    # We're about to start update script - set updating
+    # variable and mark as non dirty.
+    _caller.updating_dirty->set("false");
+    _caller.updating->set("true");
+
+    println("Update started");
+    sleep("3000", "0");
+    #runonce({"/bin/echo", "Updater speaking"}, {"keep_stdout", "keep_stderr"});
+    println("Update finished");
+
+    # No longer running update script.
+    _caller.updating->set("false");
+
+    # If something changed while script was running, restart
+    # update; else wait for next update request.
+    If (_caller.updating_dirty) {
+        _caller.blk->downup();
+    } else {
+        _caller.blk->down();
+    };
+}
+}}}
