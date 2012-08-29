@@ -1235,8 +1235,7 @@ template updater {
     _caller.updating->set("true");
 
     println("Update started");
-    sleep("3000", "0");
-    #runonce({"/bin/echo", "Updater speaking"}, {"keep_stdout", "keep_stderr"});
+    runonce({"/bin/echo", "Updater speaking"}, {"keep_stdout", "keep_stderr"});
     println("Update finished");
 
     # No longer running update script.
