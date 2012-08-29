@@ -1252,4 +1252,4 @@ template updater {
 }
 }}}
 
-However, be careful: if the update script changes files inside the directory being watched, this will result in constant updating.
+However, be careful: if the update script changes files inside the directory being watched, this will result in constant updating. If the script really must change files in the watched directory, the watcher process should be changed to ignore changes of files which the script touches, possibly using [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/regex_match.c regex_match()].
