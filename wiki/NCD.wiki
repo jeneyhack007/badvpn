@@ -109,7 +109,13 @@ NCD requires various programs during execution. In particular:
 
 = Running it =
 
-For installation instructions see [Installation].
+For installation instructions see [Installation]. If you want to build NCD from source without any other part of the BadVPN package (the VPN, tun2socks) and therefore without a dependency on NSS or OpenSSL, run cmake like that:
+
+{{{
+cmake <path_to_source> -DBUILD_NOTHING_BY_DEFAULT=1 -DBUILD_NCD=1
+}}}
+
+Anyway, no matter how you build it, NCD will not be linked to any library except the system libraries, avoiding any breakages resulting from library upgrades.
 
 == Disabling existing network configuration ==
 
