@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html>
+<head>
+<title>NCD in Javascript</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
 <body>
 
 <p>This is a quick port of my <a href="http://code.google.com/p/badvpn/wiki/NCD">NCD programming language</a>
@@ -42,6 +46,7 @@ process hello {
     rprintln("Goodbye.");
 
     sleep("2000", "3000");
+    rprintln("Waiting 3 seconds before dying.");
 
     call("func", {"FirstArg", "SecondArg"});
     
@@ -54,7 +59,7 @@ process hello {
         rprintln("stop ", elem);
     };
 
-    println("We're finished. Press Stop to unwind us.");
+    println("We're finished. Press \"Request termination\" to unwind us.");
     rprintln("Terminating...");
 }
 
@@ -73,7 +78,7 @@ Loglevel:
 <input type="radio" name="loglevel" id="loglevel5"> Debug <br>
 
 <button onclick="on_start()">Start NCD</button>
-<button onclick="on_stop()">Stop NCD</button>
+<button onclick="on_stop()">Request termination</button>
 
 </body>
 </html>
