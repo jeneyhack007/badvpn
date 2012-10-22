@@ -581,7 +581,7 @@ This means that you can use `foreach()` to acquire a set of resources at once. F
 {{{
 process foo {
     list("eth0", "eth1") ifaces;
-    foreach(ifaces, "wait_link", {});
+    foreach(ifaces, "wait_device", {});
 
     println("all devices exits");
     rprintln("all devices no longer exist (or terminating)");
