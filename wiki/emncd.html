@@ -37,9 +37,60 @@ function on_stop ()
     cfunc_emncd_stop();
 }
 
+function load_example (num)
+{
+    document.getElementById('codetext').value = document.getElementById('example' + num).value;
+}
+
 </script>
 
-<textarea rows=30 cols=80 id="codetext">
+<textarea id="example1" style="display:none;">
+process foo {
+    println("Starting up, please wait...");
+    rprintln("Goodbye World!");
+
+    sleep("500", "300"); # sleeps 500ms on init and 300ms on deinit
+
+    println("Hello World!");
+    rprintln("Shutting down, please wait...");
+}
+</textarea>
+
+<textarea id="example2" style="display:none;">
+process hello {
+    var("0") ctr;
+
+    blocker() blk;
+    blk->up();
+    blk->use();
+
+    num_modulo(ctr, "3") m_three;
+    num_modulo(ctr, "5") m_five;
+    num_equal(m_three, "0") d_three;
+    num_equal(m_five, "0") d_five;
+    and(d_three, d_five) d_three_five;
+
+    If (d_three_five) {
+        println("fizzbuzz");
+    } Elif (d_three) {
+        println("fizz");
+    } Elif (d_five) {
+        println("buzz");
+    } else {
+        println(ctr);
+    };
+
+    num_add(ctr, "1") i;
+    num_modulo(i, "20") i;
+    ctr->set(i);
+
+    sleep("100", "0");
+    blk->downup();
+
+}
+</textarea>
+
+<textarea id="example3" style="display:none;">
 process hello {
     println("Hello, NCD in Javascript!");
     println("Will now wait 2 seconds.");
@@ -66,6 +117,24 @@ process hello {
 template func {
     println("func here, my args are: ", _arg0, " ", _arg1);
     rprintln("func going away");
+}
+</textarea>
+
+Examples:
+<button onclick="load_example(1)">Example 1</button>
+<button onclick="load_example(2)">Example 2</button>
+<button onclick="load_example(3)">Example 3</button>
+<br>
+
+<textarea rows=30 cols=80 id="codetext">
+process foo {
+    println("Starting up, please wait...");
+    rprintln("Goodbye World!");
+
+    sleep("500", "300"); # sleeps 500ms on init and 300ms on deinit
+
+    println("Hello World!");
+    rprintln("Shutting down, please wait...");
 }
 </textarea><br>
 
