@@ -6,11 +6,6 @@
 </head>
 <body>
 
-<p>This is a quick port of my <a href="http://code.google.com/p/badvpn/wiki/NCD">NCD programming language</a>
-to Javascript using the <a href="https://github.com/kripken/emscripten">Emscripten</a> compiler.</p>
-
-<p>Please open the Javascript console so you can see the output (Chrome: CTRL+Shift+J. Firefox: CTRL+Shift+K).</p>
-
 <script src="emncd.js"></script>
 
 <script>
@@ -43,6 +38,13 @@ function load_example (num)
 }
 
 </script>
+
+This is a quick port of my <a href="http://code.google.com/p/badvpn/wiki/NCD">NCD programming language</a>
+to Javascript using the <a href="https://github.com/kripken/emscripten">Emscripten</a> compiler.
+<br />
+
+Please open the Javascript console so you can see the output (Chrome: CTRL+Shift+J. Firefox: CTRL+Shift+K).
+<br />
 
 <textarea id="example1" style="display:none;">
 process foo {
@@ -124,7 +126,7 @@ Examples:
 <button onclick="load_example(1)">Example 1</button>
 <button onclick="load_example(2)">Example 2</button>
 <button onclick="load_example(3)">Example 3</button>
-<br>
+<br />
 
 <textarea rows=30 cols=80 id="codetext">
 process foo {
@@ -136,7 +138,8 @@ process foo {
     println("Hello World!");
     rprintln("Shutting down, please wait...");
 }
-</textarea><br>
+</textarea>
+<br />
 
 Loglevel: 
 <input type="radio" name="loglevel" id="loglevel0"> None
@@ -144,10 +147,12 @@ Loglevel:
 <input type="radio" name="loglevel" id="loglevel2" checked> Warning
 <input type="radio" name="loglevel" id="loglevel3"> Notice
 <input type="radio" name="loglevel" id="loglevel4"> Info
-<input type="radio" name="loglevel" id="loglevel5"> Debug <br>
+<input type="radio" name="loglevel" id="loglevel5"> Debug <br />
 
 <button onclick="on_start()">Start NCD</button>
 <button onclick="on_stop()">Request termination</button>
+<br />
+Note: if you get the interpreter stuck and unable to terminate, just refresh the page
 
 </body>
 </html>
