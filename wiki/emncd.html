@@ -46,6 +46,24 @@ to Javascript using the <a href="https://github.com/kripken/emscripten">Emscript
 Please open the Javascript console so you can see the output (Chrome: CTRL+Shift+J. Firefox: CTRL+Shift+K).
 <br />
 
+<textarea id="example0" style="display:none;">
+process main {
+    var("0") i;
+    blocker() blk;
+    blk->up();
+    blk->use();
+    num_lesser(i, "10") do_more;
+    If (do_more) {
+        println(i);
+        num_add(i, "1") new_i;
+        i->set(new_i);
+        blk->downup();
+    };
+    println("Done.");
+    exit("0");
+}
+</textarea>
+
 <textarea id="example1" style="display:none;">
 process hello {
     println("hello, world");
@@ -287,6 +305,7 @@ template turing {
 </textarea>
 
 Examples:
+<button onclick="load_example(0)">Count</button>
 <button onclick="load_example(1)">Hello World</button>
 <button onclick="load_example(2)">Sleep</button>
 <button onclick="load_example(3)">FizzBuzz</button>
@@ -296,8 +315,19 @@ Examples:
 <br />
 
 <textarea rows=30 cols=80 id="codetext">
-process hello {
-    println("hello, world");
+process main {
+    var("0") i;
+    blocker() blk;
+    blk->up();
+    blk->use();
+    num_lesser(i, "10") do_more;
+    If (do_more) {
+        println(i);
+        num_add(i, "1") new_i;
+        i->set(new_i);
+        blk->downup();
+    };
+    println("Done.");
     exit("0");
 }
 </textarea>
