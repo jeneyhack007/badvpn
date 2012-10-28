@@ -1,6 +1,9 @@
 #summary tun2socks - socksify TCP at the network layer
 #labels tun,socks,ssh,tunnel,vpn,socksify,tcp,proxify
 
+
+<font size="5">*See also:* [NCD], a powerful network configuration system</font>
+
 = Introduction =
 
 `tun2socks` is used to "socksify" TCP (IPv4 only) connections at the network layer. It implements a TUN virtual network interface which accepts all incoming TCP connections (regardless of destination IP), and forwards them through a SOCKS server. This allows you to forward *all* connections through SOCKS, without any need for application support. It can be used, for example, to forward connections through a remote SSH server or through [https://www.torproject.org/ Tor]. Because of how it works, it can even be installed on a Linux router to transparently forward clients through SOCKS.
