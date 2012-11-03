@@ -49,15 +49,13 @@ Please open the Javascript console so you can see the output (Chrome: CTRL+Shift
 <textarea id="example0" style="display:none;">
 process main {
     var("0") i;
-    blocker() blk;
-    blk->up();
-    blk->use();
+    backtrack_point() point; # will be backtracking to this point
     num_lesser(i, "10") do_more;
     If (do_more) {
         println(i);
         num_add(i, "1") new_i;
         i->set(new_i);
-        blk->downup();
+        point->go(); # backtrack now!
     };
     println("Done.");
     exit("0");
@@ -87,10 +85,7 @@ process foo {
 process hello {
     var("0") ctr;
 
-    blocker() blk;
-    blk->up();
-    blk->use();
-
+    backtrack_point() point;
     num_modulo(ctr, "3") m_three;
     num_modulo(ctr, "5") m_five;
     num_equal(m_three, "0") d_three;
@@ -114,8 +109,7 @@ process hello {
     ctr->set(i);
 
     sleep("100", "0");
-    blk->downup();
-
+    point->go();
 }
 </textarea>
 
@@ -247,9 +241,7 @@ template turing {
     var("0") pos;
 
     # Enter loop.
-    blocker() loop_blk;
-    loop_blk->up();
-    loop_blk->use();
+    backtrack_point() point;
 
     # Get symbol under head.
     concat("tape_", side) tape_name;
@@ -299,7 +291,7 @@ template turing {
         };
 
         # Continue loop.
-        loop_blk->downup();
+        point->go();
     };
 }
 </textarea>
@@ -349,15 +341,13 @@ Examples:
 <textarea rows=30 cols=80 id="codetext">
 process main {
     var("0") i;
-    blocker() blk;
-    blk->up();
-    blk->use();
+    backtrack_point() point; # will be backtracking to this point
     num_lesser(i, "10") do_more;
     If (do_more) {
         println(i);
         num_add(i, "1") new_i;
         i->set(new_i);
-        blk->downup();
+        point->go(); # backtrack now!
     };
     println("Done.");
     exit("0");
