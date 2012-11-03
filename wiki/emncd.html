@@ -98,7 +98,7 @@ process hello {
         var("fizz") text;
     } Elif (d_five) {
         var("buzz") text;
-    } else {
+    } Else {
         var(ctr) text;
     } branch;
 
@@ -278,13 +278,13 @@ template turing {
             If (need_extend) {
                 cur_tape->insert(pos, blank);
             };
-        } elif (is_stay) {
+        } Elif (is_stay) {
             # Nop.
             getargs();
-        } elif (is_zero) {
+        } Elif (is_zero) {
             # Flip side, leave pos at zero.
             side->set(move);
-        } else {
+        } Else {
             # Decrement position.
             num_subtract(pos, "1") new_pos;
             pos->set(new_pos);
