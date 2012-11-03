@@ -300,8 +300,8 @@ template turing {
 process main {
     rprintln("REVERSE PRINT 1");
 
-    spawn("job1", {}) job1;
-    spawn("job2", {}) job2;
+    spawn("job1_template", {}) job1;
+    spawn("job2_template", {}) job2;
 
     job1->join() join1;
     job2->join() join2;
@@ -312,14 +312,14 @@ process main {
     rprintln("REVERSE PRINT 2");
 }
 
-template job1 {
+template job1_template {
     println("Job 1 starting");
     sleep("1000", "0");
     var("Hello") result;
     println("Job 1 finished");
 }
 
-template job2 {
+template job2_template {
     println("Job 2 starting");
     sleep("2000", "0");
     var("World") result;
