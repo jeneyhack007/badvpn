@@ -327,6 +327,35 @@ template job2_template {
 }
 </textarea>
 
+<textarea id="example8" style="display:none;">
+process foo {
+    # Create a file so we can read it.
+    file_write("a.txt", "This is a dummy file with some text.\n");
+
+    # Open a file. Both open and read errors are handler here.
+    # If a read error occurs in read() below, the file implementation
+    # will trigger backtracking to this point, with the "is_error"
+    # variable changed to "true".
+    file_open("a.txt", "r") file;
+    If (file.is_error) {
+        println("--- ERROR WITH FILE ---");
+        exit("1");
+    };
+
+    # Now read the entire file.
+    backtrack_point() point;
+    file->read() data; # No explicit error handling here!
+    If (data.not_eof) {
+        print(data);
+        point->go();
+    };
+
+    # Trigger interpreter termination. This will backtrack all (non-template)
+    # processes to the beginning then the interpreter will exit.
+    exit("0");
+}
+</textarea>
+
 Examples:
 <button onclick="load_example(0)">Count</button>
 <button onclick="load_example(1)">Hello World</button>
@@ -336,6 +365,7 @@ Examples:
 <button onclick="load_example(5)">Foreach, call</button>
 <button onclick="load_example(6)">Turing Machine</button>
 <button onclick="load_example(7)">Spawn</button>
+<button onclick="load_example(8)">Read File</button>
 <br />
 
 <textarea rows=30 cols=80 id="codetext">
