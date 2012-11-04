@@ -332,7 +332,7 @@ process foo {
     # Create a file so we can read it.
     file_write("a.txt", "This is a dummy file with some text.\n");
 
-    # Open a file. Both open and read errors are handler here.
+    # Open a file. Both open and read errors are handled here.
     # If a read error occurs in read() below, the file implementation
     # will trigger backtracking to this point, with the "is_error"
     # variable changed to "true".
