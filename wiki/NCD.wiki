@@ -942,22 +942,18 @@ process main {
 
     println("Event: interface ", watcher.devname, " ", watcher.event_type);
 
-    # Dispatch event.
-    concat("interface_event_", watcher.event_type) func;
-    call(func, {watcher.devname});
+    # Branch based on event type.
+    val_equal(watcher.event_type, "added") is_added;
+    val_equal(watcher.event_type, "removed") is_removed;
+    If (is_added) {
+        mgr->start(dev, "interface_worker", {dev});
+    }
+    Elif (is_removed) {
+        mgr->stop(dev);
+    };
 
     # Finish handling this event.
     watcher->nextevent();
-}
-
-template interface_event_added {
-    var(_arg0) dev;
-    _caller.mgr->start(dev, "interface_worker", {dev});
-}
-
-template interface_event_removed {
-    var(_arg0) dev;
-    _caller.mgr->stop(dev);
 }
 
 template interface_worker {
