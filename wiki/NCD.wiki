@@ -963,6 +963,16 @@ template interface_worker {
     rprintln(dev, ": died");
 
     # Here comes your GENERIC interface configuration code.
+
+    regex_match(dev, "^eth") is_wired;
+    regex_match(dev, "^wlan") is_wireless;
+
+    If (is_wired) {
+        # Wired configuration...
+    }
+    Elif (is_wireless) {
+        # Wireless configuration...
+    };
 }
 }}}
 
