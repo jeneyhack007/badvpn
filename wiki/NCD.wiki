@@ -964,13 +964,13 @@ template interface_worker {
 
     # Here comes your GENERIC interface configuration code.
 
-    regex_match(dev, "^eth") is_wired;
-    regex_match(dev, "^wlan") is_wireless;
+    regex_match(dev, "^eth") wired_match;
+    regex_match(dev, "^wlan") wireless_match;
 
-    If (is_wired) {
+    If (wired_match.succeeded) {
         # Wired configuration...
     }
-    Elif (is_wireless) {
+    Elif (wireless_match.succeeded) {
         # Wireless configuration...
     };
 }
