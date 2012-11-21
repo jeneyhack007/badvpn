@@ -162,6 +162,10 @@ To have NCD start on boot:
 
 Individual statement types (modules) are described briefly in the headers of their source files, under ncd/modules/ in the BadVPN source code: http://code.google.com/p/badvpn/source/browse/#svn%2Ftrunk%2Fncd%2Fmodules .
 
+= Support =
+
+If you have questions about NCD, you may be able to find me in #ncd on Freenode IRC. Alternatively, you can send me an email to <ambrop7@gmail.com>. If you have found a bug or want to propose a new feature, you can open an issue on the tracker.
+
 = NCD lanaguage introduction =
 
 Here's a quick introduction to the programming language of NCD.
