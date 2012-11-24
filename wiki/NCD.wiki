@@ -306,49 +306,6 @@ process device_service_y {
 
 Note how the service processes access the `dev` variable within process `foo` through the dependency. A `depend()` allows access to any variable as seen from the point of the matched `provide()`.
 
-Because of how the NCD interpreter works, `provide()` should usually be the *last statement* in a process. Otherwise, when something before `provide()` goes down, a latter statement could take some time to deinitialize, and during this time, the depending processes may continue initalizing and may request variables through their `depend()`-s - which will fail, because `provide()` is scheduled for deinitialization and cant't resolve variables.
-
-If you wanted to have some statements after a `provide()`, you should instead make a new process that `depend()`-s on this same `provide()` and put the statements there.
-
-There are however exceptions to this rule. For example, the following code wakes up two parallel processes, but then merges back. It's safe because when process `main` is requested to terminate after it merged back, the two parallel processes have initialized completely and won't resolve any variables.
-
-{{{
-process main {
-    var("eth1") dev;
-    net.backend.waitdevice(dev);
-
-    provide("DEVICE");
-    depend("X_DONE");
-    depend("Y_DONE");
-
-    println("up");
-    rprintln("down");
-}
-
-process device_service_x {
-    depend("DEVICE") dep;
-
-    println("X: started on device ", dep.dev);
-    rprintln("X: stopped on device ", dep.dev);
-
-    sleep("1000", "2000");
-
-    provide("X_DONE");
-}
-
-process device_service_y {
-    depend("DEVICE") dep;
-
-    println("Y: started on device ", dep.dev);
-    rprintln("Y: stopped on device ", dep.dev);
-
-    sleep("2000", "1000");
-
-    provide("Y_DONE");
-}
-
-}}}
-
 == Branching ==
 
 The latest version of NCD (1.999.120) provides an `If` clause as a special kind of statement:
