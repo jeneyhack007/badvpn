@@ -362,7 +362,7 @@ Some statements that create template processes are `call()`, `foreach()` and `pr
 
 == Calling templates ==
 
-The effect of [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/call.c call()] is mostly equivalent to embedding the body of the called process template into the place of `call()`, including correct reverse execution.
+The effect of [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/call2.c call()] is mostly equivalent to embedding the body of the called process template into the place of `call()`, including correct reverse execution.
 
 {{{
 process foo {
