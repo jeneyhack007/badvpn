@@ -1232,7 +1232,7 @@ However, be careful: if the update script changes files inside the directory bei
 
 == Separating code into files ==
 
-Pieces of code can be separated into files, and later inserted into a specific place in a program using the `include` directive. The `include` directive may only be used at the top level and not within a process or template. The path given to the `include` directive is interpreted relative to the directory where the including file resides, unless the path is absolute.
+Definitions of processes and templates can be separated into files, and later inserted into a specific place in a program using the `include` directive. The `include` directive may only be used at the top level and not within a process or template. The path given to the `include` directive is interpreted relative to the directory where the including file resides, unless the path is absolute.
 
 File `program.ncd`:
 {{{
