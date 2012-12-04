@@ -1272,3 +1272,98 @@ template helper {
 }}}
 
 The parameter to `include_guard` is a string which should uniquely identify the file in which it appears. The guard system works as follows. Just after NCD parses an included file, it scans it for any `include_guard` names. If any of the guard names has already been registered, the entire file is ignored. Otherwise, it registers all the guard names and proceeds to scan the file and resolve inclusions recursively. Note that this implies that it is irrelevant where in the file and in what order the `include_guard` directives appear.
+
+== Callbacks in generic code ==
+
+In generic code it is often needed to call back user-provided code. Suppose we want a template `call_times` which calls a user-provided template N times, where N is an argument to `call_times`. Of course, this can easily be done using the `call()` statement.
+
+{{{
+template call_times {
+    alias("_arg0") callback_template;
+    alias("_arg1") times;
+
+    # Build a list of `times` elements which we will use in Foreach.
+    value({}) list;
+    var(times) i;
+    backtrack_point() point;
+    num_greater(i, "0") do_more;
+    If (do_more) {
+        list->insert(list.length, i);
+        num_subtract(i, "1") new_i;
+        i->set(new_i);
+        point->go();
+    };
+
+    # Do the call()s.
+    Foreach (list As elem) {
+        call(callback_template, {});
+    };
+}
+
+process main {
+    call("call_times", {"callback", "10"});
+    exit("0");
+}
+
+template callback {
+    println("Hello from callback!");
+}
+}}}
+
+This simple example works, however a problem arises when we wish to use `_caller` from inside `callback` to access objects in `main`. Because `callback` is called from inside `call_times` and not from `main`, we would actually have to use `_caller._caller` to reach objects in `main`. This problem can be solved by modifying `call_times` to use [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/call2.c call_with_caller_target()] instead of `call()`. In contrast to `call()`, where `_caller` inside the called template always takes us to objects above the call, `call_with_caller_target()` takes a third parameter which specifies the object that `_caller` will refer to. In our case, `call_times` has to use `_caller` as the target.
+
+{{{
+template call_times {
+    alias("_arg0") callback_template;
+    alias("_arg1") times;
+
+    # Build a list of `times` elements which we will use in Foreach.
+    value({}) list;
+    var(times) i;
+    backtrack_point() point;
+    num_greater(i, "0") do_more;
+    If (do_more) {
+        list->insert(list.length, i);
+        num_subtract(i, "1") new_i;
+        i->set(new_i);
+        point->go();
+    };
+
+    # Do the call()s.
+    Foreach (list As elem) {
+        # _caller.X in the called template will refer to _caller.X
+        # as seen from this point.
+        call_with_caller_target(callback_template, {}, "_caller");
+    };
+}
+
+process main {
+    var("Hello from callback!") object_in_main;
+    call("call_times", {"callback", "10"});
+    exit("0");
+}
+
+template callback {
+    # Here, _caller.X refers to X as seen from call("call_times"...) in main.
+    println(_caller.object_in_main);
+}
+}}}
+
+If the above seems complicated, consider that the following program prints the length of a list value twice:
+
+{{{
+process main {
+    value({"hello", "world", "!"}) list;
+    call("helper1", {});
+    call_with_caller_target("helper2", {}, "list");
+    exit("0");
+}
+
+template helper1 {
+    println(_caller.list.length);
+}
+
+template helper2 {
+    println(_caller.length);
+}
+}}}
