@@ -1332,7 +1332,7 @@ template call_times {
     # Do the call()s.
     Foreach (list As elem) {
         # _caller.X in the called template will refer to _caller.X
-        # as seen from this point.
+        # (specified by the third argument) as seen from this point.
         call_with_caller_target(callback_template, {}, "_caller");
     };
 }
