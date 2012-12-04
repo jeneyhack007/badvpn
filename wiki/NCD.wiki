@@ -1229,3 +1229,46 @@ template updater {
 }}}
 
 However, be careful: if the update script changes files inside the directory being watched, this will result in constant updating. If the script really must change files in the watched directory, the watcher process should be changed to ignore changes of files which the script touches, possibly using [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/regex_match.c regex_match()].
+
+== Separating code into files ==
+
+Pieces of code can be separated into files, and later inserted into a specific place in a program using the `include` directive. The `include` directive may only be used at the top level and not within a process or template. The path given to the `include` directive is interpreted relative to the directory where the including file resides, unless the path is absolute.
+
+File `program.ncd`:
+{{{
+include "helper.ncdi"
+
+process main {
+    call("helper", {});
+}
+}}}
+
+File `helper.ncdi`:
+{{{
+template helper {
+    println("Hello from helper!");
+}
+}}}
+
+However this does not quite work when two included programs end up including the same file, because any processes or templates in that file will appear multiple times in the composed program, causing interpreter initialization failure. To solve that, the `include_guard` directive was added. For simplicity, we demonstrate the solution with a single program including the same file twice, as opposed to different included files including the same file.
+
+File `program.ncd`:
+{{{
+include "helper.ncdi"
+include "helper.ncdi"
+
+process main {
+    call("helper", {});
+}
+}}}
+
+File `helper.ncdi`:
+{{{
+include_guard "helper"
+
+template helper {
+    println("Hello from helper!");
+}
+}}}
+
+The parameter to `include_guard` is a string which should uniquely identify the file in which it appears. The guard system works as follows. Just after NCD parses an included file, it scans it for any `include_guard` names. If any of the guard names has already been registered, the entire file is ignored. Otherwise, it registers all the guard names and proceeds to scan the file and resolve inclusions recursively. Note that this implies that it is irrelevant where in the file and in what order the `include_guard` directives appear.
