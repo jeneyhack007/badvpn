@@ -114,12 +114,16 @@ Also, !NetworkManager has a habit of not deconfiguring interfaces when stopped. 
 
 == Testing from command line == 
 
-Once you're sure your interfaces are deconfigured and there is nothing that could interfere, then try the program (`/etc/ncd.conf`) out by running (as root):
+Once you're sure your interfaces are deconfigured and there is nothing that could interfere, you can try out your program from command line (as root):
 {{{
-badvpn-ncd --config-file /etc/ncd.conf
+badvpn-ncd /etc/ncd.conf
 }}}
 
-NCD will print status messages as it executes your program. If it's not working as expected, these can help you with debugging it.
+This will start running your program. If you hit CTRL+C (more specifically, on SIGINT or SIGTERM), the interpreter will backtrack all processes to their beginning, then exit. If your program is not behaving as expected, or you want to gain a better understanding of how it works, you can adjust the loglevel to make NCD will print status messages as it executes your program:
+
+{{{
+badvpn-ncd --loglevel info /etc/ncd.conf
+}}}
 
 == Automatically ==
 
