@@ -27,6 +27,48 @@ My conclusion was that, for more powerful and extensible network configuration, 
 
 NCD is used by writing an NCD program (the "configuration file"), then starting the `badvpn-ncd` program as a daemon (usually at system boot time). NCD will then keep running the supplied program, until it is requested to terminate (usually at shutdown time). NCD is designed to work in the background without any need to communicate with the user, and to automatically recover from any transient problems. The goal is to make things (e.g. network access) "just work", while still allowing dynamic and complex configuration.
 
+= Complete example =
+
+Below is an example NCD program that works with a single wired network interface and uses DHCP to obtain the IP address, default route and DNS servers. The below code, when read from top to bottom, simply specifies which operations are to be performed in order to reach the desired state. However note that each NCD program has an implicit *backtracking* semantic. Here, for instance:
+
+  * If the DHCP lease times out, the program will *backtrack* to the `net.ipv4.dhcp` statement, effectively removing the default route and the IP address.
+  * If the network cable is pulled out, the program will backtrack to the `net.backend.waitlink` statement, removing IP addresses and routes as above, plus stopping the DHCP client.
+  * If the eth0 device disappears (for example, it is a USB network card and is pulled out), the program will backtrack to `net.backend.waitdevice`.
+
+{{{
+process lan {
+    # Set device.
+    var("eth0") dev;
+
+    # Wait for device, set it up, and wait for network cable.
+    net.backend.waitdevice(dev);
+    net.up(dev);
+    net.backend.waitlink(dev);
+
+    # DHCP configuration.
+    # net.ipv4.dhcp() will block here until it obtaines an IP address.
+    # Note that it will only obtain the IP address, and *not* assign it;
+    # we do that with a separate command below.
+    net.ipv4.dhcp(dev) dhcp;
+
+    # Check IP address - make sure it's not local.
+    # If you have other reserved subnets around, check for those too.
+    # The statement below will do nothing if the address does not belong to the
+    # specified subnet, but if it does, it will log an error and block the
+    # process at this point, preventing the assignment of the address.
+    net.ipv4.ifnot_addr_in_network(dhcp.addr, "127.0.0.1/8");
+
+    # Assign IP address, as obtained by DHCP.
+    net.ipv4.addr(dev, dhcp.addr, dhcp.prefix);
+
+    # Add default route, as obtained by DHCP.
+    net.ipv4.route("0.0.0.0", "0", dhcp.gateway, "20", dev);
+
+    # Configure DNS servers, as obtained by DHCP.
+    net.dns(dhcp.dns_servers, "20");
+}
+}}}
+
 = Model of execution =
 
 An NCD program (see example below) consists of a set of so-called *processes*. Globally, the processes can be considered to execute concurrently. Each process consists of a list of *statements*.
@@ -51,45 +93,6 @@ A variable is passed to a statement by passing `object.variable` as an argument 
 When NCD is requested to terminate, it starts deinitializing all processes from the bottom up, like described above, and this deinitialization continues until all statements in all processes are deinitialized. NCD then exits.
 
 The NCD language does provides some control constructs, like `If` and `Foreach`. However, these are internally implemented as syntax sugar and are translated to statements (and process templates, to be discussed later). As such, they are still subject to the above described execution model.
-
-= Complete example =
-
-This is an example NCD program that works with a single wired network interface and uses DHCP to obtain the IP address, default route and DNS servers.
-
-{{{
-process lan {
-    # Set device.
-    var("eth0") dev;
-
-    # Wait for device, set it up, and wait for network cable.
-    net.backend.waitdevice(dev);
-    net.up(dev);
-    net.backend.waitlink(dev);
-
-    # DHCP configuration.
-    # net.ipv4.dhcp() will block here until it obtaines an IP address.
-    # Note that it will only obtain the IP address, and *not* assign it;
-    # we do that with a separate command below.
-    net.ipv4.dhcp(dev) dhcp;
-
-    # Check IP address - make sure it's not local.
-    # If you have other reserved subnets around, check for those too.
-    # ifnot() does nothing if argument is "true", waits forever otherwise.
-    ip_in_network(dhcp.addr, "127.0.0.0", "8") test_local;
-    ifnot(test_local);
-
-    # Assign IP address, as obtained by DHCP.
-    net.ipv4.addr(dev, dhcp.addr, dhcp.prefix);
-
-    # Add default route, as obtained by DHCP.
-    net.ipv4.route("0.0.0.0", "0", dhcp.gateway, "20", dev);
-
-    # Configure DNS servers, as obtained by DHCP.
-    net.dns(dhcp.dns_servers, "20");
-}
-}}}
-
-The above code, when read from top to bottom, simply specifies which operations are to be performed in order to reach the desired state. However note that each NCD program has an implicit deinitialization semantic. Here, for instance, pulling the network cable out will **automatically** remove the DNS servers, remove the default route and remove the IP address from the network interface; as will the DHCP lease timing out.
 
 = More examples =
 
