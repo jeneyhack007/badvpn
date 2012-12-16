@@ -4,6 +4,8 @@
 
 The [http://code.google.com/p/badvpn/source/browse/trunk/ncd/modules/sys_request_server.c sys.request_server()] module in NCD provides an interface for client programs on the same system or on the network to communicate with a running NCD program. Such an interface opens many new possibilities for things to use NCD for. The long-term goal is to implement a (better) equivalent to the !NetworkManager daemon completely in the NCD programming language, and also a corresponding GUI.
 
+Currently, a simple GUI network status indicator is available which retrieves information from an NCD network configurator via the interface described here; see the [http://code.google.com/p/ncdgui/ ncdgui] project.
+
 = Example =
 
 Here's a small example that illustrates how NCD's request interface works.
