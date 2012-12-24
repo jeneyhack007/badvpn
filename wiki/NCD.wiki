@@ -148,7 +148,7 @@ Individual statement types (modules) are described briefly in the headers of the
 
 = Support =
 
-If you have questions about NCD, you may be able to find me in #ncd on Freenode IRC. Alternatively, you can send me an email to <ambrop7@gmail.com>. If you have found a bug or want to propose a new feature, you can open an issue on the tracker.
+If you have questions about NCD, you may be able to find me in #badvpn on Freenode IRC. Alternatively, you can send me an email to <ambrop7@gmail.com>. If you have found a bug or want to propose a new feature, you can open an issue on the tracker.
 
 = NCD lanaguage introduction =
 
