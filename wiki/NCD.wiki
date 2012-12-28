@@ -176,7 +176,7 @@ process foo {
 
 This should result in something like this:
 {{{
-$ badvpn-ncd --loglevel warning --config-file hello.ncd
+$ badvpn-ncd hello.ncd
 Starting up, please wait...
 < 500ms passes >
 Hello World!
@@ -316,7 +316,7 @@ process main {
 }}}
 
 {{{
-$ badvpn-ncd --loglevel warning --config-file if_example.ncd
+$ badvpn-ncd if_example.ncd
 Got Y
 Choice: B
 }}}
@@ -821,7 +821,7 @@ template template_for_B {
 This will result in this:
 
 {{{
-$ badvpn-ncd --loglevel warning --config-file manager1.ncd
+$ badvpn-ncd manager1.ncd
 Starting A
 A: starting
 Starting B
@@ -865,7 +865,7 @@ template template_for_A {
 This will produce the following:
 
 {{{
-$ badvpn-ncd --loglevel warning --config-file manager2.ncd
+$ badvpn-ncd manager2.ncd
 A: starting
 Foo done.
 < 3 seconds pass >
@@ -956,7 +956,7 @@ process main {
 This will resort in something like this:
 
 {{{
-$ badvpn-ncd --loglevel warning --config-file var_state.ncd
+$ badvpn-ncd var_state.ncd
 Event: {"EV_MSC", "458792", "MSC_SCAN"} Previous: "none"
 Event: {"EV_KEY", "0", "KEY_ENTER"} Previous: {"EV_MSC", "458792", "MSC_SCAN"}
 Event: {"EV_SYN", "0", "unknown"} Previous: {"EV_KEY", "0", "KEY_ENTER"}
