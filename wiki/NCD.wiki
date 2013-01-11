@@ -71,6 +71,8 @@ process lan {
 
 The NCD interpreter, as an event-driven system, is able to keep track of the execution state of any number of NCD processes. For example, if you insert a duplicate of the `lan` process into the program above, with a different process name and network interface name, NCD will effectively be configuring two network interfaces, concurrently.
 
+However NCD is still a single-threaded program, so only one process can be executing on the CPU at any given time. NCD can not only manage multiple processes, but it also allows for *interactions* between processes; some examples of interaction will be explained later (see e.g. process_manager()).
+
 = More examples =
 
 See [NCD_examples] for more complex examples. NCD is capable of much more than the above program may suggest. For example, it can handle multiple network interfaces with priorities for Internet access, it can work with wireless networks and BadVPN network interfaces.
