@@ -317,10 +317,9 @@ Can it possibly happen that the execution of the `println` statements from the t
 
 In order to clearly explain the behavior here, we're going to take a look at how NCD internally works with events. NCD schedules reactions to events using a *last-in first-out* (LIFO) job queue. We said just above that an interaction involved the completion of a statement. But this is not the whole story; what actually happens is that the completion is registered, and /the processing of its side effects is scheduled/ by pushing a job to the end of the LIFO job queue. In our case, when `provide()` is initialized, it pushes three jobs to the job queue (not in that order):
 
-- one for the side effects of the completion of the `depend("GO")` in process `B1`,
-- one for the side effects of the completion of the `depend("GO")` in process `B2`, and
-- one for the side effects of the completion of `provide("GO")` in process `A` (yes, there's no magic in process A continuing).
-
+  * one for the side effects of the completion of the `depend("GO")` in process `B1`,
+  * one for the side effects of the completion of the `depend("GO")` in process `B2`, and
+  * one for the side effects of the completion of `provide("GO")` in process `A` (yes, there's no magic in process A continuing).
 In simpler terms, at this moment, execution could go /three different ways/. The next thing to happen will either be the first `println` in process `B1`, the first `println` in process `B2`, or the `println` in process `A`.
 
 The order of pushing the first two jobs is undefined, but the documentation for the depend()/provide() statements guarantees (in simpler words) that the job related to the completion of `provide("GO")` is the first to be pushed. So, the job queue will look something like this (subject to different orders of the other two jobs):
