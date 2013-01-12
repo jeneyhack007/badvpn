@@ -31,7 +31,7 @@ NCD is used by writing an NCD program (the "configuration file"), then starting 
 
 Below is an example NCD program that works with a single wired network interface and uses DHCP to obtain the IP address, default route and DNS servers. The below code, when read from top to bottom, simply specifies which operations are to be performed in order to reach the desired state. However note that each NCD program has an implicit *backtracking* semantic. Here, for instance:
 
-  * If the DHCP lease times out, the program will *backtrack* to the `net.ipv4.dhcp` statement, effectively deconfiguring the DNS servers, default route and IP address. When the DHCP client receives a new lease, the program will continue forward again.
+  * If the DHCP lease times out, the program will *backtrack* to the `net.ipv4.dhcp` statement, effectively deconfiguring the DNS servers, default route and IP address. When the DHCP client manages to renew the leased IP address or obtain a new one, the program will continue forward again, applying the new configuration.
   * If the network cable is pulled out, the program will backtrack to the `net.backend.waitlink` statement, deconfiguring the DNS/route/address, as above, plus stopping the DHCP client. The program will continue forward when the cable is plugged back in.
   * If the eth0 device disappears (for example, it is a USB network card and is pulled out), the program will backtrack to `net.backend.waitdevice`, deconfiguring everything. The program will continue forward when the device appears again.
 
