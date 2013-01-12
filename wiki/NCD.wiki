@@ -320,7 +320,7 @@ In order to clearly explain the behavior here, we're going to take a look at how
   * one for the side effects of the completion of `depend("GO")` in process `B1`,
   * one for the side effects of the completion of `depend("GO")` in process `B2`, and
   * one for the side effects of the completion of `provide("GO")` in process `A` (yes, there's no magic in process A continuing).
-In simpler terms, at this moment, execution could go _three different ways_. The next thing to happen will either be the first `println` in process `B1`, the first `println` in process `B2`, or the `println` in process `A`. If you're having problems understanding how jobs work, just keep that in mind, and skip to the conclusion.
+In simpler terms, at this moment, execution could go _three different ways_. The next thing to happen will either be the first `println` in process `B1`, the first `println` in process `B2`, or the `println` in process `A`. If you're having problems understanding how jobs work, just keep that in mind, and skip to the conclusion at the end of this section.
 
 The order of pushing the first two jobs is undefined, but the documentation for the depend()/provide() statements guarantees (in simpler words) that the job related to the completion of `provide("GO")` is the first to be pushed. So, the job queue will look something like this (subject to different orders of the other two jobs):
 
@@ -370,10 +370,10 @@ Queue: [Work process A]
 
 To sum up, in simpler terms:
 
-- When at a certain point execution has to go multiple ways, the statement in question decides in which order those ways are taken.
-- When one way is taken, this way will be keep being processed until there is nothing else to do there at the moment.
-- Statements define (or not) in their documentation in which order the ways are taken.
-- For `provide()`, it is guaranteed that the way that corresponds to its own completion (and the continuation of the process it appears in), is taken last, after any ways for `depend()`s that have just been satisfied.
+  * When at a certain point execution has to go multiple ways, the statement in question decides in which order those ways are taken.
+  * When one way is taken, this way will be keep being processed until there is nothing else to do there at the moment.
+  * Statements define (or not) in their documentation in which order the ways are taken.
+  * For `provide()`, it is guaranteed that the way that corresponds to its own completion (and the continuation of the process it appears in), is taken last, after any ways for `depend()`s that have just been satisfied.
 
 == Branching ==
 
