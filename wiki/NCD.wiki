@@ -365,6 +365,7 @@ Queue: [Work process A]
     --> its completion is registered, pushing [Work process A]
 Queue: [Work process A]
 --> nothing happens with A because all its statements are now initialized
+Queue: empty
 --> job queue is now empty and the interpreter enters a sleep state, waiting for a termination request
 }}}
 
