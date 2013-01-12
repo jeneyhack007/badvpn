@@ -292,6 +292,51 @@ process device_service_y {
 
 Note how the service processes access the `dev` variable within process `foo` through the dependency. A `depend()` allows access to any variable as seen from the point of the matched `provide()`.
 
+This is the first time we've seen *process interaction*. In the example above, process `foo` interacted with process `device_service_x` (and `device_service_y`) upon reaching `provide("DEVICE")`. In particular, the interaction was the transitioning of the `depend("DEVICE")` statement from "down" state to "up" state, i.e. its continuation. This interaction resulted to the CPU being handed over to the process `device_service_x` in order to continue its execution from the statement it was blocking at. However, consider that exactly the same kind of interaction happened with the other process, `device_service_y`. The question now is: what happens first? Does "X: started..." or "Y: started..." get printed first?
+
+To see the issue in its full glory, take a look at the following program:
+
+{{{
+process A {
+    provide("GO");
+    println("A print");
+}
+
+process B1 {
+    depend("GO");
+    println("B1 first print");
+    println("B1 second print");
+}
+
+process B2 {
+    depend("GO");
+    println("B2 first print");
+    println("B2 second print");
+}
+}}}
+
+Can it possibly happen that the execution of the `println` statements from the two processes `B1` and `B2` will be _interleaved_? Also, when will process `A` print its message?
+
+In order to clearly explain the behavior here, we're going to take a look at how NCD internally works with events. NCD schedules reactions to events using a *last-in first-out* (LIFO) job-queue. We said just above that an interaction involved the continuation of a statement. But this is not the complete story; what actually happens is that the continuation is registered, _and the processing of its side effects is scheduled by pushing a job to the end of the LIFO job queue_. In our case, when `provide()` is initialized, it pushes three jobs to the job queue (not in that order):
+
+- one for the completion of the `depend("GO")` in process `B1`,
+- one for the completion of the `depend("GO")` in process `B2`, and
+- one for the completion of `provide("GO")` in process `A` (yes, there's no magic in process A continuing).
+
+In simpler terms, at this moment, execution could go /three different ways/. The next thing to happen will either be the first `println` in process `B1`, the first `println` in process `B2`, or the `println` in process `A`.
+
+The order of pushing the first two jobs is undefined, but the documentation for the depend()/provide() statements guarantees (in layman words) that the job related to the completion of `provide("GO")` is the first to be pushed. So, the job queue will look something like this (subject to different orders of the other two jobs):
+
+{{{
+[Process A: complete provide("GO")] [Process B2: complete depend("GO")] [Process B1: complete depend("GO")]
+}}}
+
+The interpreter then removes (_pops_) the last job from the queue and executes it. As a result of the completion of `depend("GO")`, this causes the initialization of `println("B1 first print")`, which prints its text and pushes a completion for itself. This pushing and popping of jobs continues until the job queue is empty. Here is the complete sequence of job queue states and prints that happens in this program.
+
+{{{
+
+}}}
+
 == Branching ==
 
 The latest version of NCD (1.999.120) provides an `If` clause as a special kind of statement:
