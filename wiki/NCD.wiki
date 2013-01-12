@@ -374,6 +374,7 @@ To sum up, in simpler terms:
 - When at a certain point execution has to go multiple ways, the statement in question decides in which order those ways are taken.
 - When one way is taken, this way will be keep being processed until there is nothing else to do there at the moment.
 - Statements define (or not) in their documentation in which order the ways are taken.
+- For `provide()`, it is guaranteed that the way that corresponds to its own completion (and the continuation of the process it appears in), is taken last, after any ways for `depend()`s that have just been satisfied.
 
 == Branching ==
 
