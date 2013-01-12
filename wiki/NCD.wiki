@@ -328,13 +328,45 @@ In simpler terms, at this moment, execution could go /three different ways/. The
 The order of pushing the first two jobs is undefined, but the documentation for the depend()/provide() statements guarantees (in layman words) that the job related to the completion of `provide("GO")` is the first to be pushed. So, the job queue will look something like this (subject to different orders of the other two jobs):
 
 {{{
-[Process A: complete provide("GO")] [Process B2: complete depend("GO")] [Process B1: complete depend("GO")]
+[Work process A] [Work process B2] [Work process B1]
 }}}
 
-The interpreter then removes (_pops_) the last job from the queue and executes it. As a result of the completion of `depend("GO")`, this causes the initialization of `println("B1 first print")`, which prints its text and pushes a completion for itself. This pushing and popping of jobs continues until the job queue is empty. Here is the complete sequence of job queue states and prints that happens in this program.
+(The jobs actually only refer to working with some process, rather than any specific actions; the interpreter determines the appropriate action when executing a job.)
+
+The interpreter then removes (_pops_) the last job from the queue and executes it. The execution of `[Work process B1]` involves the initialization of `println("B1 first print")` - which prints its text and registers its own completion, which results in the pushing of `[Work process B1]`, again. This pushing and popping of jobs continues until the job queue is empty. Here is the complete sequence of job queue states that happens in this program, _from the moment it is started_.
 
 {{{
-
+Queue: [Work process A] [Work process B1] [Work process B2]
+--> depend("GO") in process B2 is initialized
+Queue: [Work process A] [Work process B1]
+--> depend("GO") in process B1 is initialized
+Queue: [Work process A]
+--> provide("GO") in process A is initialized
+    --> completion of provide("GO") in A is registered
+    --> completion of depend("GO") in B2 is registered
+    --> completion of depend("GO") in B1 is registered
+Queue: [Work process A] [Work process B2] [Work process B1]
+--> println("B1 first print") in B1 is initialized
+    --> its completion is registered, pushing [Work process B1]
+Queue: [Work process A] [Work process B2] [Work process B1]
+--> println("B1 second print") in B1 is initialized
+    --> its completion is registered, pushing [Work process B1]
+Queue: [Work process A] [Work process B2] [Work process B1]
+--> nothing happens with B1 because all its statements are now initialized
+Queue: [Work process A] [Work process B2]
+--> println("B2 first print") in B2 is initialized
+    --> its completion is registered, pushing [Work process B2]
+Queue: [Work process A] [Work process B2]
+--> println("B2 second print") in B2 is initialized
+    --> its completion is registered, pushing [Work process B2]
+Queue: [Work process A] [Work process B2]
+--> nothing happens with B2 because all its statements are now initialized
+Queue: [Work process A]
+--> println("A print") in A is initialized
+    --> its completion is registered, pushing [Work process A]
+Queue: [Work process A]
+--> nothing happens with A because all its statements are now initialized
+--> job queue is now empty and the interpreter enters a sleep state, waiting for a termination request
 }}}
 
 == Branching ==
