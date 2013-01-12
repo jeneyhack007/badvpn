@@ -292,9 +292,7 @@ process device_service_y {
 
 Note how the service processes access the `dev` variable within process `foo` through the dependency. A `depend()` allows access to any variable as seen from the point of the matched `provide()`.
 
-This is the first time we've seen *process interaction*. In the example above, process `foo` interacted with process `device_service_x` (and `device_service_y`) upon reaching `provide("DEVICE")`. In particular, the interaction was the transitioning of the `depend("DEVICE")` statement from "down" state to "up" state, i.e. its continuation. This interaction resulted to the CPU being handed over to the process `device_service_x` in order to continue its execution from the statement it was blocking at. However, consider that exactly the same kind of interaction happened with the other process, `device_service_y`. The question now is: what happens first? Does "X: started..." or "Y: started..." get printed first?
-
-To see the issue in its full glory, take a look at the following program:
+This is the first time we've seen *process interaction*. In the example above, process `foo` interacted with process `device_service_x` (and `device_service_y`) upon reaching `provide("DEVICE")`. In particular, the interaction was the _completion_ of the `depend("DEVICE")` statement. This interaction resulted to the CPU being handed over to the process `device_service_x` in order to continue its execution from the statement it was blocking at. However, consider that exactly the same kind of interaction happened with the other process, `device_service_y`. The question now is: what happens first? Does "X: started..." or "Y: started..." get printed first? To see the issue in its full glory, take a look at the following program:
 
 {{{
 process A {
@@ -317,15 +315,15 @@ process B2 {
 
 Can it possibly happen that the execution of the `println` statements from the two processes `B1` and `B2` will be _interleaved_? Also, when will process `A` print its message?
 
-In order to clearly explain the behavior here, we're going to take a look at how NCD internally works with events. NCD schedules reactions to events using a *last-in first-out* (LIFO) job-queue. We said just above that an interaction involved the continuation of a statement. But this is not the complete story; what actually happens is that the continuation is registered, _and the processing of its side effects is scheduled by pushing a job to the end of the LIFO job queue_. In our case, when `provide()` is initialized, it pushes three jobs to the job queue (not in that order):
+In order to clearly explain the behavior here, we're going to take a look at how NCD internally works with events. NCD schedules reactions to events using a *last-in first-out* (LIFO) job queue. We said just above that an interaction involved the completion of a statement. But this is not the whole story; what actually happens is that the completion is registered, and /the processing of its side effects is scheduled/ by pushing a job to the end of the LIFO job queue. In our case, when `provide()` is initialized, it pushes three jobs to the job queue (not in that order):
 
-- one for the completion of the `depend("GO")` in process `B1`,
-- one for the completion of the `depend("GO")` in process `B2`, and
-- one for the completion of `provide("GO")` in process `A` (yes, there's no magic in process A continuing).
+- one for the side effects of the completion of the `depend("GO")` in process `B1`,
+- one for the side effects of the completion of the `depend("GO")` in process `B2`, and
+- one for the side effects of the completion of `provide("GO")` in process `A` (yes, there's no magic in process A continuing).
 
 In simpler terms, at this moment, execution could go /three different ways/. The next thing to happen will either be the first `println` in process `B1`, the first `println` in process `B2`, or the `println` in process `A`.
 
-The order of pushing the first two jobs is undefined, but the documentation for the depend()/provide() statements guarantees (in layman words) that the job related to the completion of `provide("GO")` is the first to be pushed. So, the job queue will look something like this (subject to different orders of the other two jobs):
+The order of pushing the first two jobs is undefined, but the documentation for the depend()/provide() statements guarantees (in simpler words) that the job related to the completion of `provide("GO")` is the first to be pushed. So, the job queue will look something like this (subject to different orders of the other two jobs):
 
 {{{
 [Work process A] [Work process B2] [Work process B1]
@@ -333,18 +331,20 @@ The order of pushing the first two jobs is undefined, but the documentation for 
 
 (The jobs actually only refer to working with some process, rather than any specific actions; the interpreter determines the appropriate action when executing a job.)
 
-The interpreter then removes (_pops_) the last job from the queue and executes it. The execution of `[Work process B1]` involves the initialization of `println("B1 first print")` - which prints its text and registers its own completion, which results in the pushing of `[Work process B1]`, again. This pushing and popping of jobs continues until the job queue is empty. Here is the complete sequence of job queue states that happens in this program, _from the moment it is started_.
+The interpreter then removes (_pops_) the last job from the queue and executes it. The execution of `[Work process B1]` involves the initialization of `println("B1 first print")` - which prints its text and registers its own completion, which results in the pushing of `[Work process B1]`, again, representing its side effects. This pushing and popping of jobs continues until the job queue is empty. Here is the complete sequence of job queue states that happens in this program, _from the moment it is started_.
 
 {{{
+--> upon loading the program the interpreter pushes the jobs for all
+    processes in the order they appear
 Queue: [Work process A] [Work process B1] [Work process B2]
 --> depend("GO") in process B2 is initialized
 Queue: [Work process A] [Work process B1]
 --> depend("GO") in process B1 is initialized
 Queue: [Work process A]
 --> provide("GO") in process A is initialized
-    --> completion of provide("GO") in A is registered
-    --> completion of depend("GO") in B2 is registered
-    --> completion of depend("GO") in B1 is registered
+    --> completion of provide("GO") in A is registered, pushing [Work process A]
+    --> completion of depend("GO") in B2 is registered, pushing [Work process B2]
+    --> completion of depend("GO") in B1 is registered, pushing [Work process B1]
 Queue: [Work process A] [Work process B2] [Work process B1]
 --> println("B1 first print") in B1 is initialized
     --> its completion is registered, pushing [Work process B1]
@@ -368,6 +368,12 @@ Queue: [Work process A]
 --> nothing happens with A because all its statements are now initialized
 --> job queue is now empty and the interpreter enters a sleep state, waiting for a termination request
 }}}
+
+To sum up, in simpler terms:
+
+- When at a certain point execution has to go multiple ways, the statement in question decides in which order those ways are taken.
+- When one way is taken, this way will be keep being processed until there is nothing else to do there at the moment.
+- Statements define (or not) in their documentation in which order the ways are taken.
 
 == Branching ==
 
