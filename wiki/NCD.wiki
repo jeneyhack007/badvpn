@@ -804,13 +804,13 @@ The following example illustrates the behavior of `multiprovide()` and `multidep
 {{{
 process resource1 {
     var("Resource 1") name;
-    sleep("2000", "0");
+    sleep("2000");
     multiprovide("RESOURCE_1");
 }
 
 process resource2 {
     var("Resource 2") name;
-    sleep("4000", "0");
+    sleep("4000");
     multiprovide("RESOURCE_2");
 }
 
@@ -1202,9 +1202,9 @@ process main {
 
 process unblock_timer {
     depend("start_unblock_timer") dep;
-    sleep("1000", "0");
+    sleep("1000");
     dep.blk->up();
-    sleep("1000", "0");
+    sleep("1000");
     dep.blk->down();
 }
 
@@ -1226,7 +1226,7 @@ process main {
     println("This happens about every 1 second.");
 
     # Sleep one second.
-    sleep("1000", "0");
+    sleep("1000");
 
     # Atomically put blocker down and back up.
     # This makes the use() statement go down and immediately back up,
