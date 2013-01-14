@@ -1,5 +1,5 @@
 #summary NCD - scripting language for network configuration and much more
-#labels network,interface,configuration,hotplug,dhcp,flexible,powerful
+#labels network,interface,configuration,hotplug,dhcp,flexible,powerful,language,scripting
 
 <font size="5">*NEW:* Try NCD directly [http://badvpn.googlecode.com/svn/wiki/emncd.html in your browser]</font>
 
