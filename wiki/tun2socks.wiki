@@ -62,8 +62,9 @@ route add <IP_of_SSH_server> <IP_of_original_gateway> metric 5
 route add 0.0.0.0 mask 0.0.0.0 10.0.0.2 metric 6
 }}}
 
-
 These routes will not persist across a reboot. You should probably make scripts that install and remove them. You can remove a route by changing the `add` to `del` or `delete`, depending on whether you're in Linux or Windows.
+
+*Windows 7*: This OS has problems with respecting route metrics. If after a few minutes of normal operation connections suddenly stop being routed into tun2socks and instead go out the original default gateway, for no apparent reason, take a look at [http://code.google.com/p/badvpn/issues/detail?id=5&can=1 issue 5]. One workaround is to temporarily remove the original default route.
 
 = UDP forwarding =
 
