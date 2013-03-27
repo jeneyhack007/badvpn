@@ -315,7 +315,7 @@ process B2 {
 
 Can it possibly happen that the execution of the `println` statements from the two processes `B1` and `B2` will be _interleaved_? Also, when will process `A` print its message?
 
-To explain the behavior, we need to understand that execution of an NCD program involves the continuous processing of _jobs_ within a _last-in-first-out queue_. As a job is removed from the top of the LIFO queue and executed, it may itself may push more jobs to the queue, affecting future processing. The LIFO nature of the job queue makes the order of job pushing significant, and their execution order well-defined. For example, some jobs are pushed from inside the execution of a certain job, these will be executed in the reverse order of how they were pushed - and before any jobs which were already present in the queue.
+To explain the behavior, we need to understand that execution of an NCD program involves the continuous processing of _jobs_ within a _last-in-first-out queue_. As a job is removed from the top of the LIFO queue and executed, it may itself may push more jobs to the queue, affecting future processing. The LIFO nature of the job queue makes the order of job pushing significant, and their execution order well-defined. For example, when some jobs are pushed from inside the execution of a certain job, these will be executed in the reverse order of their pushing - and before any jobs which were already present in the queue.
 
 Now we return to the problem of the execution order in NCD. In the above program, when a `provide("GO")` is reached, its implementation ends up pushing three jobs to the LIFO job queue:
 
@@ -335,6 +335,8 @@ All this put in simpler terms:
   * When one way is taken, this way will be keep being processed until there is nothing else to do there at the moment.
   * Statements define (or not) in their documentation in which order the ways are taken.
   * For `provide()`, it is guaranteed that the way that corresponds to its own completion (and the continuation of the process it appears in), is taken last, after any ways for `depend()`s that have just been satisfied.
+
+*For the curious*: You can read a more detailed description of the LIFO-queue design in my answer to t[http://stackoverflow.com/questions/10064229/c-force-stack-unwinding-inside-function this StackOverflow question]. If you're going to be looking at the NCD/BadVPN source code, the job queue is implemented in the _BPending_ module [http://code.google.com/p/badvpn/source/browse/#svn%2Ftrunk%2Fbase here].
 
 == Branching ==
 
