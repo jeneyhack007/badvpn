@@ -336,7 +336,7 @@ All this put in simpler terms:
   * Statements define (or not) in their documentation in which order the ways are taken.
   * For `provide()`, it is guaranteed that the way that corresponds to its own completion (and the continuation of the process it appears in), is taken last, after any ways for `depend()`s that have just been satisfied.
 
-*For the curious*: You can read a more detailed description of the LIFO-queue design in my answer to t[http://stackoverflow.com/questions/10064229/c-force-stack-unwinding-inside-function this StackOverflow question]. If you're going to be looking at the NCD/BadVPN source code, the job queue is implemented in the _BPending_ module [http://code.google.com/p/badvpn/source/browse/#svn%2Ftrunk%2Fbase here].
+*For the curious*: You can read a more detailed description of the LIFO-queue design in my [http://stackoverflow.com/a/10065950/1020667 StackOverflow answer]. If you're going to be looking at the NCD/BadVPN source code, the job queue is implemented in the _BPending_ module [http://code.google.com/p/badvpn/source/browse/#svn%2Ftrunk%2Fbase here]. The _BPendingGroup_ object is the LIFO queue itself, and _BPending_ objects are the jobs, which need to be explicitly pushed by calling _BPending_Set()_. Additionally, jobs can be removed from the queue prior to their execution using _BPending_Unset()_.
 
 == Branching ==
 
