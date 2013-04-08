@@ -10,7 +10,18 @@
 
 = Installation =
 
-`tun2socks` is part of BadVPN. If you're on Linux, just build BadVPN with its CMake build system (or use the Gentoo package net-misc/badvpn, the Arch AUR or Ubuntu PPA packages). Note that you need the NSS and OpenSSL libraries to do that. Alternatively, you can use a shell script to compile `tun2socks` only, in case the CMake or library dependencies are problematic for you: http://badvpn.googlecode.com/svn/trunk/compile-tun2sock.sh . If you're on Windows, simply grab the Windows build of BadVPN.
+`tun2socks` is part of BadVPN. If you're on Linux, just build BadVPN with its CMake build system (or use the Gentoo package net-misc/badvpn, the Arch AUR or Ubuntu PPA packages). You can build just tun2socks without any other software in the package; this way, you don't need to have the NSS and OpenSSL libraries installed:
+
+{{{
+mkdir badvpn-build
+cd badvpn-build
+cmake /path/to/badvpn -DBUILD_NOTHING_BY_DEFAULT=1 -DBUILD_TUN2SOCKS=1
+make
+}}}
+
+Alternatively, you can use a shell script to compile `tun2socks` only, in case using CMake is a problem for you: http://badvpn.googlecode.com/svn/trunk/compile-tun2sock.sh .
+
+If you're on Windows, simply grab the Windows build of BadVPN.
 
 = Example (tunnelling through SSH) =
 
