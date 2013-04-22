@@ -6,7 +6,7 @@
 
 = Introduction =
 
-`tun2socks` is used to "socksify" TCP (IPv4 only) connections at the network layer. It implements a TUN virtual network interface which accepts all incoming TCP connections (regardless of destination IP), and forwards them through a SOCKS server. This allows you to forward *all* connections through SOCKS, without any need for application support. It can be used, for example, to forward connections through a remote SSH server or through [https://www.torproject.org/ Tor]. Because of how it works, it can even be installed on a Linux router to transparently forward clients through SOCKS.
+`tun2socks` is used to "socksify" TCP (IPv4 and IPv6) connections at the network layer. It implements a TUN virtual network interface which accepts all incoming TCP connections (regardless of destination IP), and forwards them through a SOCKS server. This allows you to forward *all* connections through SOCKS, without any need for application support. It can be used, for example, to forward connections through a remote SSH server or through [https://www.torproject.org/ Tor]. Because of how it works, it can even be installed on a Linux router to transparently forward clients through SOCKS.
 
 = Installation =
 
@@ -83,6 +83,16 @@ These routes will not persist across a reboot. You should probably make scripts 
 
   # On the remote SSH server, start: `badvpn-udpgw --listen-addr 127.0.0.1:7300`
   # Add the following arguments to `badvpn-tun2socks`: `--udpgw-remote-server-addr 127.0.0.1:7300`
+
+= IPv6 support =
+
+IPv6 forwarding in tun2socks works much like IPv4 forwarding. It is enabled using the `--netif-ip6addr` command line option. For example, you can assign the address `fdfe:dcba:9876::1` to the TUN interface, and tell tun2socks to assume the address `fdfe:dcba:9876::2`, like this:
+
+{{{
+badvpn-tun2socks ...other..options... --netif-ip6addr fdfe:dcba:9876::2/126
+}}}
+
+Once this is done, you should be able to ping the virtual router inside tun2socks at `fdfe:dcba:9876::2`. To forward IPv6 through tun2socks, update your routing table appropriately.
 
 = Using with Tor =
 
