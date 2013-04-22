@@ -96,7 +96,7 @@ badvpn-tun2socks ...other..options... --netif-ip6addr fdfe:dcba:9876::2/126
 
 Once this is done, you should be able to ping the virtual router inside tun2socks at `fdfe:dcba:9876::2`. To forward IPv6 through tun2socks, update your routing table appropriately.
 
-UDP forwarding via `udpgw` also supports IPv6. It is irrelevant whether the connection to udpgw is made using IPv4 or IPv6, as long as it works.
+UDP forwarding via UdpGw also supports IPv6. It is irrelevant whether the connection to UdpGw is made using IPv4 or IPv6, as long as it works.
 
 = Using with Tor =
 
