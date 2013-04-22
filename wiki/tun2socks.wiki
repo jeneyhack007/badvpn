@@ -86,6 +86,8 @@ These routes will not persist across a reboot. You should probably make scripts 
 
 = IPv6 support =
 
+*NOTE:* IPv6 support is only available in the SVN repository, and is not yet in a release version.
+
 IPv6 forwarding in tun2socks works much like IPv4 forwarding. It is enabled using the `--netif-ip6addr` command line option. For example, you can assign the address `fdfe:dcba:9876::1` to the TUN interface, and tell tun2socks to assume the address `fdfe:dcba:9876::2`, like this:
 
 {{{
