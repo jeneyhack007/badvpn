@@ -2,7 +2,7 @@
 #labels tun,socks,ssh,tunnel,vpn,socksify,tcp,proxify
 
 
-<font size="3">*See also:* [NCD], a powerful network configuration system</font>
+<font size="3">*See also:* [NCD], a programming language for network configurations</font>
 
 = Introduction =
 
