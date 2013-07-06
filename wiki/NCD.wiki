@@ -3,7 +3,7 @@
 
 <font size="5">*NEW:* Try NCD directly [http://badvpn.googlecode.com/svn/wiki/emncd.html in your browser]</font>
 
-<font size="5">*NEW:*[https://code.google.com/p/badvpn/downloads/detail?name=NCD_programming_language_thesis.pdf My diploma thesis] documenting NCD</font>
+<font size="5">*NEW:* [https://code.google.com/p/badvpn/downloads/detail?name=NCD_programming_language_thesis.pdf My diploma thesis] documenting NCD</font>
 
 = Contents =
 
