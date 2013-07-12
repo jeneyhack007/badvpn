@@ -15,8 +15,6 @@ NCD, the Network Configuration Daemon, is a programming/scripting language origi
 
 NCD is only available for Linux. It is included in the BadVPN software package.
 
-This document 
-
 = Why ? =
 
 If you use Linux on a desktop system, you must have heard of a program called !NetworkManager. It is a program that is meant to take care of network configuration on the OS. It is designed to be extremely easy and simple to use; it has a GUI with a wireless network list, easy wireless and IP configuration, support for VPN, etc..
