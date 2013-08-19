@@ -102,7 +102,7 @@ UDP forwarding via `badvpn-udpgw` also supports IPv6. It is irrelevant whether t
 
 The goal here is to have all connections initiating from a virtual machine go through [https://www.torproject.org/ Tor] via tun2socks.
 
-*NOTE*: It is not currently possible to use tun2socks with Tor on a single host without a virtual machine; that would require dynamically updating the routing table based on which Tor nodes are used.
+*NOTE*: It is hard, but not impossible, to use tun2socks with Tor on a single host without a virtual machine, since the OS would have to route tun2socks outgoing connections differently from other programs. This can be achieved using *policy routing*, but this guide does not provide any more information.
 
 *WARNING*: software in the VM may [https://trac.torproject.org/projects/tor/wiki/doc/TransparentProxyLeaks reveal information] about you without your knowledge. The Tor project recommends only using the [https://www.torproject.org/download/download-easy.html.en Tor Browser Bundle] as your web browser. However, it is not possible to properly use this browser together with transparent proxying as described here. You should however at least use something like Chrome's [https://support.google.com/chrome/?p=cpn_incognito Incognito mode]; however, this is *not* equivalent to using the bundle. You can read more about the privacy features of the Tor Browser Bundle you may be missing on [https://www.torproject.org/projects/torbrowser/design/ in this document].
 
