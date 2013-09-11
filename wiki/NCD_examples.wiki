@@ -161,7 +161,7 @@ process wlan {
     println("Connected to wireless network: bssid=", sup.bssid, " ssid=", sup.ssid);
 
     # Call configuration, pass SSID as argument.
-    call("wlan_config", {sup.ssid}) config;
+    call("wlan_config", {sup.ssid, dev}) config;
     alias("config.config") config;
 
     # Print configuration name.
@@ -183,8 +183,9 @@ process wlan {
 }
 
 template wlan_config {
-    # First argument in call() is SSID.
+    # First argument in call() is SSID, second is device name.
     alias("_arg0") ssid;
+    alias("_arg1") dev;
 
     # Compare SSID to known ones.
     val_equal(ssid, "Some Network") is_home1;
@@ -207,7 +208,7 @@ template wlan_config {
     }
     else {
         var("Default DHCP") config_name;
-        net.ipv4.dhcp(wdep.dev) dhcp;
+        net.ipv4.dhcp(dev) dhcp;
         ip_in_network(dhcp.addr, "127.0.0.0", "8") test_local;
         ifnot(test_local);
         var(dhcp.addr) addr;
