@@ -959,8 +959,8 @@ template interface_worker {
 
     # Here comes your GENERIC interface configuration code.
 
-    regex_match(dev, "^eth") wired_match;
-    regex_match(dev, "^wlan") wireless_match;
+    regex_match(dev, "^(eth|enp)") wired_match;
+    regex_match(dev, "^(wlan|wlp)") wireless_match;
 
     If (wired_match.succeeded) {
         # Wired configuration...
