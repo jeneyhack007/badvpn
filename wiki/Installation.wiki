@@ -6,7 +6,7 @@ The BadVPN package is available in the Portage tree as [http://packages.gentoo.o
 
 = Arch =
 
-Use the [https://aur.archlinux.org/packages.php?ID=48249 AUR package].
+Use the [https://aur.archlinux.org/packages/badvpn/ AUR package].
 
 = Ubuntu =
 
